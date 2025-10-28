@@ -1,5 +1,4 @@
 const CursorZone = ({
-    cursorImage,
     debug = false,
     position,
     size,
@@ -13,9 +12,9 @@ const CursorZone = ({
                 ...position,
                 ...size,
                 border: debug ? `2px solid red` : undefined,
-                cursor: disabled ? "default" : `url(${cursorImage}) 0 89, auto`, // Disable cursor change
+                cursor: "pointer",
                 pointerEvents: disabled ? "none" : "auto", // Disable interactions
-                zIndex: 2, // Ensure it is in front of the candle
+                zIndex: 99, // Ensure it is in front of the candle
             }}
             onClick={disabled ? undefined : onClick} // Disable click handler
         ></div>

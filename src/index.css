@@ -1,11 +1,32 @@
+/* ------ BASE / RESET ------ */
+
+html,
+body,
+#root {
+    background: #000;
+    color: #fff;
+    color-scheme: dark; /* dark scrollbars/controls */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
 :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: "Quattrocento", serif;
+    font-weight: 400;
+    font-style: normal;
     line-height: 1.5;
     font-weight: 400;
 
-    color-scheme: light dark;
+    /* Always black theme */
+    color-scheme: dark;
     color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    background-color: #000;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -13,22 +34,19 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-}
-a:hover {
-    color: #535bf2;
+* {
+    background-color: transparent; /* avoid white flash on nested elements */
 }
 
-html,
-body {
+div,
+body,
+html {
     margin: 0;
-    min-width: 320px;
-    min-height: 100vh;
-    background: #000;
-    color: #fff;
+    padding: 0;
+}
+
+body {
+    position: relative;
 }
 
 h1 {
@@ -36,10 +54,48 @@ h1 {
     line-height: 1.1;
 }
 
+img {
+    touch-action: manipulation;
+}
+
+/* Typography helpers */
+
+.typewriter {
+    font-family: "Special Elite", system-ui;
+}
+
+.quattrocento-regular {
+    font-family: "Quattrocento", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.quattrocento-bold {
+    font-family: "Quattrocento", serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.red {
+    color: rgb(85, 0, 0);
+}
+
+/* Links */
+a {
+    font-weight: 500;
+    color: #ffffff;
+    text-decoration: inherit;
+    text-decoration: underline;
+}
+a:hover {
+    color: #9a9a9a;
+}
+
+/* Buttons */
 button {
     border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
+    border: none;
+    padding: 0.4em 1em;
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
@@ -47,32 +103,610 @@ button {
     cursor: pointer;
     transition: border-color 0.25s;
 }
-button:hover {
-    border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
-}
 
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
-    a:hover {
-        color: #747bff;
-    }
-    button {
-        background-color: #f9f9f9;
-    }
-}
-
-.typewriter {
+.creepy-button {
+    background-color: #fff;
+    color: #000;
+    font-size: 2em;
+    padding-top: 0.6em;
+    border-radius: 0;
     font-family: "Special Elite", system-ui;
-    font-weight: 400;
-    font-style: normal;
 }
+.creepy-button:hover {
+    background-color: #afafaf;
+}
+.creepy-button:focus {
+    color: #fff;
+    background-color: #000;
+    border: 1px solid #fff;
+}
+
+/* Utility */
+.inspect-link {
+    display: block;
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration-thickness: 1px;
+    font-size: 1.5em;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+}
+.inspect-link:hover {
+    text-decoration: underline;
+    opacity: 0.6;
+    color: #fff;
+}
+
+/* ------ ENTRY PAGE ------ */
+
+#EntryPage > * {
+    transition: filter 0.3s ease;
+}
+#EntryPage.fullDim > *:not(.warning) {
+    filter: brightness(0.25);
+}
+#EntryPage.partialDim > *:not(.warning) {
+    filter: brightness(0.5);
+}
+
+.entry-page::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 600px;
+    height: 600px; /* adjust for aspect ratio */
+    background: url("/images/warning.png") no-repeat top right;
+    background-size: contain;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0; /* default hidden */
+    transition: opacity 0.3s ease;
+}
+.entry-page.partialDim::before {
+    opacity: 0.25;
+}
+.entry-page.fullDim::before {
+    opacity: 0.7;
+}
+
+/* ------ OUIJA MENU / PLANCHETTE ------ */
+
+.ouija-menu * {
+    font-size: 3em;
+}
+
+.ouija-menu {
+    position: absolute;
+    top: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    transition: opacity 400ms ease-in-out;
+}
+
+.ouija-menu button {
+    width: 200px;
+    margin: auto;
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+.ouija-menu button:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 4px;
+}
+
+.planchette {
+    will-change: transform;
+}
+.planchette.is-ready {
+    transition: transform 300ms ease-in-out;
+}
+
+@media (max-width: 700px) {
+    .ouija-menu * {
+        font-size: 1.7em;
+    }
+}
+
+/* ------ KIT PAGE (containers, SVG, modal image) ------ */
+
+/* Main containers */
+#KitPage,
+.kitpage-root {
+    height: 100vh;
+    width: 100%;
+    max-width: 1500px;
+    padding: 50px 0;
+    margin: auto;
+    overflow: hidden;
+}
+
+.kit-canvas {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* SVG wrapper / sizing */
+.kit-svg-wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.kit-svg {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Falling closed kit image */
+.falling {
+    display: block;
+    height: calc(100vh - 100px); /* account for top/bottom padding on root */
+    width: auto;
+    max-width: 100%;
+    margin: 0 auto;
+    object-fit: contain;
+    animation: fallFromTop 1.5s ease-in forwards;
+}
+
+/* Item modal (single definition) */
+.item-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.72);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+
+    cursor: pointer;
+}
+
+.item-modal > * {
+    cursor: default;
+}
+
+.item-modal-image {
+    animation: modalFloat 3s ease-in-out infinite;
+}
+
+.item-modal-image img {
+    max-height: 50vh;
+    max-width: 50vw;
+    height: auto;
+    width: auto;
+}
+
+.item-modal-image img {
+    height: auto;
+    width: auto;
+}
+
+.item-modal-text {
+    max-width: 500px;
+    text-align: center;
+    padding: 5px 10px;
+    background-color: black;
+    box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0.95);
+}
+
+.item-modal-text .item-name {
+    font-size: 2em;
+}
+
+/* Whisper overlay */
+.skull-whisper-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+.skull-whisper {
+    position: absolute;
+    transform: translate(-50%, 0);
+    font-family: "Special Elite", system-ui;
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    padding: 0 10px;
+    box-shadow: 0 0 12px 12px rgba(0, 0, 0, 0.898);
+    opacity: 0;
+    animation: skullWhisperFloat 2.4s ease-out forwards;
+}
+
+/* ------ TAROT PAGE ------ */
+
+#TarotPage {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10vh;
+    padding-top: 7vh;
+}
+
+.tarot-card-slots {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 45px;
+    z-index: 1;
+}
+
+.tarot-intro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 2em;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.tarot-intro-container > span {
+    opacity: 0;
+}
+
+/* Fortune line container */
+.fortune-parts-container {
+    width: 100%;
+    max-width: 900px;
+    min-height: 1.2em;
+    text-align: center;
+    font-size: 2em;
+    color: #fff;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 800px) {
+    .fortune-parts-container {
+        font-size: 1em;
+    }
+
+    .tarot-card-slots {
+        gap: 20px;
+    }
+
+    .tarot-intro-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 1.1em;
+        margin-top: 100px;
+    }
+}
+
+/* ------ TAROT MODAL ------ */
+
+.tarot-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.tarot-modal-content {
+    cursor: default;
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    max-width: 90vw;
+    max-height: 90vh;
+    pointer-events: auto;
+}
+
+.tarot-card-container {
+    flex-shrink: 0;
+    perspective: 1000px;
+}
+
+.tarot-modal-card {
+    height: 520px;
+    width: auto;
+    border-radius: 12px;
+    cursor: pointer;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+}
+
+.tarot-modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+}
+
+.tarot-modal-text {
+    max-width: 500px;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px 8px rgba(0, 0, 0, 0.6);
+}
+
+.tarot-card-name {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.tarot-card-description {
+    margin-bottom: 25px;
+}
+.tarot-card-description p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.tarot-card-symbolism,
+.tarot-card-artist {
+    margin-bottom: 20px;
+}
+
+.tarot-card-symbolism h4,
+.tarot-card-artist h4 {
+    color: #fff;
+    font-size: 1.3em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tarot-card-symbolism p,
+.tarot-card-artist p {
+    color: #bbb;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.tarot-modal-close-hint {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.tarot-modal-close-hint p {
+    color: #888;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+@media (max-width: 700px) {
+    .tarot-modal-content {
+        overflow-y: scroll;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .tarot-modal-card {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .tarot-card-name {
+        font-size: 2em;
+    }
+
+    .tarot-card-description,
+    .tarot-card-symbolism p,
+    .tarot-card-artist p {
+        font-size: 1em;
+    }
+}
+
+/* ------ GHOST QUIZ ------ */
+#QuizPage {
+    height: 100vh;
+    width: 100vw;
+}
+
+.quiz-container {
+    width: 85vw;
+    max-width: 1000px;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Anchor for overlay */
+.book-container {
+    transform: translateX(0);
+    transition: transform 0.5s ease-in-out;
+}
+
+/* --- Image --- */
+.book-container img {
+    margin-top: -20%;
+    transition: filter 0.2s ease;
+}
+
+.book-container img:hover {
+    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
+}
+
+/* --- Overlay --- */
+.book-text {
+    color: black;
+    font-weight: bold;
+
+    position: absolute;
+    bottom: 0;
+
+    height: 80%;
+
+    padding: 70px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+
+    font-size: 1.4em;
+    transition: opacity 0.8s ease;
+}
+
+.book-text > * {
+    padding: 0 20px;
+}
+
+.book-text > .question {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.book-text > .answers {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.8em;
+    margin-right: 10px;
+}
+
+.book-text .choice {
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.book-text .choice-key {
+    position: relative;
+}
+
+.book-text .choice .circle {
+    position: absolute;
+    left: 50%;
+    transform: translate(-52%, 0);
+    top: 2px;
+    height: 1.5em;
+    width: 1.5em;
+
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.book-text .choice:hover .circle {
+    opacity: 0.9;
+}
+
+@media (max-width: 1200px) {
+    .book-text {
+        font-size: 1.3em;
+    }
+}
+
+/* ------ EFFECTS & UTILITIES ------ */
+
+.vignette {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0) 40%,
+        rgba(0, 0, 0, 1) 100%
+    );
+}
+
+@media (max-width: 700px) {
+    .vignette {
+        background: radial-gradient(
+            ellipse at center,
+            rgba(0, 0, 0, 0) 60%,
+            rgba(0, 0, 0, 0.7) 100%
+        );
+    }
+}
+
+/* CRT scanlines overlay */
+.scanlines {
+    overflow: hidden;
+    position: relative;
+}
+.scanlines::before,
+.scanlines::after {
+    content: "";
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+.scanlines::before {
+    width: 100%;
+    height: 2px;
+    z-index: 2147483649;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0.5;
+    animation: scanline 6s linear infinite;
+}
+.scanlines::after {
+    inset: 0;
+    z-index: 2147483648;
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 0, 0, 0.2) 51%
+    );
+    background-size: 100% 4px;
+    animation: scanlines 1s steps(60) infinite;
+}
+
+/* Demo JPG cover (left intact if you still need it) */
+div.scanlines {
+    position: absolute;
+}
+div .jpg {
+    width: 100vw;
+    height: 100vh;
+    border: none;
+}
+.jpg {
+    background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Philips_PM5544.svg/800px-Philips_PM5544.svg.png")
+        no-repeat;
+    background-size: cover;
+}
+
+/* ------ ANIMATIONS ------ */
 
 @keyframes flicker {
     0%,
@@ -90,4 +724,168 @@ button:focus-visible {
     55% {
         opacity: 0.5;
     }
+}
+
+@keyframes fallFromTop {
+    0% {
+        transform: translateY(-4000px);
+    }
+    80% {
+        transform: translateY(0);
+    } /* hit ground */
+    90% {
+        transform: translateY(-50px);
+    } /* bounce */
+    100% {
+        transform: translateY(0);
+    } /* settle */
+}
+
+@keyframes modalFloat {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes scanline {
+    0% {
+        transform: translate3d(0, 200000%, 0);
+    }
+}
+
+@keyframes scanlines {
+    0% {
+        background-position: 0 50%;
+    }
+}
+
+@keyframes skullWhisperFloat {
+    0% {
+        transform: translate(-50%, 0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    85% {
+        transform: translate(-50%, -20px);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -20px);
+        opacity: 0;
+    }
+}
+
+/* ------ KNIFE PAGE ------ */
+
+#KnifePage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+}
+
+.knife-intro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.take-knife-img img {
+    height: 600px;
+    rotate: -140deg;
+    cursor: pointer;
+}
+
+.take-knife-img img:hover {
+    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
+}
+
+.onion-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.onion-container img {
+    user-select: none;
+    pointer-events: auto;
+    touch-action: manipulation;
+    scale: 1.25;
+    height: 500px;
+    width: auto;
+}
+
+.onion-container img:hover {
+    filter: drop-shadow(0 0 2px white) drop-shadow(0 0 12px white);
+}
+
+.cursor-none,
+.cursor-none * {
+    cursor: none !important;
+}
+
+/* Knife cursor image that follows the mouse */
+.knife-cursor {
+    position: fixed; /* follow viewport, not scrolled layout */
+    z-index: 9999;
+    width: 80px; /* tweak size as you like */
+    pointer-events: none; /* never intercept clicks */
+    transform: rotate(-45deg);
+}
+
+.bottle-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    right: 100px;
+    bottom: 100px;
+    transform: translate(0, 0);
+    transition: right 0.75s ease-in-out, bottom 0.75s ease-in-out,
+        transform 0.75s ease-in-out !important;
+}
+
+.bottle-container.center {
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%, 50%);
+}
+
+.bottle-container img {
+    user-select: none;
+    pointer-events: auto;
+    touch-action: manipulation;
+    height: 200px;
+}
+
+/* Reusable anim */
+
+.show,
+.hide {
+    transition-property: opacity;
+    transition-duration: 0.4s;
+    transition-timing-function: ease;
+}
+
+.show {
+    opacity: 1 !important; /* used to reveal staged elements */
+}
+
+.hide {
+    opacity: 0 !important;
+    pointer-events: none;
 }
