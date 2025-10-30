@@ -77,7 +77,6 @@ const itemDefinitions = {
         imageSrc: "images/kit/full/note.png",
         maxHeight: 500,
         maxWidth: 500,
-        inspectLink: "/tarot",
     },
     cassette: {
         name: "Cassette Tape",
@@ -125,24 +124,6 @@ const setupHitPathInteraction = (path, group, glow, onClick) => {
 };
 
 const playSound = (src, volume = 1.0) => new Howl({ src: [src], volume });
-
-const getSkullWhisper = () => {
-    const base_whispers = [
-        "listen…",
-        "the veil thins…",
-        "take care…",
-        "it remembers you…",
-        "something watches…",
-    ];
-
-    const plus = [];
-    // if (gameState?.flags?.kitIntroPlayed) {
-    //     plus.push("the box is open…");
-    // }
-
-    const pool = base_whispers.concat(plus);
-    return pool[Math.floor(Math.random() * pool.length)];
-};
 
 // ------------------ Component ------------------
 export default function KitPage() {
@@ -239,7 +220,36 @@ export default function KitPage() {
     };
 
     // ------------------ Skull whisper spawn ------------------
+
     const spawnSkullWhispers = useCallback(() => {
+        const getSkullWhisper = () => {
+            let whisper_pool = [
+                "listen...",
+                "the veil thins...",
+                "something watches...",
+                "release your sadness...",
+            ];
+
+            //not bottleCollected
+            if (!gameState?.flags?.bottleCollected) {
+                whisper_pool = whisper_pool.concat([
+                    "the bottle must be filled...",
+                    "you deny the knife it's purpose...",
+                ]);
+            }
+            //not tarotIntroPlayed
+            if (!gameState?.flags?.tarotIntroPlayed) {
+                whisper_pool = whisper_pool.concat([
+                    "consult the cards...",
+                    "seek the tarot...",
+                ]);
+            }
+
+            return whisper_pool[
+                Math.floor(Math.random() * whisper_pool.length)
+            ];
+        };
+
         // prevent overlapping whispers
         if (whisper) return;
 

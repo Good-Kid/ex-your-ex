@@ -1,15 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import WaveText from "../components/WaveText";
-import axios from "axios";
-import { Howl } from "howler";
+import React, { useEffect, useState } from "react";
 
 import ghostQuizData, {
     scoreAnswers,
-    computeMaxWeights,
-    normalizeScores,
-    pickResult4x4,
     resultFromScores,
 } from "../data/ghostData";
+import LinkButton from "../components/LinkButton";
 
 const BOOK_COVER_SRC = "/images/quiz/book_closed.png";
 const BOOK_OPEN_SRC = "/images/quiz/book_open.png";
@@ -21,14 +16,29 @@ const FLIP_DURATION = 250; // ms
 const QuizPage = () => {
     const [bookSrc, setBookSrc] = useState(BOOK_COVER_SRC);
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [lastAnswer, setLastAnswer] = useState();
     const [showText, setShowText] = useState(false);
-
     const [scores, setScores] = useState({ voice: 0, temper: 0 });
+    const [result, setResult] = useState();
+
+    const [ui, setUI] = useState({
+        quizContainer: true,
+        showQuiz: true,
+        resultsContainer: false,
+        showResults: false,
+    });
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 
     useEffect(() => {
-        console.log("Scores updated to: ", scores);
-    }, [scores]);
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 1000);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
+        console.log(result);
+    }, [result]);
 
     const getBookSrc = () => {
         if (bookSrc.endsWith(".gif")) {
@@ -53,14 +63,32 @@ const QuizPage = () => {
         if (showText === false) {
             return;
         }
-        setLastAnswer(`${question} ${answer}`);
         setShowText(false);
 
         const answerWeights =
             ghostQuizData.questions[question].answers[answer].weights;
 
-        // update the score
-        setScores((prev) => scoreAnswers(prev, answerWeights));
+        const nextScores = scoreAnswers(scores, answerWeights);
+        setScores(nextScores);
+
+        // detect if this was the last question
+        if (question === ghostQuizData.questions.length - 1) {
+            setResult(resultFromScores(scores, ghostQuizData));
+            setTimeout(() => {
+                setUI((u) => ({ ...u, showQuiz: false }));
+                setTimeout(() => {
+                    setUI((u) => ({
+                        ...u,
+                        quizContainer: false,
+                        resultsContainer: true,
+                    }));
+                    setTimeout(() => {
+                        setUI((u) => ({ ...u, showResults: true }));
+                    }, 10);
+                }, 300); // how long until the book fades away
+            }, 0);
+            return;
+        }
 
         setTimeout(() => {
             setBookSrc(PAGE_FLIP_GIF_SRC);
@@ -73,7 +101,17 @@ const QuizPage = () => {
     };
 
     const renderQuestion = () => {
-        return <span>{ghostQuizData.questions[currentQuestion].text}</span>;
+        const text = ghostQuizData.questions[currentQuestion].text;
+        return (
+            <>
+                {text.split("\n").map((line, idx) => (
+                    <span key={idx}>
+                        {line}
+                        {idx < text.split("\n").length - 1 && <br />}
+                    </span>
+                ))}
+            </>
+        );
     };
 
     const renderAnswers = () => {
@@ -88,34 +126,6 @@ const QuizPage = () => {
                             }}
                             key={idx}
                         >
-                            <div className="choice-key">
-                                {String.fromCharCode(65 + idx)})
-                                <div
-                                    className="circle"
-                                    style={
-                                        lastAnswer ==
-                                        `${currentQuestion} ${idx}`
-                                            ? {
-                                                  opacity: 1,
-                                              }
-                                            : {}
-                                    }
-                                >
-                                    <img
-                                        src="/images/quiz/circle.png"
-                                        alt=""
-                                        className="circle"
-                                        style={
-                                            lastAnswer ==
-                                            `${currentQuestion} ${idx}`
-                                                ? {
-                                                      opacity: 1,
-                                                  }
-                                                : {}
-                                        }
-                                    />
-                                </div>
-                            </div>
                             <div className="choice-text">{answer.text}</div>
                         </div>
                     )
@@ -124,34 +134,92 @@ const QuizPage = () => {
         );
     };
 
-    return (
-        <div id="QuizPage">
-            <div className="quiz-container">
+    if (ui.quizContainer)
+        return (
+            <div id="QuizPage">
                 <div
-                    className="book-container"
-                    style={{
-                        cursor:
-                            bookSrc == BOOK_COVER_SRC ? "pointer" : "default",
-                        transform: `translateX(${
-                            bookSrc == BOOK_COVER_SRC ? "-25%" : "0px"
-                        })`,
-                    }}
+                    className={`quiz-container ${
+                        ui.showQuiz ? "show" : "hide"
+                    }`}
                 >
-                    <img src={getBookSrc()} onClick={handleBookClick} alt="" />
                     <div
-                        className="book-text typewriter"
+                        className={`book-container ${
+                            bookSrc == BOOK_COVER_SRC && "hoverable"
+                        }`}
                         style={{
-                            opacity: showText ? 1 : 0,
-                            pointerEvents: showText ? "auto" : "none",
+                            cursor:
+                                bookSrc == BOOK_COVER_SRC
+                                    ? "pointer"
+                                    : "default",
+                            transform: `translateX(${
+                                bookSrc == BOOK_COVER_SRC ? "-25%" : "0px"
+                            })`,
                         }}
                     >
-                        <div className="question">{renderQuestion()}</div>
-                        <div className="answers">{renderAnswers()}</div>
+                        <img
+                            src={getBookSrc()}
+                            onClick={handleBookClick}
+                            alt=""
+                        />
+                        <div
+                            className="book-text typewriter"
+                            style={{
+                                opacity: showText ? 1 : 0,
+                                pointerEvents: showText ? "auto" : "none",
+                            }}
+                        >
+                            <div className="question ">{renderQuestion()}</div>
+                            <div className="answers">
+                                <span className="prompt">Choose One:</span>
+                                {renderAnswers()}
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div
+                    className={`quiz-results ${
+                        ui.showResults ? "show" : "hide"
+                    }`}
+                ></div>
             </div>
-        </div>
-    );
+        );
+    else if (ui.resultsContainer) {
+        return (
+            <div
+                className={`results-container ${
+                    ui.showResults ? "show" : "hide"
+                }`}
+                style={{
+                    width: "500px",
+                    margin: "auto",
+                    textAlign: "center",
+                }}
+            >
+                The results page isnt done yet {":P"},<br />
+                But if it was, you would've gotten:
+                <div
+                    style={{
+                        border: "1px solid white",
+                        display: "flex",
+                        flexDirection: "column",
+                        padding: "20px",
+                        margin: "20px",
+                    }}
+                >
+                    <span
+                        style={{
+                            borderBottom: "1px solid white",
+                            marginBottom: "10px",
+                        }}
+                    >
+                        <b>{result.name}</b>
+                    </span>
+                    <span>{result.description}</span>
+                </div>
+                <LinkButton to="/kit">Back to Kit</LinkButton>
+            </div>
+        );
+    }
 };
 
 export default QuizPage;

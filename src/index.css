@@ -1,3 +1,7 @@
+/* =========================================
+   GLOBAL STYLES
+   ========================================= */
+
 /* ------ BASE / RESET ------ */
 
 html,
@@ -58,7 +62,27 @@ img {
     touch-action: manipulation;
 }
 
-/* Typography helpers */
+/* Global link reset to inherit + no decoration */
+a,
+a:hover,
+a:visited,
+a:active,
+a:focus {
+    color: inherit !important;
+    text-decoration: none !important;
+    font-weight: inherit !important;
+}
+
+/* ------ GLOBAL COMPONENTS ------ */
+
+.link-button {
+    pointer-events: auto !important;
+    color: white !important;
+    border-radius: 0;
+    font-size: 22px;
+}
+
+/* ------ TYPOGRAPHY HELPERS ------ */
 
 .typewriter {
     font-family: "Special Elite", system-ui;
@@ -80,7 +104,8 @@ img {
     color: rgb(85, 0, 0);
 }
 
-/* Links */
+/* ------ LINKS ------ */
+
 a {
     font-weight: 500;
     color: #ffffff;
@@ -91,9 +116,9 @@ a:hover {
     color: #9a9a9a;
 }
 
-/* Buttons */
+/* ------ BUTTONS ------ */
+
 button {
-    border-radius: 8px;
     border: none;
     padding: 0.4em 1em;
     font-size: 1em;
@@ -101,7 +126,12 @@ button {
     font-family: inherit;
     background-color: #1a1a1a;
     cursor: pointer;
-    transition: border-color 0.25s;
+    transition: border-color 0.25s, background-color 0.2s, color 0.2s;
+}
+
+button:hover {
+    background-color: #333;
+    color: #fff;
 }
 
 .creepy-button {
@@ -121,11 +151,12 @@ button {
     border: 1px solid #fff;
 }
 
-/* Utility */
+/* ------ UTILITIES ------ */
+
 .inspect-link {
     display: block;
     margin-top: 20px;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(35, 14, 14, 0.8);
     text-decoration-thickness: 1px;
     font-size: 1.5em;
     transition: opacity 0.2s ease;
@@ -137,11 +168,287 @@ button {
     color: #fff;
 }
 
-/* ------ ENTRY PAGE ------ */
-
-#EntryPage > * {
-    transition: filter 0.3s ease;
+.vignette {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 9999;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0) 40%,
+        rgba(0, 0, 0, 1) 100%
+    );
 }
+
+/* CRT scanlines overlay */
+.scanlines {
+    overflow: hidden;
+    position: relative;
+}
+.scanlines::before,
+.scanlines::after {
+    content: "";
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+.scanlines::before {
+    width: 100%;
+    height: 2px;
+    z-index: 2147483649;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0.5;
+    animation: scanline 6s linear infinite;
+}
+.scanlines::after {
+    inset: 0;
+    z-index: 2147483648;
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 0, 0, 0.2) 51%
+    );
+    background-size: 100% 4px;
+    animation: scanlines 1s steps(60) infinite;
+}
+
+/* Demo JPG cover (left intact if you still need it) */
+div.scanlines {
+    position: absolute;
+}
+
+/* Reusable anim */
+.show,
+.hide {
+    transition-property: opacity;
+    transition-duration: 0.4s;
+    transition-timing-function: ease;
+}
+
+.show {
+    opacity: 1 !important; /* used to reveal staged elements */
+}
+
+.hide {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* Water splash fade animation (global effect) */
+.water-splash {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.water-splash.fade-in {
+    opacity: 0.5;
+}
+.water-splash.fade-out {
+    opacity: 0;
+}
+
+/* ------ GLOBAL ANIMATIONS ------ */
+
+@keyframes flicker {
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+        opacity: 1;
+    }
+    20%,
+    24%,
+    55% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes fallFromTop {
+    0% {
+        transform: translateY(-4000px);
+    }
+    80% {
+        transform: translateY(0);
+    } /* hit ground */
+    90% {
+        transform: translateY(-50px);
+    } /* bounce */
+    100% {
+        transform: translateY(0);
+    } /* settle */
+}
+
+@keyframes modalFloat {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes scanline {
+    0% {
+        transform: translate3d(0, 200000%, 0);
+    }
+}
+
+@keyframes scanlines {
+    0% {
+        background-position: 0 50%;
+    }
+}
+
+@keyframes skullWhisperFloat {
+    0% {
+        transform: translate(-50%, 0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    85% {
+        transform: translate(-50%, -20px);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -20px);
+        opacity: 0;
+    }
+}
+
+/* ------ GLOBAL RESPONSIVE ------ */
+
+@media (max-width: 700px) {
+    .vignette {
+        background: radial-gradient(
+            ellipse at center,
+            rgba(0, 0, 0, 0) 60%,
+            rgba(0, 0, 0, 0.7) 100%
+        );
+    }
+}
+
+/* =========================================
+   ENTRY PAGE
+   ========================================= */
+
+#EntryPage {
+    position: relative;
+    width: 95vw;
+    max-width: 1200px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    overflow: visible; /* ensure the frame doesn’t clip */
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: end;
+}
+
+/* Candle */
+#EntryPage .candle {
+    position: relative;
+    height: 90%;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: visible; /* allow the flame to escape this cell */
+    z-index: 5; /* baseline */
+}
+
+/* Candlestick scales the column */
+#EntryPage .candle .stick {
+    width: 100%;
+    height: 85%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Flame: scales with candle width, and renders above the frame */
+#EntryPage .candle .flame {
+    position: absolute;
+    left: var(--flame-x, 50%);
+    top: var(--flame-y, 12%);
+    transform: translate(-50%, -100%); /* bottom-center on wick */
+    width: var(--flame-w, 22%); /* scales with column/candle */
+    height: auto;
+    pointer-events: none;
+
+    z-index: 10; /* <- above siblings */
+    /* if a parent has its own stacking context (e.g., transform/filter), force a new one: */
+    isolation: isolate;
+}
+
+#EntryPage .skull {
+    position: absolute;
+    bottom: -10%;
+    left: -45%;
+}
+
+#EntryPage .skull img {
+    height: 350px;
+    width: auto;
+    width: auto;
+}
+
+#EntryPage .logo {
+    position: absolute;
+    top: -50px;
+    right: -20px;
+    filter: invert(1);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#EntryPage .logo img {
+    width: 60%;
+    /* border: 1px solid red; */
+    inset: -10px;
+}
+
+/* Grid child: the middle column box */
+#EntryPage .phone {
+    position: relative;
+    height: 100%;
+    min-width: 0; /* grid gotcha */
+    min-height: 0; /* grid gotcha */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+
+    transform: translateX(-6%) translateY(-20px);
+}
+
+#EntryPage .phone .prompt {
+    position: absolute;
+    transform: rotate(-12deg);
+    font-size: 2.2em;
+    right: -50px;
+    bottom: -40px;
+    padding: 5px 20px;
+}
+
+#EntryPage .phone.hoverable img {
+    cursor: pointer;
+}
+
+#EntryPage .phone.hoverable img:hover {
+    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
+}
+
 #EntryPage.fullDim > *:not(.warning) {
     filter: brightness(0.25);
 }
@@ -170,7 +477,20 @@ button {
     opacity: 0.7;
 }
 
-/* ------ OUIJA MENU / PLANCHETTE ------ */
+/* ENTRY PAGE — RESPONSIVE */
+@media (max-width: 1000px) {
+    #EntryPage .skull img {
+        display: none !important;
+    }
+
+    #EntryPage .phone .prompt {
+        font-size: 5vw;
+    }
+}
+
+/* =========================================
+   OUIJA MENU / PLANCHETTE
+   ========================================= */
 
 .ouija-menu * {
     font-size: 3em;
@@ -191,12 +511,14 @@ button {
 }
 
 .ouija-menu button {
+    color: white !important;
     width: 200px;
     margin: auto;
     background-color: transparent;
     padding: 0;
     border-radius: 0;
 }
+
 .ouija-menu button:hover {
     text-decoration: underline;
     text-decoration-thickness: 4px;
@@ -209,18 +531,21 @@ button {
     transition: transform 300ms ease-in-out;
 }
 
+/* OUIJA MENU — RESPONSIVE */
 @media (max-width: 700px) {
     .ouija-menu * {
         font-size: 1.7em;
     }
 }
 
-/* ------ KIT PAGE (containers, SVG, modal image) ------ */
+/* =========================================
+   KIT PAGE (containers, SVG, modal image)
+   ========================================= */
 
 /* Main containers */
 #KitPage,
 .kitpage-root {
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     max-width: 1500px;
     padding: 50px 0;
@@ -268,7 +593,7 @@ button {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
     background-color: rgba(0, 0, 0, 0.72);
 
@@ -302,6 +627,9 @@ button {
 }
 
 .item-modal-text {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     max-width: 500px;
     text-align: center;
     padding: 5px 10px;
@@ -311,9 +639,10 @@ button {
 
 .item-modal-text .item-name {
     font-size: 2em;
+    margin-bottom: -0.3em;
 }
 
-/* Whisper overlay */
+/* Whisper overlay (used on Kit) */
 .skull-whisper-layer {
     position: absolute;
     inset: 0;
@@ -336,10 +665,23 @@ button {
     animation: skullWhisperFloat 2.4s ease-out forwards;
 }
 
-/* ------ TAROT PAGE ------ */
+/* KIT PAGE — RESPONSIVE */
+@media (max-width: 800px) {
+    .item-modal-image img {
+        max-height: 40vh !important;
+    }
+
+    .item-modal-text {
+        max-width: 85vw;
+    }
+}
+
+/* =========================================
+   TAROT PAGE
+   ========================================= */
 
 #TarotPage {
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -382,6 +724,7 @@ button {
     flex-direction: column;
 }
 
+/* TAROT PAGE — RESPONSIVE */
 @media (max-width: 800px) {
     .fortune-parts-container {
         font-size: 1em;
@@ -400,7 +743,9 @@ button {
     }
 }
 
-/* ------ TAROT MODAL ------ */
+/* =========================================
+   TAROT MODAL
+   ========================================= */
 
 .tarot-modal {
     position: fixed;
@@ -508,6 +853,7 @@ button {
     font-style: italic;
 }
 
+/* TAROT MODAL — RESPONSIVE */
 @media (max-width: 700px) {
     .tarot-modal-content {
         overflow-y: scroll;
@@ -531,24 +877,27 @@ button {
     }
 }
 
-/* ------ GHOST QUIZ ------ */
+/* =========================================
+   GHOST QUIZ
+   ========================================= */
+
 #QuizPage {
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
 }
 
 .quiz-container {
     width: 85vw;
     max-width: 1000px;
-    margin: auto;
     position: absolute;
+    /* Center the quiz-container on the page */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-/* Anchor for overlay */
 .book-container {
+    /* Animated in code */
     transform: translateX(0);
     transition: transform 0.5s ease-in-out;
 }
@@ -559,7 +908,7 @@ button {
     transition: filter 0.2s ease;
 }
 
-.book-container img:hover {
+.book-container.hoverable img:hover {
     filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
 }
 
@@ -591,203 +940,97 @@ button {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    gap: 1em;
 }
 
 .book-text > .answers {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1.8em;
+    gap: 1em;
     margin-right: 10px;
+}
+
+.book-text > .answers .prompt {
+    text-align: center;
 }
 
 .book-text .choice {
     display: flex;
     gap: 10px;
     cursor: pointer;
+    align-items: center;
+
+    font-size: 0.9em;
+
+    background-color: rgb(230, 230, 230);
+    padding: 15px 20px;
+    border-radius: 15px;
+    transition: transform 0.25s cubic-bezier(0.4, 0.2, 0.2, 1),
+        box-shadow 0.25s cubic-bezier(0.4, 0.2, 0.2, 1), background-color 0.2s;
+
+    /* Paper texture overlay */
+    background-image: url("/images/quiz/paper_texture.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
 }
 
-.book-text .choice-key {
-    position: relative;
+/* Choice hover styles */
+
+.book-text .choice:hover {
+    transform: scale(1.04) rotate(-2deg);
+}
+.book-text .choice:hover:nth-child(even) {
+    transform: scale(1.04) rotate(2deg);
 }
 
-.book-text .choice .circle {
-    position: absolute;
-    left: 50%;
-    transform: translate(-52%, 0);
-    top: 2px;
-    height: 1.5em;
-    width: 1.5em;
-
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+.book-text .choice:hover {
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.25),
+        0 2px 8px 0 rgba(0, 0, 0, 0.18);
+    background-color: rgba(255, 255, 255, 0.85);
 }
 
 .book-text .choice:hover .circle {
     opacity: 0.9;
 }
 
+/* GHOST QUIZ — RESPONSIVE */
 @media (max-width: 1200px) {
     .book-text {
         font-size: 1.3em;
     }
 }
 
-/* ------ EFFECTS & UTILITIES ------ */
+@media (max-width: 850px) {
+    .quiz-container {
+        border: 1px solid red;
+        width: 160vw;
+        /* max-height: 70vh; */
+        max-width: none;
+        top: unset;
+        left: unset;
+        right: 0;
+        bottom: 0;
+        transform: none;
+    }
 
-.vignette {
-    pointer-events: none;
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(0, 0, 0, 0) 40%,
-        rgba(0, 0, 0, 1) 100%
-    );
-}
+    .book-text {
+        font-size: 1em;
+    }
 
-@media (max-width: 700px) {
-    .vignette {
-        background: radial-gradient(
-            ellipse at center,
-            rgba(0, 0, 0, 0) 60%,
-            rgba(0, 0, 0, 0.7) 100%
-        );
+    .book-container img {
+        max-height: 99vh;
     }
 }
 
-/* CRT scanlines overlay */
-.scanlines {
-    overflow: hidden;
-    position: relative;
-}
-.scanlines::before,
-.scanlines::after {
-    content: "";
-    position: absolute;
-    display: block;
-    pointer-events: none;
-}
-.scanlines::before {
-    width: 100%;
-    height: 2px;
-    z-index: 2147483649;
-    background: rgba(0, 0, 0, 0.3);
-    opacity: 0.5;
-    animation: scanline 6s linear infinite;
-}
-.scanlines::after {
-    inset: 0;
-    z-index: 2147483648;
-    background: linear-gradient(
-        to bottom,
-        transparent 50%,
-        rgba(0, 0, 0, 0.2) 51%
-    );
-    background-size: 100% 4px;
-    animation: scanlines 1s steps(60) infinite;
-}
-
-/* Demo JPG cover (left intact if you still need it) */
-div.scanlines {
-    position: absolute;
-}
-div .jpg {
-    width: 100vw;
-    height: 100vh;
-    border: none;
-}
-.jpg {
-    background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Philips_PM5544.svg/800px-Philips_PM5544.svg.png")
-        no-repeat;
-    background-size: cover;
-}
-
-/* ------ ANIMATIONS ------ */
-
-@keyframes flicker {
-    0%,
-    19%,
-    21%,
-    23%,
-    25%,
-    54%,
-    56%,
-    100% {
-        opacity: 1;
-    }
-    20%,
-    24%,
-    55% {
-        opacity: 0.5;
-    }
-}
-
-@keyframes fallFromTop {
-    0% {
-        transform: translateY(-4000px);
-    }
-    80% {
-        transform: translateY(0);
-    } /* hit ground */
-    90% {
-        transform: translateY(-50px);
-    } /* bounce */
-    100% {
-        transform: translateY(0);
-    } /* settle */
-}
-
-@keyframes modalFloat {
-    0% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-5px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
-}
-
-@keyframes scanline {
-    0% {
-        transform: translate3d(0, 200000%, 0);
-    }
-}
-
-@keyframes scanlines {
-    0% {
-        background-position: 0 50%;
-    }
-}
-
-@keyframes skullWhisperFloat {
-    0% {
-        transform: translate(-50%, 0);
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-    85% {
-        transform: translate(-50%, -20px);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, -20px);
-        opacity: 0;
-    }
-}
-
-/* ------ KNIFE PAGE ------ */
+/* =========================================
+   KNIFE PAGE
+   ========================================= */
 
 #KnifePage {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -800,6 +1043,12 @@ div .jpg {
     flex-direction: column;
     align-items: center;
     text-align: center;
+}
+
+.take-knife-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .take-knife-img img {
@@ -847,13 +1096,15 @@ div .jpg {
 }
 
 .bottle-container {
+    text-align: center;
+    pointer-events: none;
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
-    right: 100px;
-    bottom: 100px;
+    gap: 0;
+    right: 0;
+    bottom: 50px;
     transform: translate(0, 0);
     transition: right 0.75s ease-in-out, bottom 0.75s ease-in-out,
         transform 0.75s ease-in-out !important;
@@ -872,20 +1123,40 @@ div .jpg {
     height: 200px;
 }
 
-/* Reusable anim */
+/* KNIFE PAGE — RESPONSIVE */
+@media (max-width: 1000px) {
+    #KnifePage {
+        margin: auto;
+        font-size: 1.4em;
+        max-width: 90vw;
+    }
 
-.show,
-.hide {
-    transition-property: opacity;
-    transition-duration: 0.4s;
-    transition-timing-function: ease;
-}
+    .take-knife-img img {
+        height: 80vw;
+        width: auto;
+        cursor: pointer;
+    }
 
-.show {
-    opacity: 1 !important; /* used to reveal staged elements */
-}
+    .bottle-container {
+        right: -110px;
+        bottom: -60px;
+    }
 
-.hide {
-    opacity: 0 !important;
-    pointer-events: none;
+    .bottle-container img {
+        height: 15vh;
+        right: 0;
+    }
+
+    .onion-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .onion-container img {
+        height: auto;
+        width: 100vw;
+        max-width: 500px;
+    }
 }

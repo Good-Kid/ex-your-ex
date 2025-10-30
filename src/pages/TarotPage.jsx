@@ -11,8 +11,11 @@ import TarotModal from "../components/TarotPage/TarotModal";
 import WaveText from "../components/WaveText";
 import { getCardInfo, tarotCardData } from "../data/tarotCards";
 import { useGameState } from "../context/GameStateContext";
+import LinkButton from "../components/LinkButton";
 
-// ------------------ Constants ------------------
+// =========================================================
+// Constants
+// =========================================================
 const SLOT_COUNT = 3;
 const CARD_COUNT = 6;
 const CARD_IMAGE = "/images/tarot/back.png"; // back image
@@ -23,7 +26,11 @@ const CARD_RATIO = 11 / 19;
 const CARD_FLIP_DURATION = 0.6; // seconds
 const CARD_FLIP_DELAY = 0.5; // seconds between flips
 
-// ------------------ Helpers ------------------
+// =========================================================
+// Helpers (no behavior changes)
+// =========================================================
+const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
 const shuffleTake = (arr, n) => {
     if (!arr?.length) return Array(n).fill(null);
     const copy = [...arr];
@@ -44,19 +51,20 @@ const pickFortunes = (images) => {
     });
 };
 
-const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
-// ------------------ Component ------------------
+// =========================================================
+// Component
+// =========================================================
 export default function TarotPage() {
-    // Contexts
+    // ------------------ Context ------------------
     const { gameState, updateGameState } = useGameState();
 
-    // Responsive card size
-    const [cardHeight, setCardHeight] = useState(() =>
+    // ------------------ Layout / Responsive ------------------
+    const initialCardHeight = () =>
         window.innerWidth < MOBILE_TRIGGER_WIDTH
             ? MOBILE_CARD_HEIGHT
-            : DEFAULT_CARD_HEIGHT
-    );
+            : DEFAULT_CARD_HEIGHT;
+
+    const [cardHeight, setCardHeight] = useState(initialCardHeight);
     const cardWidth = Math.round(cardHeight * CARD_RATIO);
 
     useEffect(() => {
@@ -71,11 +79,15 @@ export default function TarotPage() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // State
+    // ------------------ UI State ------------------
+    const [returnButtonState, setReturnButtonState] = useState({
+        container: false,
+        visible: false,
+    });
     const [playTarotIntro, setPlayTarotIntro] = useState(
         () => !gameState.flags.tarotIntroPlayed
     );
-    // Intro text fade state
+
     const [introVis, setIntroVis] = useState({
         line1: false,
         line2: false,
@@ -88,33 +100,34 @@ export default function TarotPage() {
     const [revealedFaces, setRevealedFaces] = useState(
         Array(SLOT_COUNT).fill(null)
     );
+
     const [fortuneParts, setFortuneParts] = useState([null, null, null]);
     const [fortuneReveal, setFortuneReveal] = useState([false, false, false]);
 
-    // Animation state
     const [isInitialAnimating, setIsInitialAnimating] = useState(true);
     const [isRevealing, setIsRevealing] = useState(false);
     const [hasRevealed, setHasRevealed] = useState(false);
 
-    // Refs
+    // ------------------ Refs ------------------
     const cardsRef = useRef([]); // fan card elements
     const fanWrapRef = useRef(null); // fan container
     const slotOuterRefs = useRef([]); // flip wrapper
     const slotTiltRefs = useRef([]); // hover tilt inner
 
-    // Modal
+    // ------------------ Modal ------------------
     const [modalCard, setModalCard] = useState(null);
 
-    // Sound
+    // ------------------ Sound ------------------
     const flipSoundRef = useRef(
         new Howl({ src: ["/sounds/flip.ogg"], volume: 0.8 })
     );
 
-    // Precompute tarot key list
+    // ------------------ Data ------------------
     const tarotKeys = useMemo(() => Object.keys(tarotCardData), []);
 
-    // ------------------ Intro ------------------
-
+    // =========================================================
+    // Intro Sequence
+    // =========================================================
     useEffect(() => {
         if (!playTarotIntro) return;
 
@@ -141,6 +154,7 @@ export default function TarotPage() {
                 flags: { ...gameState.flags, tarotIntroPlayed: true },
             });
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [playTarotIntro]);
 
     useEffect(() => {
@@ -151,8 +165,8 @@ export default function TarotPage() {
 
         // Double rAF guarantees it's after the slots are in the DOM,
         // so the 0 -> 1 transition actually runs.
-        let raf1 = 0,
-            raf2 = 0;
+        let raf1 = 0;
+        let raf2 = 0;
         raf1 = requestAnimationFrame(() => {
             raf2 = requestAnimationFrame(() => {
                 setIntroVis((v) => ({ ...v, cardSlots: true }));
@@ -165,7 +179,20 @@ export default function TarotPage() {
         };
     }, [playTarotIntro]);
 
-    // ------------------ Layout Fan ------------------
+    useEffect(() => {
+        if (fortuneReveal.every(Boolean)) {
+            setReturnButtonState((p) => ({ ...p, container: true }));
+            const t = setTimeout(
+                () => setReturnButtonState((p) => ({ ...p, visible: true })),
+                1200
+            ); // 1.2s delay
+            return () => clearTimeout(t);
+        }
+    }, [fortuneReveal]);
+
+    // =========================================================
+    // Layout Fan
+    // =========================================================
     const layoutFan = useCallback(() => {
         const elts = cardsRef.current;
         if (!elts) return;
@@ -223,7 +250,9 @@ export default function TarotPage() {
         layoutFan();
     }, [layoutFan, selectedCards]);
 
-    // ------------------ Interactions ------------------
+    // =========================================================
+    // Interactions
+    // =========================================================
     const handleCardClick = (idx) => {
         if (
             isInitialAnimating ||
@@ -298,7 +327,9 @@ export default function TarotPage() {
         });
     };
 
-    // ------------------ Reveal Sequence ------------------
+    // =========================================================
+    // Reveal Sequence
+    // =========================================================
     useEffect(() => {
         if (hasRevealed || selectedCards.length !== SLOT_COUNT) return;
 
@@ -360,9 +391,12 @@ export default function TarotPage() {
 
         // Cleanup on unmount
         return () => tl.kill();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCards, hasRevealed, tarotKeys]);
 
-    // ------------------ Render ------------------
+    // =========================================================
+    // Render (unchanged layout + styles)
+    // =========================================================
     return (
         <div id="TarotPage">
             {playTarotIntro ? (
@@ -524,6 +558,7 @@ export default function TarotPage() {
                     </div>
                 </>
             )}
+
             {/* Fan */}
             <div
                 ref={fanWrapRef}
@@ -551,7 +586,7 @@ export default function TarotPage() {
                             style={{
                                 userSelect: "none",
                                 touchAction: "manipulation",
-                                width: `${cardWidth}px`,
+                                width: `${Math.round(cardWidth)}px`,
                                 height: `${cardHeight}px`,
                                 position: "absolute",
                                 left: "50%",
@@ -625,6 +660,18 @@ export default function TarotPage() {
                         </div>
                     ))}
                 </div>
+            )}
+
+            {returnButtonState.container && (
+                <LinkButton
+                    style={{
+                        justifySelf: "flex-end",
+                    }}
+                    className={returnButtonState.visible ? "show" : "hide"}
+                    to="/kit"
+                >
+                    Return to Kit
+                </LinkButton>
             )}
 
             <TarotModal

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSequence } from "../utils/useSequence.js";
 import { Howl } from "howler";
 import { useGameState } from "../context/GameStateContext";
+import LinkButton from "../components/LinkButton.jsx";
 
 const ONION_STAGES = [
     "/images/knife/onion/onionchop00.png",
@@ -53,6 +54,24 @@ export default function KnifePage() {
     const [knifeCursorEnabled, setKnifeCursorEnabled] = useState(false);
     const rafRef = useRef(null);
     const targetRef = useRef({ x: 0, y: 0 });
+
+    const [isMobile, setIsMobile] = useState(false);
+    const [isTouchScreen, setIsTouchScreen] = useState(false);
+
+    useEffect(() => {
+        const checkMobileAndTouch = () => {
+            const touch =
+                "ontouchstart" in window ||
+                navigator.maxTouchPoints > 0 ||
+                navigator.msMaxTouchPoints > 0;
+            const smallScreen = window.innerWidth < 900;
+            setIsTouchScreen(touch);
+            setIsMobile(smallScreen);
+        };
+        checkMobileAndTouch();
+        window.addEventListener("resize", checkMobileAndTouch);
+        return () => window.removeEventListener("resize", checkMobileAndTouch);
+    }, []);
 
     const [ui, setUI] = useState({
         showIntro: true,
@@ -211,7 +230,9 @@ export default function KnifePage() {
     const takeKnife = (e) => {
         const { clientX, clientY } = e;
         setKnifePos({ x: clientX, y: clientY });
-        setKnifeCursorEnabled(true);
+        if (!isMobile || !isTouchScreen) {
+            setKnifeCursorEnabled(true);
+        }
         // Hide the knife
         setUI((u) => ({ ...u, showKnifeImg: false, showKnifeContent: false }));
 
@@ -318,16 +339,13 @@ export default function KnifePage() {
                         className={`${ui.showFearMessage ? "show" : "hide"}`}
                         style={{
                             // Gets it out of the way
-                            display:
-                                ui.showCutMessage || !knifeCursorEnabled
-                                    ? "none"
-                                    : "initial",
+                            display: ui.showCutMessage ? "none" : "initial",
                         }}
                     >
                         Don't be afraid.
                     </span>
                     <span className={`${ui.showCutMessage ? "show" : "hide"}`}>
-                        Cut.
+                        {isTouchScreen && "Tap to "} Cut the Onion.
                     </span>
                     <img
                         draggable={false}
@@ -358,8 +376,13 @@ export default function KnifePage() {
                         src={BOTTLE_STAGES[bottleIndex]}
                         alt="Bottle"
                     />
-                    <span className={`${ui.showKitLink ? "show" : "hide"}`}>
-                        <Link to="/kit">{"< Return to Kit"}</Link>
+                    <span
+                        className={`${ui.showKitLink ? "show" : "hide"}`}
+                        style={{
+                            fontSize: "26px",
+                        }}
+                    >
+                        <LinkButton to="/kit">Return to Kit</LinkButton>
                     </span>
                 </div>
             )}

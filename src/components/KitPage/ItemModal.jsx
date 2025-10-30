@@ -1,11 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import WaveText from "../WaveText";
+import LinkButton from "../LinkButton";
 
 const ItemModal = ({ selectedItem, onClose }) => {
     if (!selectedItem) return null;
-
-    console.log(selectedItem.noFloat);
 
     const handleClickOutside = (e) => {
         // Close modal if the click happens directly on the overlay (not inside modal content)
@@ -48,13 +47,9 @@ const ItemModal = ({ selectedItem, onClose }) => {
                 </div>
                 <p>{selectedItem.description}</p>
                 {selectedItem.inspectLink && (
-                    <Link
-                        to={selectedItem.inspectLink}
-                        className="inspect-link"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        Inspect &gt;
-                    </Link>
+                    <LinkButton to={selectedItem.inspectLink}>
+                        Inspect Item
+                    </LinkButton>
                 )}
             </div>
         </div>

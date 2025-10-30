@@ -132,10 +132,10 @@ const ghostQuizData = {
     questions: [
         {
             id: 1,
-            text: "Night presses close. Through the trees, a lone house breathes a pale light. How do you announce yourself?",
+            text: "An unfortunate turn, you find yourself lost in the woods.\n Night presses close, and through the trees, a lone house breathes a pale light.\n What do you do?",
             answers: [
                 {
-                    text: "Step softly, letting the path learn your name.",
+                    text: "Approach quietly, concealing your presence",
                     weights: { voice: -1.0, temper: -0.25 },
                 }, // Quiet, Peace-leaning
                 {
@@ -146,72 +146,136 @@ const ghostQuizData = {
         },
         {
             id: 2,
-            text: "The door stands ajar. A draft answers. Do you enter gently or push it wide?",
+            text: "As you approach the house, you find the door stands ajar.\n Creeping to the threshold, you decide to enter.\n How do you do it?",
             answers: [
                 {
-                    text: "Ease it open, whispering an apology to the hinges.",
-                    weights: { voice: -0.5, temper: -0.25 },
+                    text: "Ease the door open, whispering an apology to the hinges.",
+                    weights: { voice: -1.0, temper: -0.25 },
                 }, // Quiet, Peace
                 {
-                    text: "Throw it wide—better to startle than be startled.",
-                    weights: { voice: +0.75, temper: +0.25 },
+                    text: "Throw the door wide—better to startle than be startled.",
+                    weights: { voice: +1.0, temper: +0.25 },
                 }, // Loud, Venge-tinge
             ],
         },
         {
             id: 3,
-            text: "Inside, dust remembers footsteps not your own. A glass lies shattered. How do you answer the house?",
+            text: "Inside, dust remembers footsteps not your own.\n A glass lies shattered.\n What do you do?",
             answers: [
                 {
                     text: "Gather the pieces; set the room back to how it was.",
-                    weights: { voice: -0.25, temper: -0.5 },
+                    weights: { voice: -0.25, temper: -1.0 },
                 }, // Quiet, Peaceful repair
                 {
-                    text: "Tap the shards to sing; let the silence crack wider.",
-                    weights: { voice: +0.75, temper: +0.25 },
+                    text: "Sweep the shards aside; letting them clatter against the baseboards",
+                    weights: { voice: +0.75, temper: +0.5 },
                 }, // Loud, assertive
             ],
         },
         {
             id: 4,
-            text: "A presence watches from the stairwell. It remembers a wrong. What do you offer?",
+            text: "After a moment, you feel it.\n A presence watches from the stairwell.\n It remembers a wrong. What do you offer?",
             answers: [
                 {
-                    text: "A calm vow: 'I will carry what hurts and lay it down.'",
+                    text: "A solemn vow: 'I will carry your pain as my own'",
                     weights: { voice: -0.25, temper: -0.5 },
-                }, // Quiet, Peace/mercy
+                },
                 {
                     text: "A sharp promise: 'Name them. I’ll make it even.'",
                     weights: { voice: +0.25, temper: +0.75 },
-                }, // Louder, Vengeful
+                },
             ],
         },
         {
             id: 5,
-            text: "The stairs groan. Something moves above. Do you soothe or confront?",
+            text: "The stairs groan.\n Something moves above.\n How do you respond?",
             answers: [
                 {
-                    text: "Hum a steady note until the house breathes with you.",
+                    text: "Hold your ground, wait for it to pass.",
                     weights: { voice: -0.75, temper: -0.25 },
                 }, // Very Quiet, Peace
                 {
-                    text: "Clap once like thunder: 'Show yourself.'",
+                    text: "Demand in shout: 'Show yourself!'",
                     weights: { voice: +1.0, temper: +0.25 },
                 }, // Loud, firm
             ],
         },
         {
             id: 6,
-            text: "Cold touches your throat—your last breath fogs the glass. In the end, what becomes of you?",
+            text: "The presence dissipates without response.\n you creep further into the house. Do you go up, or down?",
             answers: [
                 {
-                    text: "You forgive the house and fold into its hush.",
+                    text: "Up, into the attic",
                     weights: { voice: -0.25, temper: -0.5 },
-                }, // Quiet, Peaceful death
+                },
                 {
-                    text: "You take up the house’s cause and howl its name.",
+                    text: "Down, into the basement",
                     weights: { voice: +0.25, temper: +0.75 },
-                }, // Louder, Vengeful death
+                },
+            ],
+        },
+        {
+            id: 7,
+            text: "In the dark, a portrait stares down at you — the eyes are not still.\n It speaks without sound: 'Why do you press deeper? What do you seek?'\n How do you respond?",
+            answers: [
+                {
+                    text: "To understand what is misunderstood.",
+                    weights: { voice: -0.75, temper: +0.0 },
+                },
+                {
+                    text: "To right what is wrong.",
+                    weights: { voice: +0.75, temper: +0.5 },
+                },
+            ],
+        },
+        {
+            id: 8,
+            text: "The floorboards split, revealing a hidden stair.\n From below, a voice calls your name.\n What do you do?",
+            answers: [
+                {
+                    text: "Approach the place from which you are bid.",
+                    weights: { voice: -0.5, temper: -0.5 },
+                },
+                {
+                    text: "Back away, it's time to run.",
+                    weights: { voice: +1.0, temper: +0.25 },
+                },
+            ],
+        },
+        {
+            id: 9,
+            text: "An unseen hand pushes you down the stairs\n At the bottom, you find a mirror cracked through its center.\n Your reflection flickers between yourself and another.\n It asks: 'What are you, really?'",
+            answers: [
+                {
+                    text: "a Witness",
+                    weights: { voice: -0.5, temper: -0.5 },
+                },
+                {
+                    text: "a Judge",
+                    weights: { voice: +0.5, temper: +1.0 },
+                },
+            ],
+        },
+        {
+            id: 10,
+            text: "A beam splits, bringing the house down upon your head.\n As you fade away, you make a vow. \n What will you become?",
+            answers: [
+                {
+                    text: "A quiet light fading into peace.",
+                    weights: { voice: -0.75, temper: -1.0 },
+                }, // Quiet + Peaceful
+                {
+                    text: "A whisper that never forgives.",
+                    weights: { voice: -0.25, temper: +0.75 },
+                }, // Quiet + Vengeful
+                {
+                    text: "A voice calling others to safety.",
+                    weights: { voice: +0.75, temper: -0.25 },
+                }, // Loud + Peaceful
+                {
+                    text: "A scream that sets the dark ablaze.",
+                    weights: { voice: +1.0, temper: +1.0 },
+                }, // Loud + Vengeful
             ],
         },
     ],
