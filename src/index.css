@@ -1030,7 +1030,7 @@ div.scanlines {
 
 #KnifePage {
     width: 100vw;
-    height: 100dvh;
+    height: 80svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
