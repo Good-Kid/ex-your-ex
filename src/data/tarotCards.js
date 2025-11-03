@@ -1,4 +1,4 @@
-// Tarot card data with descriptions, symbolism, artist info, and modular fortune fragments
+// Tarot card data with descriptions, symbolism, artist info, and horoscope-style past/present/future blurbs
 export const tarotCardData = {
     "/images/tarot/fool.jpg": {
         name: "The Fool",
@@ -8,26 +8,20 @@ export const tarotCardData = {
         symbolism:
             "A carefree traveler at a cliff’s edge with a small pack and a loyal dog, symbolizing potential and naïveté.",
         fortunes: {
-            cause: [
-                "A bold step stirs the wind",
-                "Innocence invites the unknown",
-                "Untested hope takes the first stride",
-                "Your heart leaps before reason",
-                "Curiosity cracks open the road",
+            past: [
+                "You took a risk that changed the course of your journey.",
+                "Your curiosity once opened a door you didn’t expect.",
+                "An earlier choice taught you the value of trust.",
             ],
-            effect: [
-                "doors appear where walls once stood",
-                "chance aligns with timing",
-                "risk attracts unexpected guides",
-                "detours reshape your map",
-                "the world answers with signs",
+            present: [
+                "You’re standing at the start of something new.",
+                "The road ahead is uncertain but full of promise.",
+                "Let optimism lead you, even if the plan isn’t clear yet.",
             ],
-            lesson: [
-                "trust the path you can’t yet see",
-                "let wonder lead without fear",
-                "begin light; wisdom will follow",
-                "freedom grows from brave starts",
-                "play is the teacher of courage",
+            future: [
+                "A fresh opportunity will appear when you stay open-minded.",
+                "New beginnings will reward your courage.",
+                "Following your heart will take you farther than you think.",
             ],
         },
     },
@@ -40,26 +34,20 @@ export const tarotCardData = {
         symbolism:
             "A figure with tools of the four suits, one hand to the sky and one to earth, bridging idea and form.",
         fortunes: {
-            cause: [
-                "Focused will gathers the elements",
-                "A clear intent sparks the ether",
-                "You speak a vow to the world",
-                "Tools align beneath a steady hand",
-                "A single word becomes a spell",
+            past: [
+                "You’ve learned how to turn ideas into results.",
+                "Your confidence once helped you achieve something big.",
+                "Past experiences taught you how to use your talents wisely.",
             ],
-            effect: [
-                "resources arrange themselves",
-                "paths braid into one course",
-                "opportunity answers your call",
-                "latent talents wake and assemble",
-                "form condenses around vision",
+            present: [
+                "You have everything you need to make progress right now.",
+                "Focus your energy on one clear goal.",
+                "Your actions are starting to bring your vision to life.",
             ],
-            lesson: [
-                "act with precision, not haste",
-                "power grows where attention rests",
-                "name what you want without apology",
-                "as within, so without",
-                "craft the plan and move",
+            future: [
+                "Hard work and belief in yourself will soon pay off.",
+                "You’ll create something lasting through consistent effort.",
+                "Success is within reach—stay intentional with your choices.",
             ],
         },
     },
@@ -72,26 +60,20 @@ export const tarotCardData = {
         symbolism:
             "A veiled keeper between pillars, with a moon and scroll, guarding hidden knowledge.",
         fortunes: {
-            cause: [
-                "A whisper rises beneath thought",
-                "Night draws the curtain of silence",
-                "A secret swims to the surface",
-                "Your dreams speak in symbols",
-                "Stillness gathers its own gravity",
+            past: [
+                "You once trusted your instincts and were proved right.",
+                "A quiet moment in the past revealed something important.",
+                "You’ve learned to value your inner voice.",
             ],
-            effect: [
-                "the unseen shapes the seen",
-                "answers arrive without words",
-                "veiled doors unlock inwardly",
-                "doubts soften into knowing",
-                "the tide turns beneath awareness",
+            present: [
+                "Something beneath the surface needs your attention.",
+                "Trust your intuition before seeking outside advice.",
+                "You already know more than you think you do.",
             ],
-            lesson: [
-                "trust the quiet truth",
-                "let mystery ripen before acting",
-                "read the space between lines",
-                "not all keys are made of metal",
-                "intuition is an honest mirror",
+            future: [
+                "A hidden truth will become clear in time.",
+                "Your intuition will guide you to the right decision.",
+                "Answers will come naturally when you stay patient.",
             ],
         },
     },
@@ -104,26 +86,20 @@ export const tarotCardData = {
         symbolism:
             "A crowned figure amid wheat and flowing rivers, representing fertility and creation.",
         fortunes: {
-            cause: [
-                "A generous heart opens the garden",
-                "Warm hands tend small beginnings",
-                "You water what you wish to keep",
-                "Pleasure is welcomed to the table",
-                "Softness becomes your strategy",
+            past: [
+                "You’ve built comfort and beauty in your surroundings.",
+                "Your compassion has helped others thrive.",
+                "You once created something meaningful from the heart.",
             ],
-            effect: [
-                "ideas blossom into harvest",
-                "comfort draws true companions",
-                "beauty calls in resource",
-                "the home grows fertile",
-                "tension melts into ease",
+            present: [
+                "This is a good time to slow down and take care of yourself.",
+                "Creativity flows more easily when you feel supported.",
+                "Focus on what brings you real comfort and joy.",
             ],
-            lesson: [
-                "nourish what you want to flourish",
-                "receive as bravely as you give",
-                "growth needs patience and care",
-                "pleasure is a worthy compass",
-                "love multiplies when shared",
+            future: [
+                "Your efforts will soon lead to visible growth or reward.",
+                "Peace and stability are on the way.",
+                "What you nurture now will flourish later.",
             ],
         },
     },
@@ -136,26 +112,20 @@ export const tarotCardData = {
         symbolism:
             "A ruler on a stone throne with rams, symbolizing mastery, boundaries, and leadership.",
         fortunes: {
-            cause: [
-                "A firm boundary is drawn",
-                "Strategy replaces guesswork",
-                "You claim the seat of decision",
-                "Discipline rallies your forces",
-                "A plan is carved in stone",
+            past: [
+                "You’ve learned how discipline creates progress.",
+                "A past challenge taught you how to take control.",
+                "You once found strength in structure and planning.",
             ],
-            effect: [
-                "chaos yields to clear lanes",
-                "resources march in formation",
-                "respect follows direction",
-                "foundations hold under weight",
-                "effort channels into results",
+            present: [
+                "It’s time to organize and take responsibility.",
+                "Clear decisions will bring calm to a busy situation.",
+                "Your leadership is needed right now.",
             ],
-            lesson: [
-                "rule your schedule or it rules you",
-                "strength is steady, not hard",
-                "protect what you build",
-                "authority begins with self-mastery",
-                "order makes freedom durable",
+            future: [
+                "You’ll soon see results from your consistency.",
+                "A firm plan will bring lasting stability.",
+                "People will look to you for guidance and confidence.",
             ],
         },
     },
@@ -168,26 +138,20 @@ export const tarotCardData = {
         symbolism:
             "A spiritual teacher with keys, representing doctrine, mentorship, and community rites.",
         fortunes: {
-            cause: [
-                "An elder voice clears the air",
-                "You step inside a sacred room",
-                "Ritual binds intention to time",
-                "A lesson is passed hand to hand",
-                "You seek counsel beyond yourself",
+            past: [
+                "You’ve learned from mentors or traditions that shaped your beliefs.",
+                "An experience grounded your values.",
+                "Wisdom passed down to you still guides your choices.",
             ],
-            effect: [
-                "meaning settles around your task",
-                "doors open within the tradition",
-                "confusion finds a shape to hold",
-                "community strengthens your vow",
-                "practice deepens understanding",
+            present: [
+                "Look for support or guidance from trusted people.",
+                "Structure and consistency will bring peace of mind.",
+                "A community connection can help you grow.",
             ],
-            lesson: [
-                "learn the rules to break them wisely",
-                "let guidance steady your steps",
-                "roots help branches reach",
-                "shared paths can carry you farther",
-                "wisdom is a lived inheritance",
+            future: [
+                "You’ll find new understanding through shared learning.",
+                "A mentor or teaching moment will change your path.",
+                "Tradition will help you make sense of what’s next.",
             ],
         },
     },
@@ -200,26 +164,20 @@ export const tarotCardData = {
         symbolism:
             "Two figures beneath an angel, representing connection and meaningful decisions.",
         fortunes: {
-            cause: [
-                "A choice of the heart appears",
-                "Attraction draws two paths together",
-                "Values are held to the light",
-                "Tender truth is spoken aloud",
-                "A mirror shows your better self",
+            past: [
+                "A relationship or choice defined what love means to you.",
+                "You once learned to balance emotion and reason.",
+                "Your heart guided an important decision.",
             ],
-            effect: [
-                "alignment strengthens commitment",
-                "partnership magnifies possibility",
-                "conflict yields to honesty",
-                "trust grows where vulnerability lives",
-                "paths converge into one road",
+            present: [
+                "A meaningful connection is growing stronger.",
+                "This is a time to act in alignment with your values.",
+                "Honesty and openness are key right now.",
             ],
-            lesson: [
-                "choose what loves you back",
-                "let integrity guide desire",
-                "connection thrives on clarity",
-                "love is a daily decision",
-                "union begins with self-trust",
+            future: [
+                "Love and trust will lead to deeper understanding.",
+                "Partnership brings both joy and clarity ahead.",
+                "A heartfelt choice will shape your next chapter.",
             ],
         },
     },
@@ -232,26 +190,20 @@ export const tarotCardData = {
         symbolism:
             "A rider steering twin sphinxes, symbolizing harnessed will and controlled motion.",
         fortunes: {
-            cause: [
-                "Resolve snaps into place",
-                "You set a direction without flinching",
-                "Doubt is yoked to purpose",
-                "Competing urges are reined in",
-                "You take the reins at last",
+            past: [
+                "You’ve overcome obstacles through determination.",
+                "Past victories showed you what focus can do.",
+                "You learned to stay in control under pressure.",
             ],
-            effect: [
-                "speed gathers under your feet",
-                "obstacles part before focus",
-                "scattered energy becomes thrust",
-                "victory moves within reach",
-                "the road meets you halfway",
+            present: [
+                "Keep your eyes on the goal—momentum is on your side.",
+                "Discipline will carry you through current challenges.",
+                "Stay balanced as you push forward with purpose.",
             ],
-            lesson: [
-                "drive, don’t drift",
-                "momentum loves commitment",
-                "master yourself to master the course",
-                "keep your hands steady on the reins",
-                "progress is a choice repeated",
+            future: [
+                "You’ll reach success by staying steady and confident.",
+                "Progress will be clear if you don’t lose focus.",
+                "You’re heading toward a personal victory.",
             ],
         },
     },
@@ -264,26 +216,20 @@ export const tarotCardData = {
         symbolism:
             "A figure calming a lion, signifying compassionate control and bravery.",
         fortunes: {
-            cause: [
-                "A soft touch meets a fierce mood",
-                "You befriend what once scared you",
-                "Patience steadies the pulse",
-                "Kindness enters the arena",
-                "You breathe through the tremor",
+            past: [
+                "You’ve shown resilience in the face of difficulty.",
+                "Patience once helped you overcome fear.",
+                "Inner calm has carried you through storms.",
             ],
-            effect: [
-                "the beast yields to your calm",
-                "resilience replaces reaction",
-                "trust builds in shaky places",
-                "doors open without force",
-                "pain turns into presence",
+            present: [
+                "Stay composed and kind, even when tested.",
+                "Your empathy is a quiet form of strength.",
+                "You’re learning to trust your emotional balance.",
             ],
-            lesson: [
-                "gentleness is not weakness",
-                "courage is quiet and consistent",
-                "meet force with grace",
-                "tend the wound, not just the win",
-                "your breath is your anchor",
+            future: [
+                "Courage will bring you peace and resolution.",
+                "Challenges ahead will reveal your true confidence.",
+                "Gentleness will help you succeed where force would not.",
             ],
         },
     },
@@ -296,26 +242,20 @@ export const tarotCardData = {
         symbolism:
             "A cloaked wanderer with a lantern, seeking wisdom in quiet places.",
         fortunes: {
-            cause: [
-                "You step away to hear yourself",
-                "Noise fades behind a door",
-                "A lamp is lit in the dark",
-                "You turn your questions inward",
-                "Solitude gathers like snowfall",
+            past: [
+                "Time alone once helped you see what truly matters.",
+                "You learned the value of stepping back to reflect.",
+                "Solitude gave you clarity and strength.",
             ],
-            effect: [
-                "clarity glows at the edges",
-                "your pace returns to human",
-                "answers rise from the depths",
-                "misplaced priorities fall away",
-                "the next step becomes simple",
+            present: [
+                "A little quiet time will help you find your next step.",
+                "You may be craving space to think clearly.",
+                "Trust your inner guidance—it’s more reliable than you think.",
             ],
-            lesson: [
-                "seek the light you carry",
-                "silence completes the message",
-                "be alone, not lonely",
-                "guidance lives in reflection",
-                "return when you’re ready—not rushed",
+            future: [
+                "Insight will come after rest or retreat.",
+                "You’ll soon understand something that was confusing before.",
+                "Peace will follow reflection.",
             ],
         },
     },
@@ -328,26 +268,20 @@ export const tarotCardData = {
         symbolism:
             "A great wheel with creatures of knowledge, symbolizing cycles and destiny.",
         fortunes: {
-            cause: [
-                "The wheel lurches into motion",
-                "A cycle reaches its hinge",
-                "Luck swivels on a hidden pin",
-                "Timing clicks like a lock",
-                "Change crests like a wave",
+            past: [
+                "You’ve seen how quickly luck can change.",
+                "Past ups and downs taught you to stay adaptable.",
+                "Life’s twists have shaped your perspective.",
             ],
-            effect: [
-                "roles shift in an instant",
-                "openings appear where none were",
-                "old patterns break their loops",
-                "chance favors the ready",
-                "fortune tests your balance",
+            present: [
+                "A turning point is unfolding now—stay flexible.",
+                "What feels uncertain will soon find direction.",
+                "Change is working in your favor, even if it’s not obvious yet.",
             ],
-            lesson: [
-                "ride the turn, don’t resist",
-                "meet change with loose hands",
-                "what falls will rise anew",
-                "prepare so luck finds you working",
-                "every season teaches",
+            future: [
+                "A stroke of luck or timing will open new doors.",
+                "The next cycle brings opportunity and growth.",
+                "What goes around will return with new purpose.",
             ],
         },
     },
@@ -360,26 +294,20 @@ export const tarotCardData = {
         symbolism:
             "A figure with scales and sword, representing measured truth and ethical clarity.",
         fortunes: {
-            cause: [
-                "A fact cuts through the fog",
-                "You weigh cost against conviction",
-                "A promise is held to the letter",
-                "Receipts surface in the light",
-                "You face the mirror without flinching",
+            past: [
+                "You’ve made difficult choices that shaped your integrity.",
+                "Past experiences taught you the importance of fairness.",
+                "You learned to take responsibility for your actions.",
             ],
-            effect: [
-                "the scales return to level",
-                " debts are called and cleared",
-                "trust is recalibrated",
-                "boundaries gain legal teeth",
-                "the record is set straight",
+            present: [
+                "It’s time to make a clear and honest decision.",
+                "Balance and fairness should guide your next move.",
+                "Be objective—truth will serve you best now.",
             ],
-            lesson: [
-                "choose the honest edge",
-                "accountability is mercy in disguise",
-                "fairness demands courage",
-                "truth needs both heart and blade",
-                "own your part; grow",
+            future: [
+                "Justice will be done, even if delayed.",
+                "The results of your efforts will reflect your intentions.",
+                "You’ll find peace once things come into balance.",
             ],
         },
     },
@@ -392,26 +320,20 @@ export const tarotCardData = {
         symbolism:
             "A figure suspended upside down, haloed, seeing differently through sacrifice.",
         fortunes: {
-            cause: [
-                "You release the struggle midstream",
-                "Control loosens its grip",
-                "A pause stretches into insight",
-                "You hang the problem on a new hook",
-                "Surrender replaces urgency",
+            past: [
+                "You’ve learned to step back instead of forcing outcomes.",
+                "A pause in the past gave you new perspective.",
+                "Letting go once brought you peace.",
             ],
-            effect: [
-                "the view flips and clarifies",
-                "tension drains from the knot",
-                "hidden angles reveal paths",
-                "answers arrive without chasing",
-                "patience uncovers meaning",
+            present: [
+                "It’s time to look at a situation from another angle.",
+                "Patience will help more than pushing right now.",
+                "Things may feel still—but growth is happening quietly.",
             ],
-            lesson: [
-                "let go to move forward",
-                "not acting is sometimes action",
-                "trade speed for wisdom",
-                "yield to discover",
-                "sacrifice opens sight",
+            future: [
+                "A shift in perspective will unlock progress.",
+                "You’ll soon see why waiting was worth it.",
+                "A small sacrifice now will lead to freedom later.",
             ],
         },
     },
@@ -424,26 +346,20 @@ export const tarotCardData = {
         symbolism:
             "A skeletal rider passes through, signaling closure and rebirth.",
         fortunes: {
-            cause: [
-                "A chapter closes without ceremony",
-                "What’s outgrown sheds its skin",
-                "You lay the old to rest",
-                "A door seals to save your future",
-                "Finality walks in daylight",
+            past: [
+                "You’ve closed a chapter that no longer fit.",
+                "Letting something go made room for growth.",
+                "A difficult ending taught you resilience.",
             ],
-            effect: [
-                "grief makes room for growth",
-                "emptiness becomes fertile ground",
-                "attachments loosen their hold",
-                "the load grows lighter",
-                "new shoots seek the sun",
+            present: [
+                "You’re ready to release what has run its course.",
+                "Clearing space will help you feel lighter.",
+                "Change is arriving—meet it with acceptance.",
             ],
-            lesson: [
-                "honor endings as beginnings",
-                "release is an act of love",
-                "make space for what wants to live",
-                "what’s done can set you free",
-                "change is faithful, not cruel",
+            future: [
+                "A new beginning will feel more aligned.",
+                "Transformation brings relief and renewal.",
+                "What’s next will suit who you’re becoming.",
             ],
         },
     },
@@ -456,26 +372,20 @@ export const tarotCardData = {
         symbolism:
             "An angel pours water between cups, symbolizing harmony and integration.",
         fortunes: {
-            cause: [
-                "You pour from one cup to another",
-                "Opposites meet at the midpoint",
-                "A cool head tempers hot hearts",
-                "You pace what once you rushed",
-                "A careful blend replaces extremes",
+            past: [
+                "Small adjustments once made a big difference.",
+                "You learned to recover through steady habits.",
+                "Balance became easier when you slowed down.",
             ],
-            effect: [
-                "discord dissolves into accord",
-                "the mix becomes medicine",
-                "healing finds its cadence",
-                "stability returns by degrees",
-                "the path smooths underfoot",
+            present: [
+                "Choose the middle path and pace yourself.",
+                "Consistency will help you heal and progress.",
+                "Mix patience with action for the best result.",
             ],
-            lesson: [
-                "seek the wise middle",
-                "consistency outlives intensity",
-                "blend, don’t blur",
-                "healing is a rhythm",
-                "balance is built, not found",
+            future: [
+                "Harmony will return in gradual steps.",
+                "You’ll find a sustainable rhythm.",
+                "Integration will make life feel smoother.",
             ],
         },
     },
@@ -488,26 +398,20 @@ export const tarotCardData = {
         symbolism:
             "A horned figure with two chained humans, symbolizing shadow and bondage.",
         fortunes: {
-            cause: [
-                "A glittering bait hooks the mind",
-                "Old cravings wake with a grin",
-                "Fear offers a golden cage",
-                "Comfort bargains for your freedom",
-                "A shadow knocks like an old friend",
+            past: [
+                "You’ve seen how comfort can become a trap.",
+                "An old habit once limited your choices.",
+                "Naming the problem weakened its hold on you.",
             ],
-            effect: [
-                "choices narrow into habit",
-                "clarity fogs at the edges",
-                "power leaks through tiny holes",
-                "the price rises with each yes",
-                "time slips inside distraction",
+            present: [
+                "Notice where you feel stuck or drained.",
+                "You can set a boundary and step back.",
+                "Clarity grows as you tell yourself the truth.",
             ],
-            lesson: [
-                "name the chain to loosen it",
-                "what owns you, you can outgrow",
-                "freedom begins with refusal",
-                "desire is safer in daylight",
-                "you can walk out anytime",
+            future: [
+                "You’ll feel lighter after releasing what doesn’t serve you.",
+                "Freedom comes with honest limits.",
+                "A healthier pattern will replace the old one.",
             ],
         },
     },
@@ -520,26 +424,20 @@ export const tarotCardData = {
         symbolism:
             "A struck tower with figures falling—collapse that clears illusions.",
         fortunes: {
-            cause: [
-                "Lightning exposes a hollow core",
-                "A truth hits without warning",
-                "Foundations crack from within",
-                "A comfortable lie is evicted",
-                "Pressure finds its breaking point",
+            past: [
+                "A sudden change once cleared a shaky foundation.",
+                "Truth arrived faster than comfort, and it helped you grow.",
+                "What fell away made room for something real.",
             ],
-            effect: [
-                "structures tumble to ground",
-                "pretense scatters like dust",
-                "what’s real remains standing",
-                "shock opens the hidden door",
-                "new air rushes into ruins",
+            present: [
+                "An unstable situation may be ready to break open.",
+                "Let go of what isn’t working, even if it’s familiar.",
+                "Honesty will help you move through disruption.",
             ],
-            lesson: [
-                "let the false be gone",
-                "build honest, build strong",
-                "disaster can be deliverance",
-                "clarity is worth the quake",
-                "start again on bedrock",
+            future: [
+                "After the dust settles, you’ll breathe easier.",
+                "You’ll rebuild on stronger ground.",
+                "The lesson will be clearer than the shock.",
             ],
         },
     },
@@ -552,26 +450,20 @@ export const tarotCardData = {
         symbolism:
             "A figure pours water under starlight, symbolizing renewal and grace.",
         fortunes: {
-            cause: [
-                "A quiet light finds you",
-                "The night cools the burn",
-                "Gentle tending follows the storm",
-                "A promise glimmers on the horizon",
-                "You breathe beneath open sky",
+            past: [
+                "Hope returned when you needed it most.",
+                "You’ve been healing, even if slowly.",
+                "A gentle promise carried you forward.",
             ],
-            effect: [
-                "wounds stitch with patience",
-                "direction returns softly",
-                "the heart remembers its song",
-                "trust pools around your feet",
-                "the world feels kind again",
+            present: [
+                "Calm is returning—trust the steady pace.",
+                "You’re being guided toward something kind.",
+                "Take care of yourself and keep the faith.",
             ],
-            lesson: [
-                "let hope be your compass",
-                "heal at the speed of truth",
-                "faith grows in small sips",
-                "receive the calm you asked for",
-                "follow the quiet gleam",
+            future: [
+                "Healing will deepen and bring clarity.",
+                "You’ll feel more aligned and supported.",
+                "A brighter chapter is taking shape.",
             ],
         },
     },
@@ -584,26 +476,20 @@ export const tarotCardData = {
         symbolism:
             "A moonlit path with creatures and a pool, representing imagination and uncertainty.",
         fortunes: {
-            cause: [
-                "Shadows stretch into stories",
-                "A rumor walks in moonlight",
-                "Feelings swell past their banks",
-                "Fog braids with memory",
-                "Instinct prowls the edge",
+            past: [
+                "Emotions once colored your view more than facts.",
+                "You’ve been here before—uncertainty didn’t last.",
+                "Your imagination taught you to ask better questions.",
             ],
-            effect: [
-                "signals blur into mirage",
-                "doubt impersonates truth",
-                "paths fork without markers",
-                "fear paints the bigger picture",
-                "dreams leak into waking",
+            present: [
+                "Go slow and listen carefully—details matter.",
+                "Not everything is clear yet; take your time.",
+                "Lean on intuition, then check the facts.",
             ],
-            lesson: [
-                "test the tale against the dawn",
-                "name your fear; shrink its size",
-                "walk slowly and keep notes",
-                "intuition needs verification",
-                "wait for clearer light",
+            future: [
+                "Confusion will fade as information appears.",
+                "You’ll see what’s real and what’s imagined.",
+                "Patience will bring a clearer picture.",
             ],
         },
     },
@@ -616,26 +502,20 @@ export const tarotCardData = {
         symbolism:
             "A radiant sun over a child and wallflower, symbolizing warmth and truth.",
         fortunes: {
-            cause: [
-                "Light breaks cleanly over the wall",
-                "Joy arrives without disguise",
-                "Vitality returns to your limbs",
-                "Honesty opens every window",
-                "Warmth finds the coldest room",
+            past: [
+                "A simple truth once made everything easier.",
+                "You’ve enjoyed a season of clarity and optimism.",
+                "Confidence grew from honest effort.",
             ],
-            effect: [
-                "confusion evaporates",
-                "confidence grows roots",
-                "success feels natural",
-                "play unlocks progress",
-                "truth stands bright and simple",
+            present: [
+                "Good energy is available—let it in.",
+                "Clarity is simplifying your choices.",
+                "Celebrate small wins; they’re adding up.",
             ],
-            lesson: [
-                "let yourself be seen",
-                "happiness is practical magic",
-                "clarity is a kindness",
-                "celebrate the obvious win",
-                "share your light freely",
+            future: [
+                "Success will feel natural and well-earned.",
+                "Joy and warmth are on the horizon.",
+                "You’ll be seen and appreciated for who you are.",
             ],
         },
     },
@@ -648,26 +528,20 @@ export const tarotCardData = {
         symbolism:
             "Figures rise to a trumpet’s call—resurrection and realization.",
         fortunes: {
-            cause: [
-                "A call rings through your bones",
-                "The past asks to be accounted",
-                "A truth refuses burial",
-                "You hear your name in the wind",
-                "The scales tilt toward awakening",
+            past: [
+                "You faced a wake-up moment that changed your path.",
+                "Forgiveness—of yourself or others—cleared the air.",
+                "An honest review helped you move forward.",
             ],
-            effect: [
-                "old selves shed like husks",
-                "forgiveness unclogs the path",
-                "purpose stands up straight",
-                "direction becomes undeniable",
-                "life reorganizes around meaning",
+            present: [
+                "A calling is getting louder; it’s time to listen.",
+                "You’re ready to act on what you know is right.",
+                "Let the past inform you, not define you.",
             ],
-            lesson: [
-                "answer when it is your time",
-                "release the past, keep the wisdom",
-                "rise to your own voice",
-                "redemption is a choice",
-                "live like you heard it",
+            future: [
+                "Purpose will bring direction and relief.",
+                "You’ll rise to meet a meaningful opportunity.",
+                "Life will feel more aligned with who you are.",
             ],
         },
     },
@@ -680,26 +554,20 @@ export const tarotCardData = {
         symbolism:
             "A crowned dancer in a wreath, signifying completion and unity.",
         fortunes: {
-            cause: [
-                "A circle closes with grace",
-                "Threads weave into one tapestry",
-                "You return different to the start",
-                "Mastery gathers its final piece",
-                "Many roads meet in one place",
+            past: [
+                "A major cycle came to a satisfying close.",
+                "You pulled together pieces into a whole.",
+                "Recognition followed steady effort.",
             ],
-            effect: [
-                "doors open to wider horizons",
-                "recognition meets your effort",
-                "travel mirrors inner completion",
-                "wholeness settles into the body",
-                "the next cycle nods hello",
+            present: [
+                "You’re integrating what you’ve learned.",
+                "Things are coming together in a balanced way.",
+                "You can pause and appreciate how far you’ve come.",
             ],
-            lesson: [
-                "celebrate the finish faithfully",
-                "integration is the real prize",
-                "completion invites new beginnings",
-                "share what you’ve learned",
-                "wholeness is a moving dance",
+            future: [
+                "A new cycle will begin from a place of strength.",
+                "You’ll feel ready to share your gifts widely.",
+                "Completion will open the next, wider door.",
             ],
         },
     },
@@ -714,26 +582,20 @@ export const defaultCardInfo = {
     symbolism:
         "The mysteries of the universe revealed through ancient symbols.",
     fortunes: {
-        cause: [
-            "A quiet omen stirs the dust",
-            "An unnamed sign draws near",
-            "A hinge creaks in the dark",
-            "A breath gathers before words",
-            "Something old blinks awake",
+        past: [
+            "A subtle sign once nudged you forward.",
+            "You’ve come farther than you realize.",
+            "An early clue helped set your direction.",
         ],
-        effect: [
-            "pathways reshuffle themselves",
-            "chance leans in to listen",
-            "the pattern reveals a seam",
-            "curiosity opens a small door",
-            "possibility changes its coat",
+        present: [
+            "Listen closely—something important is taking shape.",
+            "Clarity is near; keep an open mind.",
+            "Patience will help you read the moment.",
         ],
-        lesson: [
-            "meet the unknown with kindness",
-            "name it, then know it",
-            "walk slowly; learn quickly",
-            "let wonder be your guide",
-            "every mystery teaches",
+        future: [
+            "Understanding will arrive when you’re ready for it.",
+            "A helpful pattern will become clear.",
+            "You’ll know which way to go soon.",
         ],
     },
 };

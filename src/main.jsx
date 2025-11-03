@@ -6,6 +6,9 @@ import "./index.css";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
+        <div className="vignette"></div>
+        <div className="scanlines"></div>
+
         <App />
     </StrictMode>
 );

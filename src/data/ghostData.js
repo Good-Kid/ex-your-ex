@@ -21,202 +21,207 @@ const ghostQuizData = {
         temper: { name: "Peaceful–Vengeful", min: "Peaceful", max: "Vengeful" },
     },
 
-    // 16 archetypes (IDs used by the 4×4 matrix below)
+    // archetypes
     results: [
         {
             id: "deep_shadow",
             name: "Deep Shadow",
             description:
-                "Silent and unseen, you steady the world from the margins where night is thickest.",
+                "A heavy silence clings to you, as if something unseen waits in the dark corners of your mind.",
         },
         {
             id: "grave_echo",
             name: "Grave Echo",
             description:
-                "You answer with memory, binding the present to what should never be forgotten.",
+                "Old regrets whisper through your thoughts, memories you can't quite bury echoing in the quiet.",
         },
         {
             id: "quiet_lantern",
             name: "Quiet Lantern",
             description:
-                "A soft glow in fearful places; your kindness speaks without a word.",
+                "A faint hope flickers, but its glow is haunted by the fear that comfort will slip away.",
         },
         {
             id: "gentle_guardian",
             name: "Gentle Guardian",
             description:
-                "You keep watch so others may rest, warding harm with patient care.",
+                "You feel watched over, yet the presence is restless—protective but never letting you rest.",
         },
 
         {
             id: "mist_phantom",
             name: "Mist Phantom",
             description:
-                "A presence felt more than seen, threading between breaths and mirrors.",
+                "Uncertainty drifts around you, a fog of doubt that never quite clears from your path.",
         },
         {
             id: "hushed_oracle",
             name: "Hushed Oracle",
             description:
-                "Your signs are subtle but true; you tilt fate with a fingertip.",
+                "A warning lingers at the edge of your thoughts, secrets half-spoken and never resolved.",
         },
         {
             id: "hearth_wisp",
             name: "Hearth Wisp",
             description:
-                "Warmth in the doorway and light in the kitchen—home follows where you drift.",
+                "Longing for warmth haunts you, as if something precious is missing from the heart of your home.",
         },
         {
             id: "steadfast_guardian",
             name: "Steadfast Guardian",
             description:
-                "Doors close, fires bank, storms break around you. You are refuge.",
+                "A stubborn worry stands guard, refusing to let go, keeping you vigilant even in peace.",
         },
 
         {
             id: "wandering_wraith",
             name: "Wandering Wraith",
             description:
-                "Roads remember your steps. You chase what’s unfinished with stubborn grace.",
+                "Restlessness stalks you, a sense that something unfinished is always just out of reach.",
         },
         {
             id: "dusk_revenant",
             name: "Dusk Revenant",
             description:
-                "Oaths and debts bind you. You return for justice when the sky turns violet.",
+                "A shadow of injustice lingers, fueling a quiet anger that refuses to fade with the light.",
         },
         {
             id: "bright_trickster",
             name: "Bright Trickster",
             description:
-                "You teach through laughter; chaos becomes a lantern in your hands.",
+                "A mocking voice teases at your confidence, turning laughter into uncertainty.",
         },
         {
             id: "storm_poltergeist",
             name: "Storm Poltergeist",
             description:
-                "Doors slam, cupboards sing—your uproar clears the air like thunder.",
+                "Tension rattles through you, sudden and sharp, as if chaos is waiting to break loose.",
         },
 
         {
             id: "void_wraith",
             name: "Void Wraith",
             description:
-                "Where you pass, the world holds its breath. Your will carves paths in darkness.",
+                "An emptiness gnaws at you, a hollow feeling that something vital has slipped away.",
         },
         {
             id: "storm_banshee",
             name: "Storm Banshee",
             description:
-                "Your cry is a beacon and a warning; endings heed your call.",
+                "A cry for release echoes inside, a warning that something must end before you can rest.",
         },
         {
             id: "tide_mariner",
             name: "Tide Mariner",
             description:
-                "You carry the sea’s rhythm—pulling, guiding, and returning what was lost.",
+                "A pull from the past tugs at you, waves of nostalgia and loss washing over your present.",
         },
         {
             id: "aurora_trickster",
             name: "Aurora Trickster",
             description:
-                "Color and clamor, joke and joy—you spark courage where fear once lived.",
+                "A restless energy flickers, coloring your thoughts with flashes of anxiety and daring.",
         },
     ],
 
     /*
-    STORY QUESTIONS (6)
-    Two answers each. Each answer adds weights { voice, temper }.
-    Narrative: woods → house → inside → presence → choice → death.
-  */
+    STORY QUESTIONS
+    */
     questions: [
         {
             id: 1,
-            text: "An unfortunate turn, you find yourself lost in the woods.\n Night presses close, and through the trees, a lone house breathes a pale light.\n What do you do?",
+            text: "You’re lost in the dark woods.\n Through the trees, a house glows with pale light.\nWhat do you do?",
+            imageSrc: "/images/quiz/question_art/house.png",
             answers: [
                 {
-                    text: "Approach quietly, concealing your presence",
+                    text: "Approach quietly and keep out of sight.",
                     weights: { voice: -1.0, temper: -0.25 },
-                }, // Quiet, Peace-leaning
+                },
                 {
-                    text: "Call out: 'Hello? Is anyone there?'",
+                    text: "Call out: 'Hello? Anyone there?'",
                     weights: { voice: +1.0, temper: -0.1 },
-                }, // Loud, slightly Peace
+                },
             ],
         },
         {
             id: 2,
-            text: "As you approach the house, you find the door stands ajar.\n Creeping to the threshold, you decide to enter.\n How do you do it?",
+            text: "The door is half-open. You decide to go in. How do you approach?",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
-                    text: "Ease the door open, whispering an apology to the hinges.",
+                    text: "Push it gently, whispering an apology to the hinges.",
                     weights: { voice: -1.0, temper: -0.25 },
-                }, // Quiet, Peace
+                },
                 {
-                    text: "Throw the door wide—better to startle than be startled.",
+                    text: "Throw it wide — better to scare than be scared.",
                     weights: { voice: +1.0, temper: +0.25 },
-                }, // Loud, Venge-tinge
+                },
             ],
         },
         {
             id: 3,
-            text: "Inside, dust remembers footsteps not your own.\n A glass lies shattered.\n What do you do?",
+            text: "Inside, dust coats the floor.\nA glass lies broken.\nWhat do you do?",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
-                    text: "Gather the pieces; set the room back to how it was.",
+                    text: "Pick up the pieces and tidy the room.",
                     weights: { voice: -0.25, temper: -1.0 },
-                }, // Quiet, Peaceful repair
+                },
                 {
-                    text: "Sweep the shards aside; letting them clatter against the baseboards",
+                    text: "Kick the shards aside and let them clatter.",
                     weights: { voice: +0.75, temper: +0.5 },
-                }, // Loud, assertive
+                },
             ],
         },
         {
             id: 4,
-            text: "After a moment, you feel it.\n A presence watches from the stairwell.\n It remembers a wrong. What do you offer?",
+            text: "You sense something watching from the stairs.\n You can feel its pain.\n What do you say?",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
-                    text: "A solemn vow: 'I will carry your pain as my own'",
+                    text: "‘I’ll carry your pain as my own.’",
                     weights: { voice: -0.25, temper: -0.5 },
                 },
                 {
-                    text: "A sharp promise: 'Name them. I’ll make it even.'",
+                    text: "‘Tell me what happened. I’ll make it right.’",
                     weights: { voice: +0.25, temper: +0.75 },
                 },
             ],
         },
         {
             id: 5,
-            text: "The stairs groan.\n Something moves above.\n How do you respond?",
+            text: "You hear the sudden creaking sound of footsteps rush overhead.\n What do you do?",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
-                    text: "Hold your ground, wait for it to pass.",
+                    text: "Stay still and wait for it to pass.",
                     weights: { voice: -0.75, temper: -0.25 },
-                }, // Very Quiet, Peace
+                },
                 {
-                    text: "Demand in shout: 'Show yourself!'",
+                    text: "Shout, 'Show yourself!'",
                     weights: { voice: +1.0, temper: +0.25 },
-                }, // Loud, firm
+                },
             ],
         },
         {
             id: 6,
-            text: "The presence dissipates without response.\n you creep further into the house. Do you go up, or down?",
+            text: "As quickly as the sound came, it is gone.\n You decide to keep exploring.\n Where do you go?",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
-                    text: "Up, into the attic",
+                    text: "Up to the attic.",
                     weights: { voice: -0.25, temper: -0.5 },
                 },
                 {
-                    text: "Down, into the basement",
+                    text: "Down to the basement.",
                     weights: { voice: +0.25, temper: +0.75 },
                 },
             ],
         },
         {
             id: 7,
-            text: "In the dark, a portrait stares down at you — the eyes are not still.\n It speaks without sound: 'Why do you press deeper? What do you seek?'\n How do you respond?",
+            text: "You find a portrait, it's eyes seem to follow you.\n You hear a voice in your head ask:\n 'What do you seek?'",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
                     text: "To understand what is misunderstood.",
@@ -230,52 +235,49 @@ const ghostQuizData = {
         },
         {
             id: 8,
-            text: "The floorboards split, revealing a hidden stair.\n From below, a voice calls your name.\n What do you do?",
+            text: "The floor opens to reveal a stairway.\n A voice below calls your name. \n What do you do?",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
-                    text: "Approach the place from which you are bid.",
+                    text: "Go toward the voice.",
                     weights: { voice: -0.5, temper: -0.5 },
                 },
                 {
-                    text: "Back away, it's time to run.",
+                    text: "Step back and run.",
                     weights: { voice: +1.0, temper: +0.25 },
                 },
             ],
         },
         {
             id: 9,
-            text: "An unseen hand pushes you down the stairs\n At the bottom, you find a mirror cracked through its center.\n Your reflection flickers between yourself and another.\n It asks: 'What are you, really?'",
+            text: "You slip and fall down the steps.\n At the bottom, you find a mirror. Your reflection speaks, asking:\n 'What are you really?'",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
-                {
-                    text: "a Witness",
-                    weights: { voice: -0.5, temper: -0.5 },
-                },
-                {
-                    text: "a Judge",
-                    weights: { voice: +0.5, temper: +1.0 },
-                },
+                { text: "A witness.", weights: { voice: -0.5, temper: -0.5 } },
+                { text: "A judge.", weights: { voice: +0.5, temper: +1.0 } },
             ],
         },
         {
             id: 10,
-            text: "A beam splits, bringing the house down upon your head.\n As you fade away, you make a vow. \n What will you become?",
+            text: "The house collapses around you. As everything fades, you make a vow. What will you become?",
+            imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {
-                    text: "A quiet light fading into peace.",
+                    text: "A quiet light fading to peace.",
                     weights: { voice: -0.75, temper: -1.0 },
-                }, // Quiet + Peaceful
+                },
                 {
                     text: "A whisper that never forgives.",
                     weights: { voice: -0.25, temper: +0.75 },
-                }, // Quiet + Vengeful
+                },
                 {
                     text: "A voice calling others to safety.",
                     weights: { voice: +0.75, temper: -0.25 },
-                }, // Loud + Peaceful
+                },
                 {
-                    text: "A scream that sets the dark ablaze.",
+                    text: "A scream that burns the dark away.",
                     weights: { voice: +1.0, temper: +1.0 },
-                }, // Loud + Vengeful
+                },
             ],
         },
     ],
@@ -305,20 +307,23 @@ const ghostQuizData = {
 
 /* -------------------------- Helper Functions -------------------------- */
 
+const SCALE = 1000; // store thousandths to avoid float drift
+const toInt = (x = 0) => Math.round(x * SCALE);
+
 /**
  * Accumulate voice/temper scores as the user answers.
- * Call with the chosen answer's { voice, temper } weights each time.
+ * Internally store as integers (thousandths).
  */
 export function scoreAnswers(prevScores, weights) {
     return {
-        voice: (prevScores?.voice || 0) + (weights?.voice || 0),
-        temper: (prevScores?.temper || 0) + (weights?.temper || 0),
+        voice: (prevScores?.voice || 0) + toInt(weights?.voice || 0),
+        temper: (prevScores?.temper || 0) + toInt(weights?.temper || 0),
     };
 }
 
 /**
- * Compute the maximum achievable absolute weight on each axis.
- * Useful for normalizing the final scores to a common -1..+1 range.
+ * Compute the maximum achievable absolute weight on each axis,
+ * scaled to the same integer basis.
  */
 export function computeMaxWeights(questions) {
     let maxVoice = 0;
@@ -332,8 +337,8 @@ export function computeMaxWeights(questions) {
             0,
             ...q.answers.map((a) => Math.abs(a.weights?.temper || 0))
         );
-        maxVoice += maxQv;
-        maxTemper += maxQt;
+        maxVoice += toInt(maxQv);
+        maxTemper += toInt(maxQt);
     });
     return {
         maxVoice: Math.max(maxVoice, 1),
@@ -342,7 +347,7 @@ export function computeMaxWeights(questions) {
 }
 
 /**
- * Normalize raw scores to -1..+1 using maxima from computeMaxWeights.
+ * Normalize raw integer scores to -1..+1 using maxima from computeMaxWeights.
  */
 export function normalizeScores(scores, maxima) {
     const nVoice = Math.max(
@@ -353,12 +358,16 @@ export function normalizeScores(scores, maxima) {
         -1,
         Math.min(1, scores.temper / (maxima.maxTemper || 1))
     );
-    return { nVoice, nTemper };
+
+    // round back to 3 decimals for stable thresholding
+    return {
+        nVoice: Math.round(nVoice * 1000) / 1000,
+        nTemper: Math.round(nTemper * 1000) / 1000,
+    };
 }
 
 /**
  * Convert a normalized value (-1..+1) into a 0..3 band index.
- * You can tweak thresholds to taste.
  */
 export function bandIndex(v, thresholds = [-0.5, 0, 0.5]) {
     if (v < thresholds[0]) return 0; // Very low
@@ -369,11 +378,10 @@ export function bandIndex(v, thresholds = [-0.5, 0, 0.5]) {
 
 /**
  * Pick the final result from a 4×4 grid of IDs using normalized voice/temper.
- * Returns the full result object (id, name, description).
  */
 export function pickResult4x4({ nVoice, nTemper }, results4x4, allResults) {
-    const row = bandIndex(nVoice); // voice: Quiet→Loud
-    const col = bandIndex(nTemper); // temper: Peaceful→Vengeful
+    const row = bandIndex(nVoice);
+    const col = bandIndex(nTemper);
     const id = results4x4[row][col];
     const result = allResults.find((r) => r.id === id) || {
         id,
@@ -385,10 +393,6 @@ export function pickResult4x4({ nVoice, nTemper }, results4x4, allResults) {
 
 /**
  * Convenience: compute a result from raw scores + questions + data.
- * Example:
- *   const maxima = computeMaxWeights(ghostQuizData.questions);
- *   const normalized = normalizeScores(scores, maxima);
- *   const result = resultFromScores(scores, ghostQuizData);
  */
 export function resultFromScores(scores, data = ghostQuizData) {
     const maxima = computeMaxWeights(data.questions);

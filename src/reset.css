@@ -38,9 +38,19 @@ html:focus-within {
 
 /* Set core body defaults */
 body {
-    min-height: 100vh;
     text-rendering: optimizeSpeed;
     line-height: 1.5;
+}
+
+/* Global link reset to inherit + no decoration */
+a,
+a:hover,
+a:visited,
+a:active,
+a:focus {
+    color: inherit !important;
+    text-decoration: none !important;
+    font-weight: inherit !important;
 }
 
 /* A elements that don't have a class get default styles */

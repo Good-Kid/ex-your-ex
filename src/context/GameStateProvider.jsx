@@ -1,34 +1,38 @@
-import React, { useMemo, useState } from "react";
-import { GameStateContext } from "./GameStateContext";
+import React, { useState, useEffect } from "react";
+import { GameStateContext } from "./GameStateContext.jsx";
 
 export default function GameStateProvider({ children }) {
-    // Load initial state from localStorage if available
     const defaultState = {
-        flags: { introSeen: false },
+        flags: {},
     };
 
+    // Load from localStorage if available
     const [gameState, setGameState] = useState(() => {
-        try {
-            const saved = localStorage.getItem("gameState");
-            return saved ? JSON.parse(saved) : defaultState;
-        } catch {
-            return defaultState;
+        const saved = localStorage.getItem("gameStateFlags");
+        if (saved) {
+            return { flags: JSON.parse(saved) };
         }
+
+        return defaultState;
     });
 
-    // Save gameState to localStorage whenever it changes
-    React.useEffect(() => {
-        localStorage.setItem("gameState", JSON.stringify(gameState));
-    }, [gameState]);
+    // Save flags to localStorage whenever they change
+    useEffect(() => {
+        localStorage.setItem("gameStateFlags", JSON.stringify(gameState.flags));
+    }, [gameState.flags]);
 
-    const updateGameState = (updates) => {
-        setGameState((prev) => ({ ...prev, ...updates }));
+    const updateGameState = (flagUpdates) => {
+        setGameState((prev) => ({
+            ...prev,
+            flags: {
+                ...prev.flags,
+                ...flagUpdates,
+            },
+        }));
     };
 
-    const value = useMemo(() => ({ gameState, updateGameState }), [gameState]);
-
     return (
-        <GameStateContext.Provider value={value}>
+        <GameStateContext.Provider value={{ gameState, updateGameState }}>
             {children}
         </GameStateContext.Provider>
     );

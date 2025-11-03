@@ -1,8 +1,14 @@
-/* =========================================
+/* -----
    GLOBAL STYLES
-   ========================================= */
+   ----- */
 
 /* ------ BASE / RESET ------ */
+
+body,
+#root {
+    position: relative;
+    min-height: 100svh;
+}
 
 html,
 body,
@@ -10,7 +16,6 @@ body,
     background: #000;
     color: #fff;
     color-scheme: dark; /* dark scrollbars/controls */
-    height: 100%;
     margin: 0;
     padding: 0;
     font-size: 20px;
@@ -39,7 +44,15 @@ body,
 }
 
 * {
+    touch-action: manipulation;
     background-color: transparent; /* avoid white flash on nested elements */
+}
+
+html.modal-open,
+body.modal-open,
+#root.modal-open {
+    overflow: hidden;
+    height: 100svh;
 }
 
 div,
@@ -76,10 +89,42 @@ a:focus {
 /* ------ GLOBAL COMPONENTS ------ */
 
 .link-button {
-    pointer-events: auto !important;
-    color: white !important;
+    color: white;
     border-radius: 0;
-    font-size: 22px;
+}
+
+/* Loader */
+
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: transparent; /* or rgba(0,0,0,.6) if you want a veil */
+    z-index: 9999;
+}
+
+.loader {
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80px;
+    animation: spin 1.2s linear infinite;
+}
+
+.orb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 24px 8px rgba(255, 255, 255, 0.7), 0 0 2px 1px #fff;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* ------ TYPOGRAPHY HELPERS ------ */
@@ -100,8 +145,14 @@ a:focus {
     font-style: normal;
 }
 
+.handwritten {
+    font-family: "Reenie Beanie", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
 .red {
-    color: rgb(85, 0, 0);
+    color: rgb(125, 0, 0);
 }
 
 /* ------ LINKS ------ */
@@ -119,36 +170,25 @@ a:hover {
 /* ------ BUTTONS ------ */
 
 button {
+    font-size: 22px;
     border: none;
     padding: 0.4em 1em;
-    font-size: 1em;
-    font-weight: 500;
+    font-weight: bold;
     font-family: inherit;
     background-color: #1a1a1a;
+    color: #fff !important;
     cursor: pointer;
     transition: border-color 0.25s, background-color 0.2s, color 0.2s;
 }
 
 button:hover {
     background-color: #333;
-    color: #fff;
 }
 
-.creepy-button {
-    background-color: #fff;
-    color: #000;
-    font-size: 2em;
-    padding-top: 0.6em;
-    border-radius: 0;
-    font-family: "Special Elite", system-ui;
-}
-.creepy-button:hover {
-    background-color: #afafaf;
-}
-.creepy-button:focus {
-    color: #fff;
-    background-color: #000;
-    border: 1px solid #fff;
+@media (max-width: 769px) {
+    button {
+        font-size: 20px;
+    }
 }
 
 /* ------ UTILITIES ------ */
@@ -168,13 +208,21 @@ button:hover {
     color: #fff;
 }
 
-.vignette {
-    pointer-events: none;
+.vignette,
+.scanlines {
     position: fixed;
     inset: 0;
+    pointer-events: none;
+    z-index: 999999;
+
     width: 100vw;
-    height: 100dvh;
-    z-index: 9999;
+    height: 100vh;
+
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.vignette {
     background: radial-gradient(
         ellipse at center,
         rgba(0, 0, 0, 0) 40%,
@@ -182,11 +230,6 @@ button:hover {
     );
 }
 
-/* CRT scanlines overlay */
-.scanlines {
-    overflow: hidden;
-    position: relative;
-}
 .scanlines::before,
 .scanlines::after {
     content: "";
@@ -194,6 +237,7 @@ button:hover {
     display: block;
     pointer-events: none;
 }
+
 .scanlines::before {
     width: 100%;
     height: 2px;
@@ -202,6 +246,7 @@ button:hover {
     opacity: 0.5;
     animation: scanline 6s linear infinite;
 }
+
 .scanlines::after {
     inset: 0;
     z-index: 2147483648;
@@ -212,11 +257,6 @@ button:hover {
     );
     background-size: 100% 4px;
     animation: scanlines 1s steps(60) infinite;
-}
-
-/* Demo JPG cover (left intact if you still need it) */
-div.scanlines {
-    position: absolute;
 }
 
 /* Reusable anim */
@@ -327,7 +367,7 @@ div.scanlines {
 
 /* ------ GLOBAL RESPONSIVE ------ */
 
-@media (max-width: 700px) {
+@media (max-width: 769px) {
     .vignette {
         background: radial-gradient(
             ellipse at center,
@@ -337,17 +377,17 @@ div.scanlines {
     }
 }
 
-/* =========================================
+/* -----
    ENTRY PAGE
-   ========================================= */
+   ----- */
 
 #EntryPage {
-    position: relative;
-    width: 95vw;
-    max-width: 1200px;
-    margin: 0 auto;
+    position: absolute;
+    inset: 0; /* top:0 right:0 bottom:0 left:0 */
+    width: min(95vw, 1200px); /* give it a definite width */
+    height: auto; /* let height come from aspect-ratio */
     aspect-ratio: 16 / 9;
-    overflow: visible; /* ensure the frame doesn’t clip */
+    margin: auto; /* centers within inset:0 */
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     align-items: end;
@@ -402,10 +442,8 @@ div.scanlines {
 }
 
 #EntryPage .logo {
+    top: 0;
     position: absolute;
-    top: -50px;
-    right: -20px;
-    filter: invert(1);
     width: 100%;
     display: flex;
     justify-content: center;
@@ -488,17 +526,17 @@ div.scanlines {
     }
 }
 
-/* =========================================
+/* -----
    OUIJA MENU / PLANCHETTE
-   ========================================= */
+   ----- */
 
 .ouija-menu * {
-    font-size: 3em;
+    font-size: 2em;
 }
 
 .ouija-menu {
     position: absolute;
-    top: 10vh;
+    top: 16vh;
     left: 50%;
     transform: translateX(-50%);
     z-index: 99;
@@ -507,12 +545,10 @@ div.scanlines {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr;
-    transition: opacity 400ms ease-in-out;
 }
 
 .ouija-menu button {
     color: white !important;
-    width: 200px;
     margin: auto;
     background-color: transparent;
     padding: 0;
@@ -521,93 +557,161 @@ div.scanlines {
 
 .ouija-menu button:hover {
     text-decoration: underline;
-    text-decoration-thickness: 4px;
+    text-decoration-thickness: 2px;
 }
 
 .planchette {
     will-change: transform;
 }
+
 .planchette.is-ready {
-    transition: transform 300ms ease-in-out;
+    transition: transform 300ms cubic-bezier(0.4, 0.2, 0.2, 1);
 }
 
 /* OUIJA MENU — RESPONSIVE */
 @media (max-width: 700px) {
     .ouija-menu * {
+        top: 30px;
         font-size: 1.7em;
     }
 }
 
-/* =========================================
+/* -----
    KIT PAGE (containers, SVG, modal image)
-   ========================================= */
+   ----- */
 
 /* Main containers */
-#KitPage,
-.kitpage-root {
-    height: 100dvh;
+#KitPage {
+    height: 100%;
     width: 100%;
-    max-width: 1500px;
-    padding: 50px 0;
-    margin: auto;
-    overflow: hidden;
 }
 
 .kit-canvas {
-    height: 100%;
+    height: 100vh;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
 }
 
 /* SVG wrapper / sizing */
-.kit-svg-wrapper {
-    height: 100%;
+.kit-svg {
+    display: block;
     width: 100%;
+    height: 100%;
+}
+
+/* Intro assets */
+.kit-intro {
+    aspect-ratio: 301 / 275;
+    height: 100vh;
+    max-width: 100%;
+    margin: auto;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.kit-svg {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
+    padding: 0 16px;
 }
 
-/* Falling closed kit image */
-.falling {
-    display: block;
-    height: calc(100vh - 100px); /* account for top/bottom padding on root */
-    width: auto;
+.kit-intro img {
+    pointer-events: none;
     max-width: 100%;
-    margin: 0 auto;
-    object-fit: contain;
-    animation: fallFromTop 1.5s ease-in forwards;
 }
 
-/* Item modal (single definition) */
-.item-modal {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100dvh;
-    width: 100vw;
-    background-color: rgba(0, 0, 0, 0.72);
+/* Note modal */
+
+.note-modal {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    inset: 0;
+    min-height: 100svh;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 50px;
-
-    cursor: pointer;
+    padding: 0 5vw;
 }
 
-.item-modal > * {
+.note-modal > .note-container {
     cursor: default;
+    aspect-ratio: 113 / 143;
+    width: 100%;
+    max-width: 600px;
+    background-image: url("/images/kit/full/note.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.note-modal .note-content {
+    height: 100%;
+    transform: perspective(600px) rotateX(3deg);
+    margin-top: -15px;
+    color: black;
+    font-size: 1.8em;
+    padding: 15%;
+    line-height: 0.8em;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.note-modal .note-checklist {
+    display: flex;
+    flex-direction: column;
+}
+
+.note-modal .note-checklist span {
+    line-height: 1em;
+}
+
+.note-modal .close-tip {
+    font-size: 1em;
+    opacity: 0.5;
+    margin-top: 5px;
+}
+
+.note-modal .check-icon {
+    font-size: 0.6em;
+    margin-right: 0.6em;
+}
+
+@media (max-width: 680px) {
+    .note-modal .note-content {
+        font-size: 5.5vw;
+    }
+
+    .note-modal .close-tip {
+        font-size: 3vw;
+    }
+}
+
+/* Item modal */
+.item-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.8);
+
+    /* Let the modal content scroll if taller than viewport */
+    overflow: auto;
+    overscroll-behavior: contain;
+
+    /* Robust to mobile dynamic viewport */
+    min-height: 100svh;
+}
+
+.item-modal > div {
+    transition: opacity 120ms ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
 }
 
 .item-modal-image {
@@ -627,9 +731,10 @@ div.scanlines {
 }
 
 .item-modal-text {
+    z-index: 50;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     max-width: 500px;
     text-align: center;
     padding: 5px 10px;
@@ -637,18 +742,58 @@ div.scanlines {
     box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0.95);
 }
 
+.item-modal-text hr {
+    width: 100%;
+    opacity: 0.5;
+    margin: 0;
+}
+
 .item-modal-text .item-name {
     font-size: 2em;
     margin-bottom: -0.3em;
 }
 
-/* Whisper overlay (used on Kit) */
+.item-modal-text .modal-footer {
+    font-size: 0.8em;
+    opacity: 0.5;
+}
+
+@supports (min-height: 100dvh) {
+    .item-modal {
+        min-height: 100dvh;
+    }
+}
+
+@supports (min-height: 100dvh) {
+    .item-modal {
+        min-height: 100dvh;
+    }
+}
+
+@media (max-width: 760px) {
+    .item-modal-image img {
+        max-height: 30vh !important;
+    }
+
+    .item-modal-text {
+        max-width: 85vw;
+        font-size: 0.9em;
+    }
+
+    .item-modal-text .item-name {
+        font-size: 1.6em;
+        margin-bottom: -0.3em;
+    }
+}
+
+/* ----- Whispers ------ */
 .skull-whisper-layer {
     position: absolute;
     inset: 0;
     pointer-events: none;
     overflow: visible;
 }
+
 .skull-whisper {
     position: absolute;
     transform: translate(-50%, 0);
@@ -665,49 +810,138 @@ div.scanlines {
     animation: skullWhisperFloat 2.4s ease-out forwards;
 }
 
-/* KIT PAGE — RESPONSIVE */
-@media (max-width: 800px) {
-    .item-modal-image img {
-        max-height: 40vh !important;
-    }
-
-    .item-modal-text {
-        max-width: 85vw;
-    }
+.mobile-logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: auto;
 }
 
-/* =========================================
-   TAROT PAGE
-   ========================================= */
+.mobile-logo img {
+    width: 90vw;
+    max-width: 450px;
+    padding: 3vh 0;
+}
 
-#TarotPage {
-    height: 100dvh;
+#KitPage.mobile .kit-intro {
+    position: absolute;
+    top: 0;
+}
+
+#KitPage.mobile .kit-canvas {
+    height: auto;
+    min-height: unset;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+#KitPage.mobile .kit-svg {
+    width: 80vw;
+    height: auto;
+    display: block;
+}
+
+#KitPage.mobile .skull-whisper {
+    font-size: 16px;
+}
+
+#KitMobileMenu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 16px;
+    justify-items: center;
+    align-items: center;
+    /* max-width: 50vw; */
+}
+
+/* Each cell: ratio via padding-top (more robust than aspect-ratio on bfcache) */
+#KitMobileMenu > div {
+    position: relative;
+    width: 100%;
+    /* height comes from padding-top ratio below */
+    background: url("/images/kit/mobile/item_square.png") center/cover no-repeat;
+    /* overflow: hidden; */
+    cursor: pointer;
+}
+
+/* Ratio box: 297/311 ≈ 95.5% */
+#KitMobileMenu > div::before {
+    content: "";
+    display: block;
+    padding-top: calc(
+        297 / 311 * 100%
+    ); /* sets the box height deterministically */
+}
+
+/* Inner frame: a definite 80% box */
+#KitMobileMenu > div .item-frame {
+    position: absolute;
+    inset: 10%; /* 80% of cell in both axes */
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
+}
+
+/* Image: never use % height; constrain with max-*, preserve aspect */
+#KitMobileMenu > div .item-frame > img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+/* ----- TAROT PAGE ------ */
+
+#TarotPage {
+    position: relative;
+    display: flex;
     flex-direction: column;
-    gap: 10vh;
-    padding-top: 7vh;
+    align-items: center;
+    justify-content: space-between;
+    height: 100svh;
+    padding: 6vh 0;
+    overflow: hidden !important;
 }
 
 .tarot-card-slots {
     display: grid;
     grid-template-columns: auto auto auto;
+    bottom: -170px;
     gap: 45px;
     z-index: 1;
 }
 
-.tarot-intro-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 2em;
-    margin-top: 100px;
-    text-align: center;
+.tarot-card-slots > div {
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    display: "flex";
+    align-items: "center";
+    justify-content: "center";
+    perspective: 1000px;
 }
 
-.tarot-intro-container > span {
-    opacity: 0;
+.card-fan {
+    position: absolute;
+    bottom: -150px;
+
+    width: 100%;
+    max-width: 1200px;
+}
+
+.tarot-intro-container {
+    height: 100%;
+    font-size: 1.75em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Fortune line container */
@@ -716,22 +950,40 @@ div.scanlines {
     max-width: 900px;
     min-height: 1.2em;
     text-align: center;
-    font-size: 2em;
+    font-size: 1.5em;
     color: #fff;
     z-index: 10;
     pointer-events: none;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1em;
+}
+
+.tarot-buttons {
+    display: flex;
+    gap: 1em;
 }
 
 /* TAROT PAGE — RESPONSIVE */
 @media (max-width: 800px) {
+    #TarotPage {
+        justify-content: flex-start;
+        gap: 60px;
+    }
+
     .fortune-parts-container {
-        font-size: 1em;
+        font-size: 1.2em;
+        gap: 1em;
     }
 
     .tarot-card-slots {
-        gap: 20px;
+        gap: 30px;
+    }
+
+    .tarot-buttons {
+        margin-top: auto;
     }
 
     .tarot-intro-container {
@@ -751,7 +1003,7 @@ div.scanlines {
     position: fixed;
     inset: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100svh;
     background-color: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
@@ -768,6 +1020,7 @@ div.scanlines {
     max-width: 90vw;
     max-height: 90vh;
     pointer-events: auto;
+    padding-bottom: 30px;
 }
 
 .tarot-card-container {
@@ -805,9 +1058,9 @@ div.scanlines {
 }
 
 .tarot-card-name {
-    font-size: 2.5em;
+    font-size: 2em;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     color: #fff;
 }
 
@@ -815,7 +1068,7 @@ div.scanlines {
     margin-bottom: 25px;
 }
 .tarot-card-description p {
-    font-size: 1.1em;
+    font-size: 1.05em;
     line-height: 1.6;
     color: #ddd;
 }
@@ -828,7 +1081,7 @@ div.scanlines {
 .tarot-card-symbolism h4,
 .tarot-card-artist h4 {
     color: #fff;
-    font-size: 1.3em;
+    font-size: 1.2em;
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -862,107 +1115,125 @@ div.scanlines {
     }
 
     .tarot-modal-card {
-        width: 100%;
+        height: auto;
+        width: 80%;
+        margin: auto;
         flex-direction: column;
     }
 
+    .tarot-modal-image {
+        width: 100%;
+        height: auto;
+    }
+
     .tarot-card-name {
-        font-size: 2em;
+        font-size: 1.7em;
+    }
+
+    .tarot-card-symbolism h4,
+    .tarot-card-artist h4 {
+        text-align: center;
+        font-size: 1.2em;
     }
 
     .tarot-card-description,
     .tarot-card-symbolism p,
     .tarot-card-artist p {
-        font-size: 1em;
+        text-align: center;
+        font-size: 0.9em;
     }
 }
 
-/* =========================================
-   GHOST QUIZ
-   ========================================= */
+/* ----- GHOST QUIZ ----- */
 
 #QuizPage {
-    height: 100dvh;
-    width: 100vw;
-}
-
-.quiz-container {
-    width: 85vw;
-    max-width: 1000px;
-    position: absolute;
-    /* Center the quiz-container on the page */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    min-height: 100svh;
+    width: 100%;
+    position: relative;
 }
 
 .book-container {
-    /* Animated in code */
-    transform: translateX(0);
-    transition: transform 0.5s ease-in-out;
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    aspect-ratio: 962 / 707;
+    width: auto;
+    max-width: 90vw;
+    height: 80vh;
 }
 
-/* --- Image --- */
 .book-container img {
-    margin-top: -20%;
-    transition: filter 0.2s ease;
+    z-index: 25;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-.book-container.hoverable img:hover {
+.book-container.closed img:hover {
+    cursor: pointer;
     filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
 }
 
-/* --- Overlay --- */
-.book-text {
-    color: black;
-    font-weight: bold;
+.book-text-container {
+    z-index: 50;
+    /* TODO: Remove this maybe */
+    pointer-events: none;
 
     position: absolute;
     bottom: 0;
 
-    height: 80%;
-
-    padding: 70px 80px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 60px;
 
-    font-size: 1.4em;
-    transition: opacity 0.8s ease;
+    aspect-ratio: 962 / 707;
+    width: 100%;
+    height: auto;
+
+    gap: 7%;
+    padding-top: 12%;
+    padding-left: 11.5%;
+    padding-right: 13%;
+    padding-bottom: 8%;
 }
 
-.book-text > * {
-    padding: 0 20px;
+.book-text-container > * {
+    color: black;
+    text-align: center;
+    /* border: 2px dashed black; */
 }
 
-.book-text > .question {
+.book-text-container .question {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    gap: 1em;
-}
-
-.book-text > .answers {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1em;
-    margin-right: 10px;
-}
-
-.book-text > .answers .prompt {
-    text-align: center;
-}
-
-.book-text .choice {
-    display: flex;
-    gap: 10px;
-    cursor: pointer;
     align-items: center;
+    justify-content: center;
+    font-size: 1.25em;
+    gap: 0.6em;
+}
 
-    font-size: 0.9em;
+.book-text-container .answer-choices {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.6em;
+    font-size: 1em;
+}
 
+.book-text-container .choice {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 9999;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+
+    /* Box styling */
+    margin: 0 5%;
     background-color: rgb(230, 230, 230);
     padding: 15px 20px;
     border-radius: 15px;
@@ -976,117 +1247,245 @@ div.scanlines {
     background-blend-mode: multiply;
 }
 
-/* Choice hover styles */
-
-.book-text .choice:hover {
+.book-text-container .choice:hover {
     transform: scale(1.04) rotate(-2deg);
 }
-.book-text .choice:hover:nth-child(even) {
+.book-text-container .choice:hover:nth-child(even) {
     transform: scale(1.04) rotate(2deg);
 }
 
-.book-text .choice:hover {
+.book-text-container .choice:hover {
     box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.25),
         0 2px 8px 0 rgba(0, 0, 0, 0.18);
     background-color: rgba(255, 255, 255, 0.85);
 }
 
-.book-text .choice:hover .circle {
-    opacity: 0.9;
-}
-
-/* GHOST QUIZ — RESPONSIVE */
-@media (max-width: 1200px) {
-    .book-text {
-        font-size: 1.3em;
-    }
-}
-
 @media (max-width: 850px) {
-    .quiz-container {
-        border: 1px solid red;
-        width: 160vw;
-        /* max-height: 70vh; */
-        max-width: none;
-        top: unset;
-        left: unset;
-        right: 0;
-        bottom: 0;
-        transform: none;
-    }
-
-    .book-text {
-        font-size: 1em;
-    }
-
-    .book-container img {
-        max-height: 99vh;
+    .book-text-container {
+        font-size: 0.9em;
     }
 }
 
-/* =========================================
+@media (max-width: 700px) {
+    .book-text-container {
+        font-size: 0.8em;
+    }
+}
+
+/* ----- Quiz Mobile Version ----- */
+#QuizPageMobile {
+    background-color: rgb(206, 206, 206);
+    background-image: url("/images/quiz/paper_texture.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100svh;
+    overflow-x: clip;
+}
+
+#QuizPageMobile > .quiz-container-mobile {
+    color: black;
+    /* background-color: rgba(0, 0, 0, 0.654); */
+    height: 100svh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px;
+    gap: 30px;
+
+    font-size: 1em;
+}
+
+.quiz-container-mobile .question-number {
+    font-size: 1.6em;
+    font-weight: bold;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.85) 30%,
+        rgba(0, 0, 0, 0.85) 70%,
+        transparent 100%
+    );
+    line-height: 1.4em;
+    padding-top: 0.15em;
+    width: 110%;
+    text-align: center;
+    color: white;
+}
+
+.quiz-container-mobile .question {
+    margin: auto 0;
+
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5em;
+
+    font-size: 1.2em;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    padding: 0 15px;
+}
+
+.quiz-container-mobile .question-art {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 1;
+    min-height: 0;
+    height: 100%;
+    max-height: 25vh;
+}
+
+.quiz-container-mobile .question-art img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.quiz-container-mobile .answer-choices {
+    margin-top: auto;
+    margin-bottom: 2vh;
+    font-weight: normal;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+}
+
+.quiz-container-mobile .answer-choices > * {
+    background-color: rgba(0, 0, 0, 0.872);
+    color: white;
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18),
+        0 1px 8px 0 rgba(0, 0, 0, 0.12);
+    border: 2px solid #3a2c2c;
+    letter-spacing: 0.03em;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border-radius: 15px;
+    padding: 10px;
+    text-align: center;
+}
+
+/* TODO: REMOVE FAKE QUIZ RESULTS */
+
+.quiz-result {
+    height: 100svh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+.quiz-result .result-name {
+    font-size: 40px;
+}
+
+.quiz-result .result-description {
+    border: 1px solid white;
+    padding: 10px;
+    margin: 0 20px;
+    text-align: center;
+    margin-bottom: 2em;
+    max-width: 500px;
+}
+
+/* -----
    KNIFE PAGE
-   ========================================= */
+   ----- */
 
 #KnifePage {
-    width: 100vw;
-    height: 80svh;
+    position: relative;
+    font-size: 1.75em;
+    min-height: 100svh;
+    width: 100%;
+    overflow: clip;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 2em;
 }
 
-.knife-intro-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.take-knife-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.take-knife-img img {
-    height: 600px;
-    rotate: -140deg;
-    cursor: pointer;
-}
-
-.take-knife-img img:hover {
-    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
-}
-
+.intro-container,
+.knife-container,
 .onion-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.knife-container img {
+    transform: rotate(-150deg);
+    margin: auto;
+    height: 400px;
+    cursor: pointer;
+}
+
+.knife-container img:hover {
+    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
+}
+
+.onion-container {
+    position: relative;
+    overflow: visible;
+    width: 100%;
+    height: 100%;
 }
 
 .onion-container img {
-    user-select: none;
-    pointer-events: auto;
-    touch-action: manipulation;
-    scale: 1.25;
-    height: 500px;
-    width: auto;
+    width: min(700px, 100%);
 }
 
-.onion-container img:hover {
-    filter: drop-shadow(0 0 2px white) drop-shadow(0 0 12px white);
+.onion-container img.glow {
+    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
 }
+
+.onion-click-zone {
+    z-index: 999;
+    position: absolute;
+    top: 8%;
+    left: 2%;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: inline-block;
+    clip-path: circle(20% at 50% 50%);
+    /* background-color: rgba(255, 0, 0, 0.562); */
+}
+
+.bottle-container {
+    position: absolute;
+    top: auto;
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 12em;
+    text-align: center;
+    gap: 1em;
+    transform: translate(50%, 50%);
+}
+
+.bottle-container img {
+    height: 200px;
+}
+
+/* Knife cursor */
 
 .cursor-none,
 .cursor-none * {
     cursor: none !important;
 }
 
-/* Knife cursor image that follows the mouse */
 .knife-cursor {
     position: fixed; /* follow viewport, not scrolled layout */
     z-index: 9999;
@@ -1095,68 +1494,90 @@ div.scanlines {
     transform: rotate(-45deg);
 }
 
-.bottle-container {
-    text-align: center;
-    pointer-events: none;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-    right: 0;
-    bottom: 50px;
-    transform: translate(0, 0);
-    transition: right 0.75s ease-in-out, bottom 0.75s ease-in-out,
-        transform 0.75s ease-in-out !important;
-}
-
-.bottle-container.center {
-    right: 50%;
-    bottom: 50%;
-    transform: translate(50%, 50%);
-}
-
-.bottle-container img {
-    user-select: none;
-    pointer-events: auto;
-    touch-action: manipulation;
-    height: 200px;
-}
-
 /* KNIFE PAGE — RESPONSIVE */
 @media (max-width: 1000px) {
     #KnifePage {
-        margin: auto;
         font-size: 1.4em;
-        max-width: 90vw;
     }
 
     .take-knife-img img {
-        height: 80vw;
+        height: 60vw;
         width: auto;
         cursor: pointer;
     }
+}
 
+@media (max-width: 700px) {
     .bottle-container {
-        right: -110px;
-        bottom: -60px;
+        width: 90vw;
     }
 
     .bottle-container img {
         height: 15vh;
-        right: 0;
     }
+}
 
-    .onion-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
+/* -----
+   CASSETTE PAGE
+   ----- */
 
-    .onion-container img {
-        height: auto;
-        width: 100vw;
-        max-width: 500px;
-    }
+#CassettePage {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#CassettePage > div {
+    width: 100%;
+}
+
+#CassettePage .tape-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#CassettePage .tape-container .tape-img {
+    transform: rotate(-8deg);
+    z-index: 50;
+    width: 50%;
+}
+
+#CassettePage .tape-container .tape-img.hoverable:hover {
+    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
+}
+
+#CassettePage .tape-container .pencil-img {
+    z-index: 25;
+    position: absolute;
+    right: 100px;
+    bottom: 20px;
+    height: 80vh;
+    transform: rotate(190deg);
+    cursor: pointer;
+}
+
+#CassettePage .tape-container .pencil-img:hover {
+    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
+}
+
+#CassettePage .tape-container .pencil-img.picked-up {
+    opacity: 0.1;
+    transition: opacity 0.1s ease;
+}
+
+#CassettePage .tape-container .pencil-img.picked-up:hover {
+    opacity: 0.2;
+}
+
+.pencil-cursor {
+    position: fixed; /* follow viewport, not scrolled layout */
+    z-index: 9999;
+    height: 80vh; /* tweak size as you like */
+    pointer-events: none; /* never intercept clicks */
+    transform: rotate(150deg);
 }

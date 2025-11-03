@@ -1,34 +1,31 @@
-import React, {
-    useRef,
-    useEffect,
-    useMemo,
-    useCallback,
-    useState,
-} from "react";
-import gsap from "gsap";
+import React, { useRef, useEffect, useMemo, useState } from "react";
 import { Howl } from "howler";
 import TarotModal from "../components/TarotPage/TarotModal";
 import WaveText from "../components/WaveText";
 import { getCardInfo, tarotCardData } from "../data/tarotCards";
 import { useGameState } from "../context/GameStateContext";
 import LinkButton from "../components/LinkButton";
+// eslint-disable-next-line no-unused-vars
+import { motion, useAnimate } from "motion/react";
 
-// =========================================================
-// Constants
-// =========================================================
+// ----- Constants -----
 const SLOT_COUNT = 3;
-const CARD_COUNT = 6;
+const CARD_COUNT = 5;
 const CARD_IMAGE = "/images/tarot/back.png"; // back image
 const MOBILE_TRIGGER_WIDTH = 700;
 const DEFAULT_CARD_HEIGHT = 300;
 const MOBILE_CARD_HEIGHT = 140;
 const CARD_RATIO = 11 / 19;
-const CARD_FLIP_DURATION = 0.6; // seconds
+const CARD_FLIP_DURATION = 0.14; // seconds
 const CARD_FLIP_DELAY = 0.5; // seconds between flips
+const CARD_BORDER_RADIUS = 6;
 
-// =========================================================
-// Helpers (no behavior changes)
-// =========================================================
+const HAS_HOVER =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(hover: hover)").matches;
+
+// ----- Helpers -----
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
 const shuffleTake = (arr, n) => {
@@ -45,20 +42,40 @@ const pickFortunes = (images) => {
     return images.map((src, i) => {
         const info = getCardInfo(src);
         const pools = info?.fortunes || {};
-        const group = i === 0 ? "cause" : i === 1 ? "effect" : "lesson";
+        const group = i === 0 ? "past" : i === 1 ? "present" : "future";
         const options = pools[group] || [""];
         return options[Math.floor(Math.random() * options.length)] || "";
     });
 };
 
-// =========================================================
-// Component
-// =========================================================
+// Compute fan positions for the current visible set
+function computeFanTransforms({ visibleCount, cardWidth, mobile }) {
+    if (!visibleCount) return [];
+    const spreadDeg = 60;
+    const baseAngle = -spreadDeg / 2;
+    const angleStep = visibleCount > 1 ? spreadDeg / (visibleCount - 1) : 0;
+    const center = (visibleCount - 1) / 2;
+    const arcHeight = 60;
+    const overlap = mobile ? 40 : 80;
+    const spacing = cardWidth - overlap;
+    const startX = -center * spacing;
+
+    return Array.from({ length: visibleCount }).map((_, pos) => {
+        const angle = baseAngle + angleStep * pos;
+        const offset = pos - center;
+        const y =
+            -30 - arcHeight * (1 - Math.pow(offset / Math.max(center, 1), 2));
+        const x = startX + spacing * pos;
+        return { x, y, rotate: angle, origY: y };
+    });
+}
+
+// ----- Component -----
 export default function TarotPage() {
-    // ------------------ Context ------------------
+    // ----- Context -----
     const { gameState, updateGameState } = useGameState();
 
-    // ------------------ Layout / Responsive ------------------
+    // ----- Layout / Responsive -----
     const initialCardHeight = () =>
         window.innerWidth < MOBILE_TRIGGER_WIDTH
             ? MOBILE_CARD_HEIGHT
@@ -66,6 +83,11 @@ export default function TarotPage() {
 
     const [cardHeight, setCardHeight] = useState(initialCardHeight);
     const cardWidth = Math.round(cardHeight * CARD_RATIO);
+
+    const isMobile =
+        typeof window !== "undefined"
+            ? window.innerWidth < MOBILE_TRIGGER_WIDTH
+            : false;
 
     useEffect(() => {
         const handleResize = () => {
@@ -79,21 +101,10 @@ export default function TarotPage() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // ------------------ UI State ------------------
-    const [returnButtonState, setReturnButtonState] = useState({
-        container: false,
-        visible: false,
-    });
+    // ----- UI State -----
     const [playTarotIntro, setPlayTarotIntro] = useState(
         () => !gameState.flags.tarotIntroPlayed
     );
-
-    const [introVis, setIntroVis] = useState({
-        line1: false,
-        line2: false,
-        fadeOut: false,
-        cardSlots: false,
-    });
 
     const [selectedCards, setSelectedCards] = useState([]); // indices from fan
     const [removedCards, setRemovedCards] = useState([]); // removed from fan
@@ -101,158 +112,99 @@ export default function TarotPage() {
         Array(SLOT_COUNT).fill(null)
     );
 
-    const [fortuneParts, setFortuneParts] = useState([null, null, null]);
-    const [fortuneReveal, setFortuneReveal] = useState([false, false, false]);
-
+    const [fortuneParts, setFortuneParts] = useState([
+        "line1",
+        "line2",
+        "line3",
+    ]);
     const [isInitialAnimating, setIsInitialAnimating] = useState(true);
     const [isRevealing, setIsRevealing] = useState(false);
     const [hasRevealed, setHasRevealed] = useState(false);
 
-    // ------------------ Refs ------------------
-    const cardsRef = useRef([]); // fan card elements
+    // fan visibility (instead of display:none)
+    const [fanHidden, setFanHidden] = useState(playTarotIntro);
+
+    // ----- Refs -----
+    const cardsRef = useRef([]); // fan card elements (motion.img refs if needed)
     const fanWrapRef = useRef(null); // fan container
     const slotOuterRefs = useRef([]); // flip wrapper
     const slotTiltRefs = useRef([]); // hover tilt inner
 
-    // ------------------ Modal ------------------
+    // ----- Modal -----
     const [modalCard, setModalCard] = useState(null);
 
-    // ------------------ Sound ------------------
+    // ----- Animations -----
+    const [scope, animate] = useAnimate();
+    const DEFAULT_DURATION = 0.6;
+
+    useEffect(() => {
+        const revealCardsAnimation = async () => {
+            await animate(".tarot-buttons", {
+                opacity: 1,
+                pointerEvents: "auto",
+            });
+        };
+        if (hasRevealed) revealCardsAnimation();
+    }, [hasRevealed, animate]);
+
+    useEffect(() => {
+        const tarotIntroAnimation = async () => {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            await animate(
+                ".tarot-intro-container .line1",
+                { opacity: 1 },
+                { duration: 1 }
+            );
+            await animate(
+                ".tarot-intro-container .line2",
+                { opacity: 1 },
+                { duration: 1 }
+            );
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await animate(scope.current, { opacity: 0 }, { duration: 1 });
+            setPlayTarotIntro(false);
+            updateGameState({ tarotIntroPlayed: true });
+            await animate(scope.current, { opacity: 1 }, { duration: 1 });
+            setFanHidden(false);
+        };
+        if (playTarotIntro) tarotIntroAnimation();
+    }, [playTarotIntro, animate, updateGameState, scope]);
+
+    // ----- Sound -----
     const flipSoundRef = useRef(
         new Howl({ src: ["/sounds/flip.ogg"], volume: 0.8 })
     );
 
-    // ------------------ Data ------------------
+    // ----- Data -----
     const tarotKeys = useMemo(() => Object.keys(tarotCardData), []);
 
-    // =========================================================
-    // Intro Sequence
-    // =========================================================
-    useEffect(() => {
-        if (!playTarotIntro) return;
+    // ----- Fan transforms cache -----
+    const visibleIdx = useMemo(
+        () =>
+            Array.from({ length: CARD_COUNT }, (_, i) => i).filter(
+                (i) => !removedCards.includes(i)
+            ),
+        [removedCards]
+    );
 
-        const t1 = setTimeout(
-            () => setIntroVis((v) => ({ ...v, line1: true })),
-            100
-        );
-        const t2 = setTimeout(
-            () => setIntroVis((v) => ({ ...v, line2: true })),
-            1400
-        );
-        const t3 = setTimeout(
-            () => setIntroVis((v) => ({ ...v, fadeOut: true })),
-            3200
-        );
-        const t4 = setTimeout(() => setPlayTarotIntro(false), 4000);
-
-        return () => {
-            clearTimeout(t1);
-            clearTimeout(t2);
-            clearTimeout(t3);
-            clearTimeout(t4);
-            updateGameState({
-                flags: { ...gameState.flags, tarotIntroPlayed: true },
-            });
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [playTarotIntro]);
-
-    useEffect(() => {
-        if (playTarotIntro) return;
-
-        // Ensure it starts hidden on first render after mount
-        setIntroVis((v) => ({ ...v, cardSlots: false }));
-
-        // Double rAF guarantees it's after the slots are in the DOM,
-        // so the 0 -> 1 transition actually runs.
-        let raf1 = 0;
-        let raf2 = 0;
-        raf1 = requestAnimationFrame(() => {
-            raf2 = requestAnimationFrame(() => {
-                setIntroVis((v) => ({ ...v, cardSlots: true }));
-            });
+    const fanTransforms = useMemo(() => {
+        const t = computeFanTransforms({
+            visibleCount: visibleIdx.length,
+            cardWidth,
+            mobile: isMobile,
         });
+        return t; // array aligned to visibleIdx order
+    }, [visibleIdx.length, cardWidth, isMobile]);
 
-        return () => {
-            cancelAnimationFrame(raf1);
-            cancelAnimationFrame(raf2);
-        };
-    }, [playTarotIntro]);
-
+    // After first paint of the fan, mark initial anim as done
     useEffect(() => {
-        if (fortuneReveal.every(Boolean)) {
-            setReturnButtonState((p) => ({ ...p, container: true }));
-            const t = setTimeout(
-                () => setReturnButtonState((p) => ({ ...p, visible: true })),
-                1200
-            ); // 1.2s delay
-            return () => clearTimeout(t);
+        if (visibleIdx.length) {
+            const id = setTimeout(() => setIsInitialAnimating(false), 600);
+            return () => clearTimeout(id);
         }
-    }, [fortuneReveal]);
+    }, [visibleIdx.length]);
 
-    // =========================================================
-    // Layout Fan
-    // =========================================================
-    const layoutFan = useCallback(() => {
-        const elts = cardsRef.current;
-        if (!elts) return;
-
-        const visibleIdx = Array.from(
-            { length: CARD_COUNT },
-            (_, i) => i
-        ).filter((i) => !removedCards.includes(i));
-        const visibleCount = visibleIdx.length;
-        if (!visibleCount) return;
-
-        const spreadDeg = 60;
-        const baseAngle = -spreadDeg / 2;
-        const angleStep = visibleCount > 1 ? spreadDeg / (visibleCount - 1) : 0;
-        const center = (visibleCount - 1) / 2;
-        const arcHeight = 60;
-
-        // Make overlap smaller on mobile for more spacing
-        const overlap = window.innerWidth < 700 ? 40 : 80;
-        const spacing = cardWidth - overlap;
-        const startX = -center * spacing;
-
-        let completed = 0;
-        const total = visibleIdx.length;
-
-        visibleIdx.forEach((cardIdx, pos) => {
-            const card = elts[cardIdx];
-            if (!card) return;
-
-            const angle = baseAngle + angleStep * pos;
-            const offset = pos - center;
-            const y =
-                -30 -
-                arcHeight * (1 - Math.pow(offset / Math.max(center, 1), 2));
-            const x = startX + spacing * pos;
-
-            card.dataset.origY = String(y);
-
-            gsap.to(card, {
-                x,
-                y,
-                rotate: angle,
-                duration: 0.5,
-                ease: "power3.out",
-                delay: 0.02 * pos,
-                onComplete: () => {
-                    completed++;
-                    if (completed === total) setIsInitialAnimating(false);
-                },
-            });
-        });
-    }, [removedCards, cardWidth]);
-
-    useEffect(() => {
-        layoutFan();
-    }, [layoutFan, selectedCards]);
-
-    // =========================================================
-    // Interactions
-    // =========================================================
+    // ----- Interactions -----
     const handleCardClick = (idx) => {
         if (
             isInitialAnimating ||
@@ -265,25 +217,17 @@ export default function TarotPage() {
 
         setSelectedCards((prev) => [...prev, idx]);
 
-        const el = cardsRef.current[idx];
-        if (!el) return;
-
-        el.style.zIndex = 3;
-        gsap.to(el, {
-            y: (Number(el.dataset.origY) || 0) - 100,
-            scale: 1.05,
-            opacity: 0,
-            duration: 0.4,
-            ease: "power3.inOut",
-            onComplete: () => {
-                setRemovedCards((prev) => [...prev, idx]);
-                cardsRef.current[idx] = null;
-            },
-        });
+        // Soft-remove after a short delay to let Motion animate out
+        const removeDelay = 350;
+        setTimeout(() => {
+            setRemovedCards((prev) => [...prev, idx]);
+        }, removeDelay);
     };
 
+    // Slot hover tilt (disabled on touch by HAS_HOVER)
     const handleSlotHoverMove = (e, idx) => {
         if (
+            !HAS_HOVER ||
             !hasRevealed ||
             isRevealing ||
             window.innerWidth < MOBILE_TRIGGER_WIDTH
@@ -291,45 +235,28 @@ export default function TarotPage() {
             return;
         const el = slotTiltRefs.current[idx];
         if (!el) return;
-
         const rect = el.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
         const nx = clamp((e.clientX - cx) / (rect.width / 2), -1, 1);
         const ny = clamp((e.clientY - cy) / (rect.height / 2), -1, 1);
-
         const MAX_TILT_X = 6;
         const MAX_TILT_Y = 5;
         const SHIFT = 2;
-
-        gsap.to(el, {
-            rotationX: -ny * MAX_TILT_X,
-            rotationY: -nx * MAX_TILT_Y,
-            x: -nx * SHIFT,
-            y: -ny * SHIFT,
-            duration: 0.15,
-            ease: "power2.out",
-            overwrite: true,
-        });
+        el.style.transform = `translate3d(${-nx * SHIFT}px, ${
+            -ny * SHIFT
+        }px, 0) rotateX(${-ny * MAX_TILT_X}deg) rotateY(${
+            -nx * MAX_TILT_Y
+        }deg)`;
     };
 
     const handleSlotHoverLeave = (idx) => {
         const el = slotTiltRefs.current[idx];
         if (!el || window.innerWidth < MOBILE_TRIGGER_WIDTH) return;
-        gsap.to(el, {
-            rotationX: 0,
-            rotationY: 0,
-            x: 0,
-            y: 0,
-            duration: 0.25,
-            ease: "power2.out",
-            overwrite: true,
-        });
+        el.style.transform = `translate3d(0,0,0) rotateX(0deg) rotateY(0deg)`;
     };
 
-    // =========================================================
-    // Reveal Sequence
-    // =========================================================
+    // ----- Reveal Sequence -----
     useEffect(() => {
         if (hasRevealed || selectedCards.length !== SLOT_COUNT) return;
 
@@ -346,85 +273,106 @@ export default function TarotPage() {
 
         setRevealedFaces(slotImages);
         setFortuneParts(fortunes);
-        setFortuneReveal([false, false, false]);
 
-        // Build flip timeline
-        setIsRevealing(true);
+        const doReveal = async () => {
+            setIsRevealing(true);
 
-        const tl = gsap.timeline({
-            defaults: { ease: "power3.inOut" },
-            onComplete: () => {
-                setHasRevealed(true);
-                setIsRevealing(false);
-            },
+            // 1) Slide/fade fan out
+            if (fanWrapRef.current) {
+                await animate(
+                    fanWrapRef.current,
+                    { y: 400, opacity: 0 },
+                    { duration: 0.6 }
+                );
+                setFanHidden(true);
+            }
+
+            // 2) Flip each slot sequentially and reveal fortune lines
+            for (let s = 0; s < SLOT_COUNT; s++) {
+                const outer = slotOuterRefs.current[s];
+                if (!outer) continue;
+
+                await animate(
+                    outer,
+                    { rotateY: 180 },
+                    { duration: CARD_FLIP_DURATION, easing: "easeInOut" }
+                );
+
+                // sound + line reveal
+                flipSoundRef.current.play();
+                await animate(
+                    `.fortune-parts-container .line${s + 1}`,
+                    { opacity: 1 },
+                    { duration: 0.5 }
+                );
+
+                // gap before next flip
+                await new Promise((r) => setTimeout(r, CARD_FLIP_DELAY * 1000));
+            }
+
+            updateGameState({ tarotCompleted: true });
+            setHasRevealed(true);
+            setIsRevealing(false);
+        };
+
+        doReveal();
+    }, [selectedCards, hasRevealed, tarotKeys, animate, updateGameState]);
+
+    // ----- Draw Again Handler -----
+    const handleDrawAgain = async () => {
+        await Promise.allSettled([
+            animate(
+                ".tarot-card-slots img",
+                { opacity: 0 },
+                { duration: DEFAULT_DURATION }
+            ).finished,
+            animate(
+                ".tarot-buttons",
+                { opacity: 0, pointerEvents: "none" },
+                { duration: DEFAULT_DURATION }
+            ).finished,
+            animate(
+                ".fortune-parts-container .line1",
+                { opacity: 0 },
+                { duration: DEFAULT_DURATION }
+            ).finished,
+            animate(
+                ".fortune-parts-container .line2",
+                { opacity: 0 },
+                { duration: DEFAULT_DURATION }
+            ).finished,
+            animate(
+                ".fortune-parts-container .line3",
+                { opacity: 0 },
+                { duration: DEFAULT_DURATION }
+            ).finished,
+        ]);
+
+        // Reset state
+        setIsInitialAnimating(true);
+        setSelectedCards([]);
+        setRemovedCards([]);
+        setRevealedFaces(Array(SLOT_COUNT).fill(null));
+        setFortuneParts(["", "", ""]);
+        setHasRevealed(false);
+        setIsRevealing(false);
+        setModalCard(null);
+        setFanHidden(false);
+
+        requestAnimationFrame(() => {
+            animate(".tarot-card-slots img", { opacity: 1 }, { duration: 0 });
         });
+    };
 
-        if (fanWrapRef.current) {
-            tl.to(fanWrapRef.current, { y: 400, opacity: 0, duration: 0.6 });
-            tl.set(fanWrapRef.current, { display: "none" });
-        }
-
-        for (let s = 0; s < SLOT_COUNT; s++) {
-            const outer = slotOuterRefs.current[s];
-            if (!outer) continue;
-
-            gsap.set(outer, {
-                transformPerspective: 800,
-                transformStyle: "preserve-3d",
-                rotationY: 0,
-            });
-
-            tl.to(outer, {
-                rotationY: 180,
-                duration: CARD_FLIP_DURATION,
-                onStart: () => {
-                    flipSoundRef.current.play();
-                    setFortuneReveal((prev) => {
-                        const next = [...prev];
-                        next[s] = true;
-                        return next;
-                    });
-                },
-            });
-            tl.to({}, { duration: CARD_FLIP_DELAY });
-        }
-
-        // Cleanup on unmount
-        return () => tl.kill();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedCards, hasRevealed, tarotKeys]);
-
-    // =========================================================
-    // Render (unchanged layout + styles)
-    // =========================================================
+    // ----- Render -----
     return (
-        <div id="TarotPage">
+        <div id="TarotPage" ref={scope}>
             {playTarotIntro ? (
-                <div
-                    style={{
-                        opacity: introVis.fadeOut ? 0 : 1,
-                        transition: "opacity 0.6s ease, transform 0.6s ease",
-                    }}
-                    className="tarot-intro-container typewriter"
-                >
-                    <span
-                        style={{
-                            opacity: introVis.line1 ? 1 : 0,
-                            transition:
-                                "opacity 0.6s ease, transform 0.6s ease",
-                        }}
-                        className="line1"
-                    >
+                <div className="tarot-intro-container typewriter">
+                    <span style={{ opacity: 0 }} className="line1">
                         Choose 3 cards
                     </span>
-                    <span
-                        style={{
-                            opacity: introVis.line2 ? 1 : 0,
-                            transition:
-                                "opacity 0.6s ease, transform 0.6s ease",
-                        }}
-                        className="line2"
-                    >
+                    <span style={{ opacity: 0 }} className="line2">
                         Your fortune will be made clear
                     </span>
                 </div>
@@ -437,15 +385,7 @@ export default function TarotPage() {
                                 style={{
                                     width: `${cardWidth * 1.2}px`,
                                     height: `${cardHeight * 1.2}px`,
-                                    borderRadius: 12,
-                                    background: "rgba(255,255,255,0.05)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    perspective: "1000px",
-                                    opacity: introVis.cardSlots ? 1 : 0,
-                                    transition:
-                                        "opacity 0.6s ease, transform 0.6s ease",
+                                    opacity: 1,
                                 }}
                             >
                                 {selectedCards[i] !== undefined && (
@@ -457,12 +397,16 @@ export default function TarotPage() {
                                             width: "100%",
                                             height: "100%",
                                             position: "relative",
-                                            borderRadius: 12,
+                                            borderRadius: CARD_BORDER_RADIUS,
                                             transformStyle: "preserve-3d",
                                             cursor:
                                                 hasRevealed && !isRevealing
                                                     ? "pointer"
                                                     : "default",
+                                            transform:
+                                                "perspective(800px) rotateY(0deg)",
+                                            transition: "transform 0.3s ease",
+                                            zIndex: hasRevealed ? 3 : 1,
                                         }}
                                         onMouseMove={(e) =>
                                             handleSlotHoverMove(e, i)
@@ -470,6 +414,30 @@ export default function TarotPage() {
                                         onMouseLeave={() =>
                                             handleSlotHoverLeave(i)
                                         }
+                                        // <<< Tap/Click lives on the wrapper >>>
+                                        onClick={() => {
+                                            if (
+                                                hasRevealed &&
+                                                !isRevealing &&
+                                                revealedFaces[i]
+                                            ) {
+                                                setModalCard(revealedFaces[i]);
+                                            }
+                                        }}
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                (e.key === "Enter" ||
+                                                    e.key === " ") &&
+                                                hasRevealed &&
+                                                !isRevealing &&
+                                                revealedFaces[i]
+                                            ) {
+                                                setModalCard(revealedFaces[i]);
+                                                e.preventDefault();
+                                            }
+                                        }}
                                     >
                                         <div
                                             ref={(el) =>
@@ -479,11 +447,13 @@ export default function TarotPage() {
                                                 position: "absolute",
                                                 inset: 0,
                                                 transformStyle: "preserve-3d",
-                                                borderRadius: 12,
+                                                borderRadius:
+                                                    CARD_BORDER_RADIUS,
                                                 transformOrigin: "50% 50%",
                                                 pointerEvents: isRevealing
                                                     ? "none"
                                                     : "auto",
+                                                backfaceVisibility: "hidden",
                                             }}
                                         >
                                             {/* Back */}
@@ -500,10 +470,15 @@ export default function TarotPage() {
                                                     inset: 0,
                                                     width: "100%",
                                                     height: "100%",
-                                                    borderRadius: 12,
+                                                    borderRadius:
+                                                        CARD_BORDER_RADIUS,
                                                     backfaceVisibility:
                                                         "hidden",
                                                     transform: "rotateY(0deg)",
+                                                    // Make the back non-interactive after reveal to avoid iOS hit-test quirks
+                                                    pointerEvents: hasRevealed
+                                                        ? "none"
+                                                        : "auto",
                                                 }}
                                             />
                                             {/* Front */}
@@ -527,7 +502,8 @@ export default function TarotPage() {
                                                     inset: 0,
                                                     width: "100%",
                                                     height: "100%",
-                                                    borderRadius: 12,
+                                                    borderRadius:
+                                                        CARD_BORDER_RADIUS,
                                                     backfaceVisibility:
                                                         "hidden",
                                                     transform:
@@ -537,17 +513,6 @@ export default function TarotPage() {
                                                         !isRevealing
                                                             ? "pointer"
                                                             : "default",
-                                                }}
-                                                onClick={() => {
-                                                    if (
-                                                        hasRevealed &&
-                                                        !isRevealing &&
-                                                        revealedFaces[i]
-                                                    ) {
-                                                        setModalCard(
-                                                            revealedFaces[i]
-                                                        );
-                                                    }
                                                 }}
                                             />
                                         </div>
@@ -559,120 +524,132 @@ export default function TarotPage() {
                 </>
             )}
 
-            {/* Fan */}
-            <div
-                ref={fanWrapRef}
-                style={{
-                    position: "absolute",
-                    bottom: -150,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: "100%",
-                    maxWidth: 1200,
-                    height: `${cardHeight + 120}px`,
-                    pointerEvents: "auto",
-                }}
-            >
-                {Array.from({ length: CARD_COUNT }).map((_, i) => {
-                    if (removedCards.includes(i)) return null;
-                    const isPicked = selectedCards.includes(i);
-                    return (
-                        <img
-                            draggable={false}
-                            key={i}
-                            ref={(el) => (cardsRef.current[i] = el)}
-                            src={CARD_IMAGE}
-                            alt={`Tarot Card ${i + 1}`}
-                            style={{
-                                userSelect: "none",
-                                touchAction: "manipulation",
-                                width: `${Math.round(cardWidth)}px`,
-                                height: `${cardHeight}px`,
-                                position: "absolute",
-                                left: "50%",
-                                top: 0,
-                                transform: "translateX(-50%)",
-                                cursor:
-                                    isPicked || playTarotIntro
-                                        ? "default"
-                                        : "pointer",
-                                boxShadow: "0 4px 32px rgba(0,0,0,0.5)",
-                                borderRadius: 12,
-                                background: "#222",
-                                opacity: isPicked ? 0.3 : 1,
-                                pointerEvents: isPicked ? "none" : "auto",
-                            }}
-                            onMouseEnter={(e) => {
-                                if (
-                                    window.innerWidth < 700 ||
-                                    isPicked ||
-                                    isInitialAnimating ||
-                                    playTarotIntro
-                                )
-                                    return;
-                                gsap.to(e.currentTarget, {
-                                    y:
-                                        Number(e.currentTarget.dataset.origY) -
-                                        30,
-                                    scale: 1.08,
-                                    duration: 0.12,
-                                    overwrite: true,
-                                });
-                            }}
-                            onMouseLeave={(e) => {
-                                if (
-                                    window.innerWidth < 700 ||
-                                    isPicked ||
-                                    isInitialAnimating ||
-                                    playTarotIntro
-                                )
-                                    return;
-                                gsap.to(e.currentTarget, {
-                                    y: Number(e.currentTarget.dataset.origY),
-                                    scale: 1,
+            {/* Fan (Framer Motion) */}
+            {!fanHidden && (
+                <motion.div
+                    className="card-fan"
+                    ref={fanWrapRef}
+                    style={{
+                        height: `${cardHeight + 120}px`,
+                        pointerEvents: "auto",
+                    }}
+                    initial={{ opacity: 1, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {Array.from({ length: CARD_COUNT }).map((_, i) => {
+                        if (removedCards.includes(i)) return null;
+
+                        // Where is this card among the visible positions?
+                        const vPos = visibleIdx.indexOf(i);
+                        const t = fanTransforms[vPos] || {
+                            x: 0,
+                            y: 0,
+                            rotate: 0,
+                            origY: 0,
+                        };
+                        const xCentered = t.x - cardWidth / 2;
+                        const isPicked = selectedCards.includes(i);
+
+                        // Hover allowed?
+                        const canHover =
+                            HAS_HOVER &&
+                            !isPicked &&
+                            !isInitialAnimating &&
+                            !playTarotIntro;
+
+                        // When picked, animate out
+                        const pickedAnimate = isPicked
+                            ? {
+                                  opacity: 0,
+                                  y: t.origY - 100,
+                                  scale: 1.05,
+                                  transition: { duration: 0.35 },
+                              }
+                            : {};
+
+                        return (
+                            <motion.img
+                                draggable={false}
+                                key={i}
+                                ref={(el) => (cardsRef.current[i] = el)}
+                                src={CARD_IMAGE}
+                                alt={`Tarot Card ${i + 1}`}
+                                data-orig-y={t.origY}
+                                initial={{
+                                    x: xCentered,
+                                    y: 0,
+                                    rotate: 0,
+                                    opacity: 0,
+                                }}
+                                animate={{
+                                    x: xCentered,
+                                    y: t.y,
+                                    rotate: t.rotate,
+                                    opacity: 1,
+                                    ...pickedAnimate,
+                                }}
+                                transition={{
+                                    duration: 0.5,
+                                    delay: vPos >= 0 ? 0.02 * vPos : 0,
+                                    type: "tween",
+                                    ease: "easeOut",
+                                }}
+                                whileHover={
+                                    canHover
+                                        ? {
+                                              y: t.origY - 30,
+                                              scale: 1.08,
+                                              transition: { duration: 0.12 },
+                                          }
+                                        : {}
+                                }
+                                style={{
+                                    userSelect: "none",
+                                    touchAction: "manipulation",
+                                    width: `${Math.round(cardWidth)}px`,
+                                    height: `${cardHeight}px`,
+                                    position: "absolute",
+                                    left: "50%",
+                                    top: 0,
+                                    cursor:
+                                        isPicked || playTarotIntro
+                                            ? "default"
+                                            : "pointer",
                                     boxShadow: "0 4px 32px rgba(0,0,0,0.5)",
-                                    duration: 0.25,
-                                    overwrite: true,
-                                });
-                            }}
-                            onClick={() => handleCardClick(i)}
-                        />
-                    );
-                })}
-            </div>
+                                    borderRadius: CARD_BORDER_RADIUS,
+                                    background: "#222",
+                                    pointerEvents: isPicked ? "none" : "auto",
+                                }}
+                                onClick={() => handleCardClick(i)}
+                            />
+                        );
+                    })}
+                </motion.div>
+            )}
 
             {/* Fortune */}
-            {fortuneParts.some(Boolean) && (
-                <div className="fortune-parts-container typewriter">
-                    {[0, 1, 2].map((i) => (
-                        <div
-                            key={i}
-                            style={{
-                                opacity: fortuneReveal[i] ? 1 : 0,
-                                transition: "opacity 0.6s",
-                                marginRight: i < 2 ? 8 : 0,
-                                display: "inline-block",
-                            }}
-                        >
-                            <WaveText intensity="low">
-                                {fortuneParts[i]}
-                            </WaveText>
-                        </div>
-                    ))}
-                </div>
-            )}
+            <div className="fortune-parts-container typewriter">
+                <span className="line1" style={{ opacity: 0 }}>
+                    <WaveText intensity="low">{fortuneParts[0]}</WaveText>
+                </span>
+                <span className="line2" style={{ opacity: 0 }}>
+                    <WaveText intensity="low">{fortuneParts[1]}</WaveText>
+                </span>
+                <span className="line3" style={{ opacity: 0 }}>
+                    <WaveText intensity="low">{fortuneParts[2]}</WaveText>
+                </span>
+            </div>
 
-            {returnButtonState.container && (
-                <LinkButton
-                    style={{
-                        justifySelf: "flex-end",
-                    }}
-                    className={returnButtonState.visible ? "show" : "hide"}
-                    to="/kit"
-                >
+            <div
+                className="tarot-buttons"
+                style={{ opacity: 0, pointerEvents: "none" }}
+            >
+                <button onClick={handleDrawAgain}>Draw Again</button>
+                <LinkButton style={{ justifySelf: "flex-end" }} to="/kit">
                     Return to Kit
                 </LinkButton>
-            )}
+            </div>
 
             <TarotModal
                 selectedCard={modalCard}

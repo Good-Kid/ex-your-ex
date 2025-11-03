@@ -154,20 +154,7 @@ const TarotModal = ({ selectedCard, onClose }) => {
                     </div>
                     <div className="tarot-modal-close-hint">
                         {isMobile ? (
-                            <button
-                                style={{
-                                    background: "rgba(255,255,255,0.08)",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: 8,
-                                    padding: "10px 18px",
-                                    fontSize: "1em",
-                                    margin: "12px auto 0",
-                                    cursor: "pointer",
-                                    width: "100%",
-                                }}
-                                onClick={onClose}
-                            >
+                            <button onClick={onClose}>
                                 Click here to close
                             </button>
                         ) : (

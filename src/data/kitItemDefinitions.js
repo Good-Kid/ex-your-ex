@@ -1,0 +1,74 @@
+const kitItemDefinitions = {
+    cards: {
+        name: "Tarot Cards",
+        description:
+            "Consult the cards to gain insight on your past, present, and future.",
+        imageSrc: "/images/kit/full/tarot.png",
+        maxHeight: 360,
+        inspectLink: "/tarot",
+        noFloat: true,
+    },
+    note: {
+        name: "Note",
+        description:
+            "A mysterious note included with the kit. it has some pretty useful info!",
+        imageSrc: "/images/kit/full/note.png",
+        maxHeight: 500,
+        maxWidth: 500,
+    },
+    book: {
+        name: "Grimoire",
+        description:
+            "Find out what spirit haunts you by taking a haunted walk through a mysterious house in the dark woods.",
+        imageSrc: "/images/kit/full/book.png",
+        maxWidth: 400,
+        inspectLink: "/quiz",
+    },
+    lighter: {
+        name: "Silver Lighter",
+        description: "An antique lighter. It is out of fuel.",
+        imageSrc: "/images/kit/full/lighter.png",
+        maxHeight: 350,
+        maxWidth: 150,
+        rotation: -15,
+    },
+    skull: {
+        name: "Beast Skull",
+        description: "A myserious curio consulted in times of need",
+        imageSrc: "/images/kit/full/skull.png",
+        maxWidth: 350,
+        rotation: 0,
+    },
+    knife: {
+        name: "Ritual Dagger",
+        description:
+            "A ceremonial blade used in ancient rituals. Its edge remains eternally sharp.",
+        imageSrc: "/images/kit/full/knife.png",
+        rotation: -45,
+        maxHeight: 400,
+        inspectLink: "/knife",
+    },
+    cassette: {
+        name: "Cassette Tape",
+        description:
+            "A cassette tape that contains audio imperative to the ritual.",
+        imageSrc: "/images/kit/full/cassette.png",
+        maxWidth: 400,
+    },
+    bottle: {
+        name: "Empty Bottle",
+        description: "A small glass dropper bottle. It is currently empty.",
+        imageSrc: "/images/kit/full/bottle.png",
+        maxHeight: 350,
+        rotation: 8,
+    },
+    candles: {
+        name: "Ritual Candles",
+        description:
+            "Ancient candles used in summoning rituals. Their flickering flames guide spirits from the other side.",
+        imageSrc: "/images/kit/full/candles.png",
+        maxWidth: 300,
+    },
+};
+
+export default kitItemDefinitions;

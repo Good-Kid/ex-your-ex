@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { useSequence } from "../utils/useSequence.js";
+import { useAnimate } from "motion/react";
 import { Howl } from "howler";
-import { useGameState } from "../context/GameStateContext";
+import { useGameState } from "../context/GameStateContext.jsx";
 import LinkButton from "../components/LinkButton.jsx";
 
 const ONION_STAGES = [
@@ -44,16 +43,26 @@ const playRandomChop = (lastPlayedRef) => {
 };
 
 export default function KnifePage() {
-    const { gameState, updateGameState } = useGameState();
+    const { updateGameState } = useGameState();
+    const lastPlayedRef = useRef(null);
 
     const [onionIndex, setOnionIndex] = useState(0);
     const [bottleIndex, setBottleIndex] = useState(0);
-    const lastPlayedRef = useRef(null);
 
     const [knifePos, setKnifePos] = useState({ x: 0, y: 0 });
     const [knifeCursorEnabled, setKnifeCursorEnabled] = useState(false);
+
+    const [onionGlow, setOnionGlow] = useState(false);
+    const [onionFullyChopped, setOnionFullyChopped] = useState(false);
+
     const rafRef = useRef(null);
     const targetRef = useRef({ x: 0, y: 0 });
+
+    // NEW: last-known pointer (updated always; doesn’t re-render)
+    const lastPointerRef = useRef({
+        x: typeof window !== "undefined" ? window.innerWidth / 2 : 0,
+        y: typeof window !== "undefined" ? window.innerHeight / 2 : 0,
+    });
 
     const [isMobile, setIsMobile] = useState(false);
     const [isTouchScreen, setIsTouchScreen] = useState(false);
@@ -73,197 +82,41 @@ export default function KnifePage() {
         return () => window.removeEventListener("resize", checkMobileAndTouch);
     }, []);
 
-    const [ui, setUI] = useState({
-        showIntro: true,
-        introLine1: false,
-        introLine2: false,
-        introFade: false,
-        showKnifeContainer: false,
-        showKnifeContent: false,
-        showKnifeImg: false,
-        showOnionContainer: false,
-        showBottleContainer: false,
-        showBottleImg: false,
-        showFearMessage: false,
-        showCutMessage: false,
-        showOnionImg: false,
-        showEnding: false,
-        centerBottle: false,
-        showBottleMessage: false,
-        showKitLink: false,
-    });
-
-    // Intro sequence
-    useSequence(
-        [
-            {
-                delay: 100,
-                run: () => setUI((u) => ({ ...u, introLine1: true })),
-            },
-            {
-                delay: 2000,
-                run: () => setUI((u) => ({ ...u, introLine2: true })),
-            },
-            {
-                delay: 2500,
-                run: () => setUI((u) => ({ ...u, introFade: true })),
-            },
-            {
-                delay: 800,
-                run: () =>
-                    setUI((u) => ({
-                        ...u,
-                        showIntro: false,
-                        showKnifeContainer: true,
-                    })),
-            },
-            {
-                delay: 50,
-                run: () =>
-                    setUI((u) => ({
-                        ...u,
-                        showKnifeContent: true,
-                        showKnifeImg: true,
-                    })),
-            },
-        ],
-        []
-    );
-
-    // Onion Sequence
-    useSequence(
-        ui.showOnionContainer
-            ? [
-                  {
-                      delay: 0,
-                      run: () =>
-                          setUI((u) => ({
-                              ...u,
-                              showOnionContainer: true,
-                              showBottleContainer: true,
-                          })),
-                  },
-                  {
-                      delay: 10,
-                      run: () =>
-                          setUI((u) => ({
-                              ...u,
-                              showFearMessage: true,
-                          })),
-                  },
-                  {
-                      delay: 2500,
-                      run: () =>
-                          setUI((u) => ({
-                              ...u,
-                              showFearMessage: false,
-                          })),
-                  },
-                  {
-                      delay: 1000,
-                      run: () =>
-                          setUI((u) => ({
-                              ...u,
-                              showCutMessage: true,
-                              showOnionImg: true,
-                              showBottleImg: true,
-                          })),
-                  },
-              ]
-            : [],
-        [ui.showOnionContainer]
-    );
-
-    // Ending Sequence
-    useSequence(
-        ui.showEnding
-            ? [
-                  {
-                      delay: 0,
-                      run: () => {
-                          setUI((u) => ({
-                              ...u,
-                              showOnionImg: false,
-                              showCutMessage: false,
-                          }));
-                          setKnifeCursorEnabled(false);
-                      },
-                  },
-                  {
-                      delay: 1000,
-                      run: () => {
-                          setUI((u) => ({
-                              ...u,
-                              showOnionContainer: false,
-                              centerBottle: true,
-                          }));
-                          updateGameState({
-                              flags: {
-                                  ...gameState.flags,
-                                  bottleCollected: true,
-                              },
-                          });
-                      },
-                  },
-                  {
-                      delay: 1000,
-                      run: () =>
-                          setUI((u) => ({
-                              ...u,
-                              showBottleMessage: true,
-                          })),
-                  },
-                  {
-                      delay: 2000,
-                      run: () =>
-                          setUI((u) => ({
-                              ...u,
-                              showKitLink: true,
-                          })),
-                  },
-              ]
-            : [],
-        [ui.showEnding]
-    );
-
-    // Take knife
-    const takeKnife = (e) => {
-        const { clientX, clientY } = e;
-        setKnifePos({ x: clientX, y: clientY });
-        if (!isMobile || !isTouchScreen) {
-            setKnifeCursorEnabled(true);
-        }
-        // Hide the knife
-        setUI((u) => ({ ...u, showKnifeImg: false, showKnifeContent: false }));
-
-        setTimeout(() => {
-            // Transition to onion stage
-            setUI((u) => ({
-                ...u,
-                showKnifeContainer: false,
-                showOnionContainer: true,
-            }));
-        }, 600);
-    };
-
-    // Detect when Onion is fully chopped
+    // Preload onion and bottle images
     useEffect(() => {
-        if (onionIndex === ONION_STAGES.length - 1) {
-            setUI((u) => ({ ...u, showEnding: true }));
-        }
-    }, [onionIndex]);
+        const allImages = [...ONION_STAGES, ...BOTTLE_STAGES];
+        allImages.forEach((src) => {
+            const img = new window.Image();
+            img.src = src;
+        });
+    }, []);
 
-    // Track cursor
+    // Always track last-known pointer (for immediate seed on enable)
+    useEffect(() => {
+        const onAnyPointerMove = (e) => {
+            if (e && typeof e.clientX === "number") {
+                lastPointerRef.current = { x: e.clientX, y: e.clientY };
+            }
+        };
+        window.addEventListener("pointermove", onAnyPointerMove, {
+            passive: true,
+        });
+        return () =>
+            window.removeEventListener("pointermove", onAnyPointerMove);
+    }, []);
+
+    // Track cursor (only when enabled)
     useEffect(() => {
         if (!knifeCursorEnabled) return;
 
         const onMove = (e) => {
             targetRef.current = { x: e.clientX, y: e.clientY };
-            if (!rafRef.current)
+            if (!rafRef.current) {
                 rafRef.current = requestAnimationFrame(() => {
                     setKnifePos(targetRef.current);
                     rafRef.current = null;
                 });
+            }
         };
 
         window.addEventListener("pointermove", onMove, { passive: true });
@@ -273,130 +126,251 @@ export default function KnifePage() {
         };
     }, [knifeCursorEnabled]);
 
-    // Click handler for onion chopping
-    const handleChop = () => {
-        if (ui.showEnding || !ui.showOnionImg) return;
+    // ----- Animations -----
+    const [scope, animate] = useAnimate();
+
+    const DEFAULT_DURATION = 0.75;
+
+    // Intro animation
+    useEffect(() => {
+        const introAnimation = async () => {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            await animate(
+                ".intro-container .line1",
+                { opacity: 1 },
+                { duration: DEFAULT_DURATION }
+            );
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            await animate(
+                ".intro-container .line2",
+                { opacity: 1 },
+                { duration: DEFAULT_DURATION }
+            );
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await animate(
+                ".intro-container",
+                { opacity: 0 },
+                { duration: DEFAULT_DURATION }
+            );
+            await animate(
+                ".intro-container",
+                { display: "none" },
+                { duration: 0 }
+            );
+            await animate(
+                ".knife-container",
+                { display: "flex" },
+                { duration: 0 }
+            );
+            await animate(
+                ".knife-container",
+                { opacity: 1 },
+                { duration: DEFAULT_DURATION }
+            );
+        };
+        introAnimation();
+    }, [animate]);
+
+    //----- Click Handlers -----
+    const handleTakeKnife = async (e) => {
+        await animate(
+            ".knife-container img",
+            { opacity: 0 },
+            { duration: 0.1 }
+        );
+
+        if (!isMobile && !isTouchScreen) {
+            // Prefer the click/tap coordinates; fall back to last-known pointer
+            const x =
+                e?.clientX ??
+                e?.touches?.[0]?.clientX ??
+                lastPointerRef.current.x;
+            const y =
+                e?.clientY ??
+                e?.touches?.[0]?.clientY ??
+                lastPointerRef.current.y;
+
+            // Seed both target and state BEFORE enabling the cursor
+            targetRef.current = { x, y };
+            setKnifePos({ x, y });
+            setKnifeCursorEnabled(true);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 250));
+        await animate(
+            ".knife-container",
+            { opacity: 0 },
+            { duration: DEFAULT_DURATION }
+        );
+        await animate(".knife-container", { display: "none" }, { duration: 0 });
+        await animate(".onion-container", { display: "flex" }, { duration: 0 });
+        animate(
+            ".bottle-container",
+            { bottom: "20%", right: "10%" },
+            { duration: 0 }
+        );
+        animate(
+            ".bottle-container",
+            { opacity: 1 },
+            { duration: DEFAULT_DURATION }
+        );
+        await animate(
+            ".onion-container",
+            { opacity: 1 },
+            { duration: DEFAULT_DURATION }
+        );
+    };
+
+    const handleOnionChop = async () => {
+        if (onionFullyChopped) return;
+
+        playRandomChop(lastPlayedRef);
+
+        if (onionIndex === ONION_STAGES.length - 1) {
+            0;
+            // Onion is fully chopped
+            setOnionFullyChopped(true);
+            animate(".onion-container", { opacity: 0 }, { duration: 0.3 });
+            if (knifeCursorEnabled) {
+                await animate(
+                    ".knife-cursor",
+                    { opacity: 0 },
+                    { duration: 0.3 }
+                );
+                setKnifeCursorEnabled(false);
+            }
+            animate(".onion-container", { display: "none" }, { duration: 0.3 });
+            updateGameState({ bottleCompleted: true });
+            await animate(
+                ".bottle-container",
+                {
+                    bottom: "50%",
+                    right: "50%",
+                    pointerEvents: "auto",
+                },
+                { duration: DEFAULT_DURATION }
+            );
+            await animate(
+                ".bottle-text",
+                {
+                    opacity: 1,
+                },
+                { duration: DEFAULT_DURATION }
+            );
+            return;
+        }
 
         setOnionIndex((i) => Math.min(i + 1, ONION_STAGES.length - 1));
         setBottleIndex((i) => Math.min(i + 1, BOTTLE_STAGES.length - 1));
-        playRandomChop(lastPlayedRef);
+
+        animate(".onion-container span", { opacity: 0 }, { duration: 0.5 });
     };
 
+    // ---- Render ----
     return (
         <div
             id="KnifePage"
             className={
-                "typewriter " + (knifeCursorEnabled ? "cursor-none" : "")
+                "typewriter " +
+                (knifeCursorEnabled && !isMobile ? "cursor-none" : "")
             }
+            ref={scope}
         >
-            {ui.showIntro && (
+            <div className="intro-container">
+                <span className="line1" style={{ opacity: 0 }}>
+                    The ritual demands a sacrifice
+                </span>
+                <span className="line2 red" style={{ opacity: 0 }}>
+                    Offer what flows within
+                </span>
+            </div>
+
+            <div
+                className="knife-container"
+                style={{ display: "none", opacity: 0 }}
+            >
+                <span>Take the knife</span>
+                <img
+                    draggable={false}
+                    onClick={handleTakeKnife}
+                    src="/images/kit/full/knife.png"
+                    alt=""
+                />
+            </div>
+
+            <div
+                className="onion-container"
+                style={{
+                    display: "none",
+                    opacity: 0,
+                    transform: "translate(0%, 0%)",
+                }}
+            >
+                <span>{isMobile && "Tap to "}Chop</span>
+                <img
+                    style={{
+                        zIndex: 200,
+                    }}
+                    className={onionGlow ? "glow" : undefined}
+                    draggable={false}
+                    src={ONION_STAGES[onionIndex]}
+                    alt=""
+                />
                 <div
-                    className={`knife-intro-container ${
-                        ui.introFade ? "hide" : "show"
-                    }`}
+                    className="onion-click-zone"
+                    onClick={handleOnionChop}
+                    onMouseEnter={() => {
+                        setOnionGlow(true);
+                    }}
+                    onMouseLeave={() => {
+                        setOnionGlow(false);
+                    }}
+                ></div>
+            </div>
+
+            <div
+                className="bottle-container"
+                style={{
+                    opacity: 0,
+                    pointerEvents: "none",
+                }}
+            >
+                <span
+                    className="bottle-text"
+                    style={{
+                        opacity: 0,
+                    }}
                 >
-                    <span className={`${ui.introLine1 ? "show" : "hide"}`}>
-                        The ritual demands a sacrifice
-                    </span>
-                    <span className={`red ${ui.introLine2 ? "show" : "hide"}`}>
-                        Offer what flows within
-                    </span>
-                </div>
-            )}
-
-            {ui.showKnifeContainer && (
-                <div className="take-knife-container">
-                    <span className={ui.showKnifeContent ? "show" : "hide"}>
-                        Take the knife
-                    </span>
-                    <div className="take-knife-img">
-                        <button
-                            type="button"
-                            onClick={takeKnife}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                padding: 0,
-                                margin: 0,
-                            }}
-                        >
-                            <img
-                                draggable={false}
-                                src="/images/kit/full/knife.png"
-                                alt="Knife"
-                                className={`knife-img ${
-                                    ui.showKnifeImg ? "show" : "hide"
-                                }`}
-                            />
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {ui.showOnionContainer && (
-                <div className="onion-container">
-                    <span
-                        className={`${ui.showFearMessage ? "show" : "hide"}`}
-                        style={{
-                            // Gets it out of the way
-                            display: ui.showCutMessage ? "none" : "initial",
-                        }}
-                    >
-                        Don't be afraid.
-                    </span>
-                    <span className={`${ui.showCutMessage ? "show" : "hide"}`}>
-                        {isTouchScreen && "Tap to "} Cut the Onion.
-                    </span>
-                    <img
-                        draggable={false}
-                        src={ONION_STAGES[onionIndex]}
-                        alt="Onion"
-                        className={`onion-img ${
-                            ui.showOnionImg ? "show" : "hide"
-                        }`}
-                        onClick={handleChop}
-                    />
-                </div>
-            )}
-
-            {ui.showBottleContainer && (
-                <div
-                    className={`bottle-container ${
-                        ui.centerBottle ? "center" : ""
-                    }`}
+                    You filled the bottle with tears
+                </span>
+                <img
+                    className="bottle-img"
+                    draggable={false}
+                    src={BOTTLE_STAGES[bottleIndex]}
+                    alt=""
+                />
+                <LinkButton
+                    className="bottle-text"
+                    style={{
+                        opacity: 0,
+                    }}
+                    to="/kit"
                 >
-                    <span
-                        className={`${ui.showBottleMessage ? "show" : "hide"}`}
-                    >
-                        The offering is complete
-                    </span>
-                    <img
-                        className={`${ui.showBottleImg ? "show" : "hide"}`}
-                        draggable={false}
-                        src={BOTTLE_STAGES[bottleIndex]}
-                        alt="Bottle"
-                    />
-                    <span
-                        className={`${ui.showKitLink ? "show" : "hide"}`}
-                        style={{
-                            fontSize: "26px",
-                        }}
-                    >
-                        <LinkButton to="/kit">Return to Kit</LinkButton>
-                    </span>
-                </div>
-            )}
+                    Return to Kit
+                </LinkButton>
+            </div>
 
             {knifeCursorEnabled && (
                 <img
                     draggable={false}
                     src="/images/kit/full/knife.png"
                     alt=""
-                    className="knife-cursor show"
+                    className="knife-cursor"
                     style={{
                         position: "fixed",
+                        opacity: 1,
                         left: `${knifePos.x + 100}px`,
                         top: `${knifePos.y - 100}px`,
+                        pointerEvents: "none",
                     }}
                 />
             )}

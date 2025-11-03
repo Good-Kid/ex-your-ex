@@ -18,7 +18,7 @@ const FLAME_Y = "16%";
 const FLAME_W = "18%";
 
 export default function EntryPage() {
-    const { gameState, updateGameState } = useGameState();
+    const { updateGameState } = useGameState();
     const [phoneAnswered, setPhoneAnswered] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function EntryPage() {
         if (!window.__entryPageAlertShown) {
             window.__entryPageAlertShown = true;
             window.alert(
-                "This is a demo!\n\nImage loading has not yet been optimized, so some images may load slowly. You may notice timing issues with sounds because of this.\n\nThe site is NOT yet optimized for mobile, your mileage may very.\n\nPlease reach out to Libra on Discord with any comments or bugs."
+                "This is a demo!\n\nPlease reach out to Libra on Discord with any comments or bugs."
             );
         }
     }, []);
@@ -59,9 +59,7 @@ export default function EntryPage() {
         if (fadeOut) {
             const navTimeout = setTimeout(() => {
                 navigate("/kit");
-                updateGameState({
-                    flags: { ...gameState.flags, kitIntroPlayed: false },
-                });
+                updateGameState({ kitIntroPlayed: false });
             }, 1000); // match transition duration
             return () => clearTimeout(navTimeout);
         }
@@ -77,7 +75,7 @@ export default function EntryPage() {
             }}
         >
             <div className="logo">
-                <img src="/images/logo_full.png" alt="" />
+                <img src="/images/logo_full_white.png" alt="" />
             </div>
             <div
                 className="candle"
@@ -88,7 +86,7 @@ export default function EntryPage() {
                 }}
             >
                 <div className="skull">
-                    <img src="images/homepage/skull.webp" alt="" />
+                    <img src="/images/homepage/skull.webp" alt="" />
                 </div>
                 <img
                     className="stick"

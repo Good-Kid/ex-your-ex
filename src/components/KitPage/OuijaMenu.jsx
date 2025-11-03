@@ -1,15 +1,16 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 
-const OuijaMenu = ({ visible, onClickHandler }) => {
+const OuijaMenu = ({ onClickHandler, style, hidePlanchette = false }) => {
     const containerRef = useRef(null);
     const planchetteRef = useRef(null);
     const [mounted, setMounted] = useState(false);
 
-    useLayoutEffect(() => {
+    // Helper to position planchette at center
+    const positionPlanchetteCenter = () => {
         const container = containerRef.current;
         if (!container) return;
 
-        const buttons = container.querySelectorAll("button.typewriter");
+        const buttons = container.querySelectorAll("button");
         const yes = buttons[0],
             no = buttons[1];
         if (!yes || !no) return;
@@ -22,6 +23,7 @@ const OuijaMenu = ({ visible, onClickHandler }) => {
         const centerY = y.bottom - c.top + 8;
 
         const el = planchetteRef.current;
+        if (!el) return;
         el.style.transition = "none";
         el.style.transform = `translate(${centerX}px, ${centerY}px) translateX(-50%)`;
 
@@ -29,6 +31,19 @@ const OuijaMenu = ({ visible, onClickHandler }) => {
             el.style.transition = ""; // restore CSS transition
             setMounted(true);
         });
+    };
+
+    useLayoutEffect(() => {
+        positionPlanchetteCenter();
+
+        const handleResize = () => {
+            positionPlanchetteCenter();
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
     }, []);
 
     const onOptionHover = (e) => {
@@ -48,8 +63,7 @@ const OuijaMenu = ({ visible, onClickHandler }) => {
             ref={containerRef}
             className="ouija-menu"
             style={{
-                pointerEvents: visible ? "auto" : "none",
-                opacity: visible ? 1 : 0,
+                ...style,
             }}
         >
             <div
@@ -65,20 +79,19 @@ const OuijaMenu = ({ visible, onClickHandler }) => {
             </div>
 
             <button
-                className="typewriter"
                 style={{ gridRow: 2, gridColumn: 1 }}
                 onMouseOver={onOptionHover}
                 onFocus={onOptionHover}
-                onClick={onClickHandler}
+                onClick={() => onClickHandler(true)}
             >
                 Yes
             </button>
 
             <button
-                className="typewriter"
                 style={{ gridRow: 2, gridColumn: 2 }}
                 onMouseOver={onOptionHover}
                 onFocus={onOptionHover}
+                onClick={() => onClickHandler(false)}
             >
                 No
             </button>
@@ -87,6 +100,7 @@ const OuijaMenu = ({ visible, onClickHandler }) => {
                 ref={planchetteRef}
                 className={"planchette" + (mounted ? " is-ready" : "")}
                 style={{
+                    display: hidePlanchette ? "none" : "initial",
                     position: "absolute",
                     top: -20,
                     left: 0,
@@ -98,7 +112,7 @@ const OuijaMenu = ({ visible, onClickHandler }) => {
                 }}
             >
                 <img
-                    src="images/planchette.png"
+                    src="/images/planchette.png"
                     alt=""
                     style={{ height: 120, width: "auto" }}
                 />

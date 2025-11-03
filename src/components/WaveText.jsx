@@ -1,6 +1,5 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useMemo, useRef } from "react";
 
-// Configuration presets
 const intensityPresets = {
     low: {
         speed: 0.02,
@@ -12,7 +11,6 @@ const intensityPresets = {
         verticalMultiplier: 0.6,
     },
     lowMedium: {
-        // Added low-medium preset
         speed: 0.03,
         maxOpacity: 0.96,
         minOpacity: 0.86,
@@ -41,21 +39,19 @@ const intensityPresets = {
     },
 };
 
-const WaveText = ({ children, intensity = "medium" }) => {
+const WaveText = ({ children, intensity = "medium", noWrap = false }) => {
     const lettersRef = useRef([]);
     const rafRef = useRef(0);
     const phaseRef = useRef(0);
 
     const text = typeof children === "string" ? children : String(children);
     const config = intensityPresets[intensity] || intensityPresets.medium;
+    const tokens = useMemo(() => text.split(/(\s+)/), [text]);
 
     useLayoutEffect(() => {
         let running = true;
-
-        // ensure refs array length matches text
         lettersRef.current.length = text.length;
 
-        // one synchronous pass BEFORE paint → no pop-in
         const paintPhase = (phase) => {
             lettersRef.current.forEach((el, i) => {
                 if (!el) return;
@@ -67,9 +63,6 @@ const WaveText = ({ children, intensity = "medium" }) => {
                 const sin = Math.sin(rad);
                 const cos = Math.cos(rad);
 
-                // baseline styles set synchronously
-                el.style.position = "relative";
-                el.style.willChange = "transform, opacity";
                 el.style.transform = `translate3d(${mag * cos}px, ${
                     config.verticalMultiplier * mag * sin
                 }px, 0)`;
@@ -82,10 +75,7 @@ const WaveText = ({ children, intensity = "medium" }) => {
             });
         };
 
-        // initial synchronous paint
         paintPhase(phaseRef.current);
-
-        // animate on subsequent frames
         const tick = () => {
             if (!running) return;
             phaseRef.current += config.speed;
@@ -93,34 +83,68 @@ const WaveText = ({ children, intensity = "medium" }) => {
             rafRef.current = requestAnimationFrame(tick);
         };
         rafRef.current = requestAnimationFrame(tick);
-
         return () => {
             running = false;
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+            cancelAnimationFrame(rafRef.current);
         };
     }, [text, config]);
 
+    let cursor = 0;
     return (
         <span
             className="wave-text"
-            style={{ display: "inline-block", whiteSpace: "nowrap" }}
+            style={{
+                display: "inline-block",
+                whiteSpace: noWrap ? "nowrap" : "normal",
+            }}
         >
-            {text.split("").map((letter, i) => (
-                <span
-                    key={i}
-                    ref={(el) => (lettersRef.current[i] = el)}
-                    style={{
-                        display: "inline-block",
-                        // keep a stable baseline even before JS runs
-                        position: "relative",
-                        willChange: "transform, opacity",
-                        transition: "opacity 0.2s",
-                        transform: "translate3d(0,0,0)",
-                    }}
-                >
-                    {letter === " " ? "\u00A0" : letter}
-                </span>
-            ))}
+            {tokens.map((tok, tIdx) => {
+                if (tok === "") return null;
+
+                if (/^\s+$/.test(tok)) {
+                    cursor += tok.length;
+                    return (
+                        <React.Fragment key={`ws-${tIdx}`}>
+                            {tok}
+                        </React.Fragment>
+                    );
+                }
+
+                const wordChars = Array.from(tok);
+                const wordStart = cursor;
+                cursor += tok.length;
+
+                return (
+                    <span
+                        key={`w-${tIdx}`}
+                        style={{
+                            display: "inline-block",
+                            whiteSpace: "nowrap",
+                            lineHeight: "inherit",
+                            verticalAlign: "baseline",
+                        }}
+                    >
+                        {wordChars.map((ch, i) => {
+                            const absIndex = wordStart + i;
+                            return (
+                                <span
+                                    key={`ch-${tIdx}-${i}`}
+                                    ref={(el) =>
+                                        (lettersRef.current[absIndex] = el)
+                                    }
+                                    style={{
+                                        display: "inline-block",
+                                        willChange: "transform, opacity",
+                                        transition: "opacity 0.2s",
+                                    }}
+                                >
+                                    {ch}
+                                </span>
+                            );
+                        })}
+                    </span>
+                );
+            })}
         </span>
     );
 };
