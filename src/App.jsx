@@ -6,6 +6,7 @@ import TarotPage from "./pages/TarotPage";
 import QuizPage from "./pages/QuizPage";
 import KnifePage from "./pages/KnifePage";
 import CassettePage from "./pages/CasettePage";
+import GalleryPage from "./pages/GalleryPage";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Route path="/" element={<EntryPage />} />
                     <Route path="/kit" element={<KitPage />} />
                     <Route path="/tarot" element={<TarotPage />} />
+                    <Route path="/tarot/gallery" element={<GalleryPage />} />
                     <Route path="/quiz" element={<QuizPage />} />
                     <Route path="/knife" element={<KnifePage />} />
                     <Route path="/cassette" element={<CassettePage />} />

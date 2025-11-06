@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useAnimate } from "motion/react";
 import { Howl } from "howler";
 import { useGameState } from "../context/GameStateContext";
+import LinkButton from "../components/LinkButton";
 
 const TAPE_SRCS = [
     "/images/cassette/tape/unwound1.png",
@@ -24,123 +24,177 @@ const playCrankSound = () => {
 export default function CassettePage() {
     const { gameState, updateGameState } = useGameState();
 
+    // ----- Detect Mobile -----
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(
+                /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                    navigator.userAgent
+                ) || window.matchMedia("(max-width: 768px)").matches
+            );
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
     // ----- State -----
     const [tapeSrc, setTapeSrc] = useState(TAPE_SRCS[0]);
-
-    // Shake animation state
-    const [shake, setShake] = useState(false);
-
-    // ----- Pencil Cursor -----
-    const [pencilCursorEnabled, setPencilCursorEnabled] = useState(false);
-    const [pencilPos, setPencilPos] = useState({ x: 0, y: 0 });
-    const rafRef = useRef(null);
-    const targetRef = useRef({ x: 0, y: 0 });
+    const [tapeFixed, setTapeFixed] = useState(
+        () => gameState.flags.cassetteCompleted
+    );
+    const [tapeHoverable, setTapeHoverable] = useState(true);
+    const [showLaylo, setShowLaylo] = useState(false);
 
     // ----- Animations -----
     const [scope, animate] = useAnimate();
     const DEFAULT_DURATION = 0.75;
 
-    // Track pointer for pencil cursor
-    useEffect(() => {
-        const onAnyPointerMove = (e) => {
-            if (e && typeof e.clientX === "number") {
-                targetRef.current = { x: e.clientX, y: e.clientY };
-                if (pencilCursorEnabled) {
-                    if (!rafRef.current) {
-                        rafRef.current = requestAnimationFrame(() => {
-                            setPencilPos(targetRef.current);
-                            rafRef.current = null;
-                        });
-                    }
-                }
-            }
-        };
-        window.addEventListener("pointermove", onAnyPointerMove, {
-            passive: true,
-        });
-        return () =>
-            window.removeEventListener("pointermove", onAnyPointerMove);
-    }, [pencilCursorEnabled]);
-
     // Intro animation
     useEffect(() => {
-        const introAnimation = async () => {};
-        introAnimation();
-    }, [animate]);
+        const introAnimation = async () => {
+            // Preload only the first tape image
+            await new Promise((resolve) => {
+                const img = new window.Image();
+                img.src = TAPE_SRCS[0];
+                img.onload = () => resolve();
+                img.onerror = () => resolve();
+            });
+            // Preload the rest in the background
+            TAPE_SRCS.slice(1).forEach((src) => {
+                const img = new window.Image();
+                img.src = src;
+            });
+            animate(".repair-container", {
+                display: "flex",
+            });
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            await animate(".repair-container", {
+                opacity: 1,
+                pointerEvents: "auto",
+            });
+        };
+
+        const tapePlayerAnimation = async () => {
+            animate(".song-preview-container", {
+                display: "flex",
+            });
+            setShowLaylo(true);
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            await animate(
+                ".song-preview-container",
+                {
+                    opacity: 1,
+                },
+                { duration: DEFAULT_DURATION }
+            );
+        };
+
+        if (!tapeFixed) introAnimation();
+        if (tapeFixed) {
+            if (!gameState.flags.cassetteCompleted) {
+                updateGameState({ cassetteCompleted: true });
+            }
+            tapePlayerAnimation();
+        }
+    }, [animate, tapeFixed, updateGameState]);
 
     // ----- Click Handlers -----
-    const handleTakePencil = (e) => {
-        if (pencilCursorEnabled) {
-            setPencilCursorEnabled(false);
-            return;
-        }
-        const x = e?.clientX ?? window.innerWidth / 2;
-        const y = e?.clientY ?? window.innerHeight / 2;
-        targetRef.current = { x, y };
-        setPencilPos({ x, y });
-        setPencilCursorEnabled(true);
-    };
 
-    const handleClickCasette = (e) => {
-        if (!pencilCursorEnabled) {
-            setShake(true);
-            return;
-        }
+    const handleClickCasette = () => {
+        const fadeOutRepairFrame = async () => {
+            await animate(
+                ".repair-container",
+                {
+                    opacity: 0,
+                },
+                { duration: DEFAULT_DURATION }
+            );
+            animate(
+                ".repair-container",
+                {
+                    display: "none",
+                },
+                { duration: 0 }
+            );
+            setTapeFixed(true);
+        };
+
+        if (tapeFixed) return;
         const currentIndex = TAPE_SRCS.indexOf(tapeSrc);
         if (currentIndex < TAPE_SRCS.length - 1) {
             setTapeSrc(TAPE_SRCS[currentIndex + 1]);
             playCrankSound();
         }
+        // Detect end of repair frames
+        if (currentIndex === TAPE_SRCS.length - 2) {
+            setTapeHoverable(false);
+            fadeOutRepairFrame();
+            return;
+        }
     };
 
     // ---- Render ----
     return (
-        <div
-            id="CassettePage"
-            className={
-                "typewriter " + (pencilCursorEnabled ? "cursor-none" : "")
-            }
-            ref={scope}
-        >
-            <div className="tape-container">
-                <motion.img
-                    className={`tape-img ${pencilCursorEnabled && "hoverable"}`}
+        <div id="CassettePage" className={"typewriter"} ref={scope}>
+            <div
+                className={`repair-container ${
+                    tapeHoverable ? "hoverable" : ""
+                }`}
+                style={{
+                    display: "none",
+                    pointerEvents: "none",
+                    opacity: 0,
+                }}
+            >
+                <span>{isMobile ? "Tap" : "Click"} to fix the Cassette</span>
+                <img
+                    draggable={false}
+                    className={`tape-img`}
                     src={tapeSrc}
                     alt=""
                     onClick={handleClickCasette}
-                    animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    onAnimationComplete={() => setShake(false)}
-                />
-                <img
-                    className={`pencil-img ${
-                        pencilCursorEnabled && "picked-up"
-                    }`}
-                    src={
-                        pencilCursorEnabled
-                            ? "/images/cassette/pencil_silhouette.png"
-                            : "/images/cassette/pencil.png"
-                    }
-                    onClick={handleTakePencil}
                 />
             </div>
-            <div className="player-container"></div>
-            {pencilCursorEnabled && (
-                <img
-                    draggable={false}
-                    src="/images/cassette/pencil.png"
-                    alt="Pencil Cursor"
-                    className="pencil-cursor"
-                    style={{
-                        position: "fixed",
-                        opacity: 1,
-                        left: `${pencilPos.x + 160}px`,
-                        top: `${pencilPos.y - 100}px`,
-                        pointerEvents: "none",
-                        zIndex: 9999,
-                    }}
-                />
-            )}
+            <div
+                className={`song-preview-container `}
+                style={{
+                    display: "none",
+                    opacity: 0,
+                }}
+            >
+                <iframe
+                    className="youtube"
+                    width="100%"
+                    height="auto"
+                    src="https://www.youtube.com/embed/RFuXdBOXtHI?si=sZzmJsqha_A_AUuZ"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                ></iframe>
+                <div className="laylo-container">
+                    {showLaylo && (
+                        <iframe
+                            id="laylo-drop-f1a526de-0264-47bc-a2b2-257e19be0c67"
+                            frameborder="0"
+                            scrolling="no"
+                            allow="web-share"
+                            allowtransparency="true"
+                            style={{
+                                zIndex: 99999,
+                                width: "100%",
+                                backgroundColor: "black",
+                            }}
+                            src="https://embed.laylo.com?dropId=f1a526de-0264-47bc-a2b2-257e19be0c67&color=ffffff&minimal=false&theme=dark&background=translucent&customTitle=PRESAVE%20%22RIFT%22"
+                        ></iframe>
+                    )}
+                </div>
+                <LinkButton to="/kit">Back to Kit</LinkButton>
+            </div>
         </div>
     );
 }

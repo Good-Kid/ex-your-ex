@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import gsap from "gsap";
 import WaveText from "../WaveText";
+import { RiExternalLinkFill } from "react-icons/ri";
 import { getCardInfo } from "../../data/tarotCards";
 
 const TarotModal = ({ selectedCard, onClose }) => {
+    const NO_ART_FALLBACK = "/images/tarot/noart.png";
     const tiltRef = useRef(null);
     const isAnimatingRef = useRef(false);
     const rafRef = useRef(null);
@@ -115,10 +117,7 @@ const TarotModal = ({ selectedCard, onClose }) => {
 
     return (
         <div className="tarot-modal" onClick={onClose}>
-            <div
-                className="tarot-modal-content"
-                onClick={(e) => e.stopPropagation()}
-            >
+            <div className="tarot-modal-content">
                 <div className="tarot-card-container">
                     <div
                         ref={tiltRef}
@@ -128,29 +127,54 @@ const TarotModal = ({ selectedCard, onClose }) => {
                         style={{
                             transformStyle: "preserve-3d",
                             transformOrigin: "50% 50%",
+                            cursor: "default",
                         }}
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <img
-                            src={selectedCard}
+                            src={cardInfo.image?.src || NO_ART_FALLBACK}
                             alt={cardInfo.name}
                             className="tarot-modal-image"
+                            onError={(e) => {
+                                if (
+                                    e.target.src !==
+                                        window.location.origin +
+                                            NO_ART_FALLBACK &&
+                                    !e.target.src.endsWith("noart.png")
+                                ) {
+                                    e.target.src = NO_ART_FALLBACK;
+                                }
+                            }}
                         />
                     </div>
                 </div>
-                <div className="tarot-modal-text">
+                <div
+                    className="tarot-modal-text"
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                        cursor: "default",
+                    }}
+                >
                     <div className="tarot-card-name typewriter">
                         <WaveText intensity="low">{cardInfo.name}</WaveText>
                     </div>
                     <div className="tarot-card-description">
                         <p>{cardInfo.description}</p>
                     </div>
-                    <div className="tarot-card-symbolism typewriter">
+                    <div className="tarot-card-symbolism">
                         <h4>Symbolism</h4>
                         <p>{cardInfo.symbolism}</p>
                     </div>
-                    <div className="tarot-card-artist typewriter">
+                    <div className="tarot-card-artist">
                         <h4>Artist</h4>
-                        <p>{cardInfo.artist}</p>
+                        {cardInfo.artist.link ? (
+                            <a target={"_blank"} href={cardInfo.artist.link}>
+                                {cardInfo.artist.name}
+                                <RiExternalLinkFill className="icon" />
+                            </a>
+                        ) : (
+                            <p>{cardInfo.artist.name}</p>
+                        )}
                     </div>
                     <div className="tarot-modal-close-hint">
                         {isMobile ? (

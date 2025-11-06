@@ -85,7 +85,7 @@ const ItemModal = ({ selectedItem, onClose }) => {
 
     // Add marginBottom for cassette
     const imageExtraStyles =
-        selectedItem.id === "cassette" ? { marginBottom: -100 } : {};
+        selectedItem.name === "Broken Cassette" ? { marginBottom: -100 } : {};
 
     return (
         <div className="item-modal" onClick={handleClickOutside}>

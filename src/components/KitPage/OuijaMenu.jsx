@@ -1,6 +1,11 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 
-const OuijaMenu = ({ onClickHandler, style, hidePlanchette = false }) => {
+const OuijaMenu = ({
+    onClickHandler,
+    style,
+    hidePlanchette = false,
+    noDisabled = false,
+}) => {
     const containerRef = useRef(null);
     const planchetteRef = useRef(null);
     const [mounted, setMounted] = useState(false);
@@ -78,23 +83,34 @@ const OuijaMenu = ({ onClickHandler, style, hidePlanchette = false }) => {
                 Open the box?
             </div>
 
-            <button
-                style={{ gridRow: 2, gridColumn: 1 }}
-                onMouseOver={onOptionHover}
-                onFocus={onOptionHover}
-                onClick={() => onClickHandler(true)}
-            >
-                Yes
-            </button>
+            <div className="button-container">
+                <button
+                    style={{ gridRow: 2, gridColumn: 1 }}
+                    onMouseOver={onOptionHover}
+                    onFocus={onOptionHover}
+                    onClick={() => onClickHandler(true)}
+                >
+                    Yes
+                </button>
+            </div>
 
-            <button
-                style={{ gridRow: 2, gridColumn: 2 }}
-                onMouseOver={onOptionHover}
-                onFocus={onOptionHover}
-                onClick={() => onClickHandler(false)}
-            >
-                No
-            </button>
+            <div className="button-container">
+                <button
+                    style={{
+                        gridRow: 2,
+                        gridColumn: 2,
+                        opacity: noDisabled ? 0.5 : 1,
+                    }}
+                    className={noDisabled ? "disabled" : undefined}
+                    disabled={noDisabled}
+                    onMouseOver={onOptionHover}
+                    onFocus={onOptionHover}
+                    onClick={() => onClickHandler(false)}
+                >
+                    No
+                </button>
+                {noDisabled && <div className="crossout"></div>}
+            </div>
 
             <div
                 ref={planchetteRef}

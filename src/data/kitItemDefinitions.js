@@ -19,14 +19,15 @@ const kitItemDefinitions = {
     book: {
         name: "Grimoire",
         description:
-            "Find out what spirit haunts you by taking a haunted walk through a mysterious house in the dark woods.",
+            "Find out awaits you in the afterlife by taking a walk through a mysterious house in the woods.",
         imageSrc: "/images/kit/full/book.png",
         maxWidth: 400,
         inspectLink: "/quiz",
     },
     lighter: {
         name: "Silver Lighter",
-        description: "An antique lighter. It is out of fuel.",
+        description:
+            "An antique lighter. Used to light the candles during the ritual.",
         imageSrc: "/images/kit/full/lighter.png",
         maxHeight: 350,
         maxWidth: 150,
@@ -54,6 +55,7 @@ const kitItemDefinitions = {
             "A cassette tape that contains audio imperative to the ritual.",
         imageSrc: "/images/kit/full/cassette.png",
         maxWidth: 400,
+        inspectLink: "/cassette",
     },
     bottle: {
         name: "Empty Bottle",

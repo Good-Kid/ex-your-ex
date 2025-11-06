@@ -11,6 +11,7 @@ import { useAnimate } from "motion/react";
 import kitItemDefinitions from "../data/kitItemDefinitions";
 import KitMobileMenu from "../components/KitPage/KitMobileMenu";
 import NoteModal from "../components/KitPage/NoteModal";
+import safePlayAudio, { waitForHowler } from "../utils/safePlayAudio";
 
 // ----- Helpers -----
 
@@ -53,6 +54,7 @@ export default function KitPage() {
     const [selectedItem, setSelectedItem] = useState(null);
     const [noteModalOpen, setNoteModalOpen] = useState(false);
     const [whisper, setWhisper] = useState(null); // { key, text, x, y }
+    const [noDisabled, setNoDisabled] = useState(false);
 
     // refs for stage/svg and whisper layer
     const svgRef = useRef(null);
@@ -87,22 +89,59 @@ export default function KitPage() {
 
     const spawnSkullWhispers = useCallback(() => {
         const getSkullWhisper = () => {
-            let whisper_pool = ["listen..."];
+            let whisper_pool = [];
 
             if (!gameState?.flags?.bottleCompleted) {
                 whisper_pool = whisper_pool.concat([
-                    "the bottle must be filled...",
-                    "use the dagger...",
+                    {
+                        text: "the bottle must be filled...",
+                        glow_id: "bottle",
+                    },
+                    {
+                        text: "use the dagger...",
+                        glow_id: "bottle",
+                    },
                 ]);
             }
-            if (!gameState?.flags?.tarotIntroPlayed) {
+
+            if (!gameState?.flags?.tarotCompleted) {
                 whisper_pool = whisper_pool.concat([
-                    "consult the cards...",
-                    "seek the tarot...",
+                    {
+                        text: "consult the cards...",
+                        glow_id: "tarot",
+                    },
+                    {
+                        text: "seek the tarot...",
+                        glow_id: "tarot",
+                    },
                 ]);
             }
-            if (!gameState?.flags?.cassetteFixed) {
-                whisper_pool = whisper_pool.concat(["repair the cassette..."]);
+
+            if (!gameState?.flags?.cassetteCompleted) {
+                whisper_pool = whisper_pool.concat([
+                    {
+                        text: "repair the cassette...",
+                        glow_id: "cassette",
+                    },
+                    {
+                        text: "wind the tape...",
+                        glow_id: "cassette",
+                    },
+                ]);
+            }
+
+            if (!gameState?.flags?.quizCompleted) {
+                whisper_pool = whisper_pool.concat([
+                    {
+                        text: "consult the grimoire...",
+                        glow_id: "book",
+                    },
+                    ,
+                    {
+                        text: "the book... under me...",
+                        glow_id: "book",
+                    },
+                ]);
             }
 
             return whisper_pool[
@@ -132,7 +171,7 @@ export default function KitPage() {
         const y = skullRect.top - layerRect.top - 40; // top of skull
 
         // choose text
-        const text = getSkullWhisper(gameState);
+        const text = getSkullWhisper(gameState).text;
 
         // show whisper and play sound
         setWhisper({ key: Date.now(), text, x, y });
@@ -169,7 +208,7 @@ export default function KitPage() {
                 { transform: "translateY(0%)" },
                 { easing: "ease-in", duration: 0.5 }
             );
-            new Howl({ src: ["/sounds/thump1.mp3"] }).play();
+            safePlayAudio("/sounds/thump1.mp3");
             await animate(
                 ".kit-intro",
                 { transform: "translateY(-8%)" },
@@ -180,7 +219,7 @@ export default function KitPage() {
                 { transform: "translateY(0%)" },
                 { duration: 0.2 }
             );
-            new Howl({ src: ["/sounds/thump2.mp3"] }).play();
+            safePlayAudio("/sounds/thump2.mp3");
             await new Promise((resolve) => setTimeout(resolve, 500));
             await animate(".ouija-menu", { opacity: 1 }, { duration: 0.75 });
         };
@@ -188,12 +227,23 @@ export default function KitPage() {
         if (playIntroAnim) introAnimation();
     }, [playIntroAnim, animate]);
 
+    const clickedNoAnimation = async () => {
+        safePlayAudio("/sounds/switch_off.mp3");
+        await animate(scope.current, { opacity: 0 }, { duration: 0.1 });
+        setNoDisabled(true);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        safePlayAudio("/sounds/switch_on.mp3");
+        await animate(scope.current, { opacity: 1 }, { duration: 0.1 });
+    };
+
     // ----- Click Handlers -----
     const handleOuijaClick = (clickedYes) => {
         if (clickedYes) {
             new Howl({ src: ["/sounds/latch.mp3"] }).play();
             setPlayIntroAnim(false);
             updateGameState({ kitIntroPlayed: true });
+        } else {
+            clickedNoAnimation();
         }
     };
 
@@ -228,7 +278,7 @@ export default function KitPage() {
                     "A glass bottle filled with your tears, ready for use in the ritual.";
             }
 
-            if (itemId === "cassette" && !gameState.flags.cassetteFixed) {
+            if (itemId === "cassette" && !gameState.flags.cassetteCompleted) {
                 def.name = "Broken Cassette";
                 def.imageSrc = `/images/kit/full/${itemId}_unwound.png`;
                 def.description =
@@ -384,31 +434,32 @@ export default function KitPage() {
 
                     <g id="bottle">
                         <image
-                            id="bottle_glow"
-                            width="580"
-                            height="797"
-                            transform="translate(336.963 230.987) scale(.3)"
-                            href={
-                                gameState.flags.bottleCompleted
-                                    ? "/images/kit/menu/full_bottle_glow.png"
-                                    : "/images/kit/menu/bottle_glow.png"
-                            }
-                        />
-                        <image
                             id="bottle_normal"
-                            width="117"
-                            height="344"
-                            transform="translate(406.26 299.083) scale(.3)"
+                            width="139"
+                            height="409"
+                            transform="translate(408 311.76) scale(.24)"
                             href={
                                 gameState.flags.bottleCompleted
                                     ? "/images/kit/menu/full_bottle_normal.png"
                                     : "/images/kit/menu/bottle_normal.png"
                             }
                         />
-                        <path
+                        <image
+                            id="bottle_glow"
+                            class="cls-2"
+                            width="273"
+                            height="541"
+                            transform="translate(391.681 296.161) scale(.24)"
+                            href={
+                                gameState.flags.bottleCompleted
+                                    ? "/images/kit/menu/full_bottle_glow.png"
+                                    : "/images/kit/menu/bottle_glow.png"
+                            }
+                        />
+                        <polyline
                             id="bottle_hit_path"
-                            className="cls-1"
-                            d="M441.262,388.153l-1.403-31.78-1.242-14.713-2.354-3.4-5.951-2.027v-2.812l2.419-2.681.196-18.963-4.577-1.569-.654-14.19-1.896-2.616-3.596-1.373-4.25,1.766-1.635,2.289-1.177,14.255-4.512,1.177-.262,18.898,4.316,1.766.196,4.904-7.716,4.839s-.719,2.681-.719,2.877v18.005l20.808,39.235s2.929-.612,3.06-.612,4.414-1.537,4.414-1.537l3.335-1.994,2.55-2.191.651-2.583v-4.97Z"
+                            class="cls-1"
+                            points="408 365.736 430.818 408.762 433.227 408.374 435.666 407.338 437.668 406.348 439.693 404.761 441.143 403.127 439.026 361.658 438.451 358.644 437.599 356.642 435.804 355.422 432.905 354.594 431.041 353.765 431.041 350.912 431.524 349.922 432.375 349.393 433.273 348.081 433.296 330.385 432.49 329.74 430.788 329.326 428.924 329.004 428.486 326.956 428.095 315.381 427.336 313.839 425.679 312.366 424.85 311.86 421.007 311.86 419.696 312.734 418.131 314.299 417.578 315.542 417.44 325.897 416.865 327.669 416.106 329.28 413.989 329.349 412.838 329.763 412.078 330.523 411.94 348.196 414.035 349.163 416.244 350.451 416.405 352.96 416.06 354.548 414.127 355.146 411.25 356.688 409.064 358.943 408.12 361.75 408 365.736"
                         />
                     </g>
 
@@ -573,6 +624,7 @@ export default function KitPage() {
                     style={{
                         opacity: playIntroAnim ? 0.0001 : 1,
                     }}
+                    gameFlags={gameState.flags}
                     clickCallback={handleItemClick}
                 />
             )}
@@ -587,6 +639,7 @@ export default function KitPage() {
                     <OuijaMenu
                         onClickHandler={handleOuijaClick}
                         hidePlanchette={isMobile}
+                        noDisabled={noDisabled}
                         style={{
                             opacity: 0,
                         }}

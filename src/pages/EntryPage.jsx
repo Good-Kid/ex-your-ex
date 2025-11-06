@@ -31,15 +31,15 @@ export default function EntryPage() {
         }
     };
 
-    // Show demo alert on first visit
-    useEffect(() => {
-        if (!window.__entryPageAlertShown) {
-            window.__entryPageAlertShown = true;
-            window.alert(
-                "This is a demo!\n\nPlease reach out to Libra on Discord with any comments or bugs."
-            );
-        }
-    }, []);
+    // // Show demo alert on first visit
+    // useEffect(() => {
+    //     if (!window.__entryPageAlertShown) {
+    //         window.__entryPageAlertShown = true;
+    //         window.alert(
+    //             "This is a demo!\n\nPlease reach out to Libra on Discord with any comments or bugs."
+    //         );
+    //     }
+    // }, []);
 
     useEffect(() => {
         if (phoneAnswered) {

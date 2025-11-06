@@ -53,12 +53,14 @@ const NoteModal = ({ modalOpen, onClose }) => {
                 <div className="note-content handwritten">
                     <span>Thank you for ordering a kit!</span>
                     <span>
-                        We had to send you a bit of an old model, but it will
-                        still get the job done.
+                        It's our guarantee that by the time you complete the
+                        ritual, all of the heartbreak and grief you've been
+                        feeling will have left your body entirely... as a
+                        spirit!
                     </span>
                     <span>
                         In order to exorcise those nasty residual feelings
-                        you've been dealing with. Just follow this checklist:
+                        you've been dealing with, just follow this checklist:
                     </span>
 
                     <div className="note-checklist">
@@ -127,7 +129,9 @@ const NoteModal = ({ modalOpen, onClose }) => {
                             Perform the Ritual
                         </span>
                     </div>
-                    <span>If you get stuck, try asking the skull.</span>
+                    <span>
+                        P.S. If you get stuck, the skull might know what to do.
+                    </span>
                 </div>
             </div>
             <span className="close-tip">

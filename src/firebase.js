@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
     apiKey: "AIzaSyARD6QXTiiulw9QFMKlHWdVnwVj66J7BOs",
@@ -15,3 +15,11 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
+
+export const analyticsPromise = isSupported().then((ok) =>
+    ok ? getAnalytics(app) : null
+);
+export const log = async (event, params) => {
+    const analytics = await analyticsPromise;
+    if (analytics) logEvent(analytics, event, params);
+};

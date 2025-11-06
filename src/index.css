@@ -15,7 +15,6 @@ body,
 #root {
     background: #000;
     color: #fff;
-    color-scheme: dark; /* dark scrollbars/controls */
     margin: 0;
     padding: 0;
     font-size: 20px;
@@ -33,7 +32,6 @@ body,
     font-weight: 400;
 
     /* Always black theme */
-    color-scheme: dark;
     color: rgba(255, 255, 255, 0.87);
     background-color: #000;
 
@@ -91,6 +89,7 @@ a:focus {
 .link-button {
     color: white;
     border-radius: 0;
+    margin: 1em 0;
 }
 
 /* Loader */
@@ -179,6 +178,7 @@ button {
     color: #fff !important;
     cursor: pointer;
     transition: border-color 0.25s, background-color 0.2s, color 0.2s;
+    margin: 1em 0;
 }
 
 button:hover {
@@ -213,7 +213,7 @@ button:hover {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 999999;
+    z-index: 9999;
 
     width: 100vw;
     height: 100vh;
@@ -530,7 +530,7 @@ button:hover {
    OUIJA MENU / PLANCHETTE
    ----- */
 
-.ouija-menu * {
+.ouija-menu > * {
     font-size: 2em;
 }
 
@@ -547,17 +547,27 @@ button:hover {
     grid-template-rows: auto 1fr;
 }
 
+.ouija-menu .button-container {
+    position: relative;
+    display: flex;
+}
+
 .ouija-menu button {
-    color: white !important;
+    color: white;
     margin: auto;
     background-color: transparent;
     padding: 0;
     border-radius: 0;
+    font-size: 1em;
 }
 
-.ouija-menu button:hover {
+.ouija-menu button:not(.disabled):hover {
     text-decoration: underline;
     text-decoration-thickness: 2px;
+}
+
+.ouija-menu button.disabled {
+    cursor: default;
 }
 
 .planchette {
@@ -568,11 +578,33 @@ button:hover {
     transition: transform 300ms cubic-bezier(0.4, 0.2, 0.2, 1);
 }
 
-/* OUIJA MENU — RESPONSIVE */
-@media (max-width: 700px) {
-    .ouija-menu * {
-        top: 30px;
-        font-size: 1.7em;
+.crossout {
+    /* positioning */
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* sprite cell = EXACTLY one frame */
+    width: 118px;
+    height: 14px;
+
+    /* draw sprite at native size (no scaling) */
+    background: url("/images/kit/scribble_spritesheet.png") no-repeat 0 0;
+
+    /* 4 frames in 0.8s -> 5fps. steps(4) is correct for 4 frames */
+    animation: crossout-sprite 0.8s steps(4) infinite;
+    /* animation: crossout-sprite 0.8s steps(4) forwards;  // one-shot */
+}
+
+@keyframes crossout-sprite {
+    /* Animate across the full sheet width for a clean loop */
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -472px 0;
     }
 }
 
@@ -645,15 +677,15 @@ button:hover {
 .note-modal .note-content {
     height: 100%;
     transform: perspective(600px) rotateX(3deg);
-    margin-top: -15px;
+    margin-top: -20px;
     color: black;
-    font-size: 1.8em;
-    padding: 15%;
+    font-size: 1.7em;
+    padding: 15% 17%;
     line-height: 0.8em;
 
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 0.9em;
 }
 
 .note-modal .note-checklist {
@@ -678,7 +710,7 @@ button:hover {
 
 @media (max-width: 680px) {
     .note-modal .note-content {
-        font-size: 5.5vw;
+        font-size: 5.3vw;
     }
 
     .note-modal .close-tip {
@@ -688,6 +720,7 @@ button:hover {
 
 /* Item modal */
 .item-modal {
+    z-index: 9999;
     position: fixed;
     inset: 0;
     display: flex;
@@ -704,6 +737,10 @@ button:hover {
 
     /* Robust to mobile dynamic viewport */
     min-height: 100svh;
+}
+
+.item-modal button {
+    margin: 0;
 }
 
 .item-modal > div {
@@ -734,7 +771,7 @@ button:hover {
     z-index: 50;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
     max-width: 500px;
     text-align: center;
     padding: 5px 10px;
@@ -904,17 +941,17 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 100svh;
     padding: 6vh 0;
-    overflow: hidden !important;
+    overflow: hidden;
 }
 
 .tarot-card-slots {
     display: grid;
     grid-template-columns: auto auto auto;
     bottom: -170px;
-    gap: 45px;
+    gap: 30px;
     z-index: 1;
 }
 
@@ -958,32 +995,43 @@ button:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0 1em;
+    padding: 0 2em;
+    gap: 0.5em;
+    margin-top: 1.5em;
+    margin-bottom: 4em;
+    margin-top: 4em;
 }
 
 .tarot-buttons {
+    flex-wrap: wrap;
     display: flex;
-    gap: 1em;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em 1em;
+    margin-top: auto;
+}
+
+.learn-more {
+    margin-top: 1em;
+    text-align: center;
+    width: 100%;
 }
 
 /* TAROT PAGE — RESPONSIVE */
 @media (max-width: 800px) {
     #TarotPage {
-        justify-content: flex-start;
-        gap: 60px;
+        gap: 30px;
+        padding: 4vh 0;
     }
 
     .fortune-parts-container {
-        font-size: 1.2em;
+        font-size: 1em;
         gap: 1em;
+        margin: auto 0;
     }
 
     .tarot-card-slots {
-        gap: 30px;
-    }
-
-    .tarot-buttons {
-        margin-top: auto;
+        gap: 15px;
     }
 
     .tarot-intro-container {
@@ -993,6 +1041,10 @@ button:hover {
         font-size: 1.1em;
         margin-top: 100px;
     }
+
+    .learn-more {
+        font-size: 0.85em;
+    }
 }
 
 /* =========================================
@@ -1001,6 +1053,7 @@ button:hover {
 
 .tarot-modal {
     position: fixed;
+    z-index: 9999;
     inset: 0;
     width: 100vw;
     height: 100svh;
@@ -1013,7 +1066,7 @@ button:hover {
 }
 
 .tarot-modal-content {
-    cursor: default;
+    cursor: pointer;
     display: flex;
     gap: 50px;
     align-items: center;
@@ -1032,7 +1085,6 @@ button:hover {
     height: 520px;
     width: auto;
     border-radius: 12px;
-    cursor: pointer;
     will-change: transform;
     backface-visibility: hidden;
     transform: translate3d(0, 0, 0);
@@ -1085,6 +1137,7 @@ button:hover {
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-family: "Special Elite", system-ui;
 }
 
 .tarot-card-symbolism p,
@@ -1092,6 +1145,21 @@ button:hover {
     color: #bbb;
     font-size: 1em;
     line-height: 1.5;
+}
+
+.tarot-card-artist a {
+    color: #bbb;
+    text-decoration: underline !important;
+    line-height: 1em;
+}
+
+.tarot-card-artist a:hover {
+    color: #9a9a9a !important;
+}
+
+.tarot-card-artist .icon {
+    font-size: 0.8em;
+    margin-left: 0.2em;
 }
 
 .tarot-modal-close-hint {
@@ -1108,8 +1176,11 @@ button:hover {
 
 /* TAROT MODAL — RESPONSIVE */
 @media (max-width: 700px) {
-    .tarot-modal-content {
+    .tarot-modal {
         overflow-y: scroll;
+    }
+
+    .tarot-modal-content {
         flex-direction: column;
         gap: 20px;
     }
@@ -1142,15 +1213,142 @@ button:hover {
         text-align: center;
         font-size: 0.9em;
     }
+
+    .tarot-card-artist {
+        text-align: center;
+    }
 }
 
-/* ----- GHOST QUIZ ----- */
+/* ----- Tarot Gallery ----- */
+
+#GalleryPage {
+    padding: 2em 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#GalleryPage h2 {
+    text-align: center;
+}
+
+.tarot-gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2em;
+    max-width: 1000px;
+    margin: auto;
+    margin: 0 1em;
+}
+
+.tarot-gallery-card {
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.tarot-gallery-card img {
+    cursor: pointer;
+    transition: filter 0.1s ease;
+}
+
+.tarot-gallery-card img:hover {
+    filter: drop-shadow(0 0 3px white) drop-shadow(0 0 12px white);
+}
+
+.tarot-gallery-grid .card-title {
+    margin-top: 0.4em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.tarot-gallery-grid .card-title .card-no {
+    font-size: 1.5em;
+}
+
+@media (max-width: 760px) {
+    .tarot-gallery-grid {
+        width: 100vw;
+
+        gap: 1em;
+    }
+
+    .tarot-gallery-grid > * {
+        max-width: 40vw;
+    }
+}
+
+/* ----- Quiz Page ----- */
 
 #QuizPage {
     position: relative;
     min-height: 100svh;
     width: 100%;
     position: relative;
+}
+
+/* Intro */
+
+.intro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+}
+
+#QuizPage .intro-container {
+    position: absolute;
+    width: 100%;
+    top: -4.25em;
+    bottom: -1.5em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2em;
+}
+
+#QuizPage .intro-container .title {
+    font-size: 2em;
+}
+
+#QuizPageMobile .intro-container {
+    height: 100svh;
+    width: 100vw;
+    overflow: clip;
+    justify-content: center;
+    gap: 10px;
+}
+
+#QuizPageMobile .intro-container .book-img {
+    margin-top: -20vw;
+    transform: translateX(-20%);
+}
+
+#QuizPageMobile .intro-container .top {
+    width: 90vw;
+}
+
+#QuizPageMobile .intro-container .title {
+    font-size: 1.5em;
+}
+
+/* Book Container */
+
+#QuizPage .question-number {
+    position: absolute;
+    pointer-events: none;
+    top: -1.6em;
+    font-size: 1.5em !important;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2em;
+    color: white;
 }
 
 .book-container {
@@ -1161,28 +1359,36 @@ button:hover {
     transform: translate(-50%, -50%);
 
     aspect-ratio: 962 / 707;
-    width: auto;
-    max-width: 90vw;
-    height: 80vh;
+    width: 90vw;
+    max-width: 900px;
+    height: auto;
 }
 
-.book-container img {
+@media (max-height: 900px) {
+    .book-container {
+        max-width: 700px;
+    }
+}
+
+.book-container .book-img {
     z-index: 25;
     position: absolute;
     bottom: 0;
     left: 50%;
+
     transform: translateX(-50%);
+    transition: transform 0.4s cubic-bezier(0.4, 0.2, 0.2, 1);
+
+    width: 962px;
 }
 
-.book-container.closed img:hover {
+.book-container .book-img.hoverable:hover {
     cursor: pointer;
     filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
 }
 
 .book-text-container {
     z-index: 50;
-    /* TODO: Remove this maybe */
-    pointer-events: none;
 
     position: absolute;
     bottom: 0;
@@ -1192,19 +1398,26 @@ button:hover {
 
     aspect-ratio: 962 / 707;
     width: 100%;
-    height: auto;
+    height: 100%;
+    max-height: 100%;
 
-    gap: 7%;
-    padding-top: 12%;
-    padding-left: 11.5%;
-    padding-right: 13%;
+    gap: 6%;
+    padding-top: 6%;
+    padding-left: 8%;
+    padding-right: 10%;
     padding-bottom: 8%;
+
+    /* Prevent children from overflowing padding */
+    box-sizing: border-box;
 }
 
 .book-text-container > * {
     color: black;
     text-align: center;
+    height: 100%;
+    max-height: 100%;
     /* border: 2px dashed black; */
+    overflow: hidden; /* Prevent child overflow */
 }
 
 .book-text-container .question {
@@ -1212,15 +1425,29 @@ button:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 1.25em;
+    font-size: 1em;
     gap: 0.6em;
+}
+
+.book-text-container .question img {
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 30%;
+    margin-bottom: 20px;
+    flex-shrink: 1;
+    width: auto;
+    height: auto;
+    display: block;
 }
 
 .book-text-container .answer-choices {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1.6em;
+    gap: 1.1em;
     font-size: 1em;
 }
 
@@ -1273,21 +1500,16 @@ button:hover {
 }
 
 /* ----- Quiz Mobile Version ----- */
+
 #QuizPageMobile {
-    background-color: rgb(206, 206, 206);
-    background-image: url("/images/quiz/paper_texture.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
     height: 100svh;
-    overflow-x: clip;
 }
 
 #QuizPageMobile > .quiz-container-mobile {
-    color: black;
-    /* background-color: rgba(0, 0, 0, 0.654); */
-    height: 100svh;
+    overflow-x: clip;
 
+    /* Sizing */
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1295,24 +1517,33 @@ button:hover {
     padding: 15px;
     gap: 30px;
 
+    /* Font */
     font-size: 1em;
+    color: black;
+
+    /* Background */
+    background-color: rgb(206, 206, 206);
+    background-image: url("/images/quiz/paper_texture.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .quiz-container-mobile .question-number {
     font-size: 1.6em;
     font-weight: bold;
-    background: linear-gradient(
+    /* background: linear-gradient(
         to right,
         transparent 0%,
         rgba(0, 0, 0, 0.85) 30%,
         rgba(0, 0, 0, 0.85) 70%,
         transparent 100%
-    );
+    ); */
+    /* color: white; */
     line-height: 1.4em;
     padding-top: 0.15em;
     width: 110%;
     text-align: center;
-    color: white;
 }
 
 .quiz-container-mobile .question {
@@ -1323,7 +1554,7 @@ button:hover {
     text-align: center;
     gap: 0.5em;
 
-    font-size: 1.2em;
+    font-size: 1.3em;
 
     background-size: cover;
     background-repeat: no-repeat;
@@ -1352,13 +1583,14 @@ button:hover {
     margin-bottom: 2vh;
     font-weight: normal;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 15px;
     justify-content: center;
     width: 100%;
 }
 
 .quiz-container-mobile .answer-choices > * {
+    cursor: pointer;
     background-color: rgba(0, 0, 0, 0.872);
     color: white;
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18),
@@ -1371,34 +1603,52 @@ button:hover {
     text-align: center;
 }
 
-/* TODO: REMOVE FAKE QUIZ RESULTS */
+.quiz-container-mobile .answer-choices > *:hover {
+    background-color: rgba(0, 0, 0, 0.764);
+}
 
-.quiz-result {
+#QuizPageResults {
+    position: relative;
+    z-index: 9999;
     height: 100svh;
-    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 0.5em;
+    padding: 2vh 3vw;
+}
+
+#QuizPageResults .img-container {
+    flex: 1 1 auto;
+    width: 100%; /* ensure it can’t be wider than the screen */
+    max-width: 100%;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 1em;
 }
 
-.quiz-result .result-name {
-    font-size: 40px;
+#QuizPageResults .img-container img {
+    width: auto; /* take full container width */
+    height: auto; /* scale proportionally */
+    object-fit: contain;
+    max-height: 100%;
+    max-width: 100%;
 }
 
-.quiz-result .result-description {
-    border: 1px solid white;
-    padding: 10px;
-    margin: 0 20px;
-    text-align: center;
-    margin-bottom: 2em;
-    max-width: 500px;
+#QuizPageResults .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
 }
 
-/* -----
-   KNIFE PAGE
-   ----- */
+#QuizPageResults .buttons > *:nth-child(3) {
+    grid-column: 1 / span 2;
+    margin: auto;
+}
+
+/* -----KNIFE PAGE ----- */
 
 #KnifePage {
     position: relative;
@@ -1412,9 +1662,9 @@ button:hover {
     align-items: center;
 }
 
-.intro-container,
-.knife-container,
-.onion-container {
+#KnifePage .intro-container,
+#KnifePage .knife-container,
+#KnifePage .onion-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1522,62 +1772,81 @@ button:hover {
    ----- */
 
 #CassettePage {
-    height: 100%;
+    height: 100svh;
     width: 100%;
-    max-width: 100%;
     display: flex;
-    flex-direction: row;
+    justify-content: center;
+    font-size: 1.75em;
+    padding: 5vh 5vw;
 }
 
-#CassettePage > div {
-    width: 100%;
-}
-
-#CassettePage .tape-container {
-    position: relative;
+.repair-container {
+    padding-top: 100px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    gap: 1em;
 }
 
-#CassettePage .tape-container .tape-img {
-    transform: rotate(-8deg);
-    z-index: 50;
-    width: 50%;
+.repair-container img {
+    max-width: 400px;
+    width: 100%;
+    transition: filter 0.1s;
 }
 
-#CassettePage .tape-container .tape-img.hoverable:hover {
-    filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
-}
-
-#CassettePage .tape-container .pencil-img {
-    z-index: 25;
-    position: absolute;
-    right: 100px;
-    bottom: 20px;
-    height: 80vh;
-    transform: rotate(190deg);
+.repair-container.hoverable img:hover {
     cursor: pointer;
-}
-
-#CassettePage .tape-container .pencil-img:hover {
     filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
 }
 
-#CassettePage .tape-container .pencil-img.picked-up {
-    opacity: 0.1;
-    transition: opacity 0.1s ease;
+.song-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 0.6em;
+    min-height: 600px;
 }
 
-#CassettePage .tape-container .pencil-img.picked-up:hover {
-    opacity: 0.2;
+.song-preview-container .laylo-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 180px;
 }
 
-.pencil-cursor {
-    position: fixed; /* follow viewport, not scrolled layout */
-    z-index: 9999;
-    height: 80vh; /* tweak size as you like */
-    pointer-events: none; /* never intercept clicks */
-    transform: rotate(150deg);
+.song-preview-container iframe {
+    max-width: 700px;
+}
+
+.song-preview-container iframe.youtube {
+    border-radius: 30px;
+    aspect-ratio: 1.78 / 1;
+    /* filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white); */
+}
+
+.song-preview-container iframe.laylo {
+    height: 180px;
+}
+
+/* -----
+    RESPONSIVE: MOBILE
+    ----- */
+
+@media (max-width: 760px) {
+    #CassettePage {
+        font-size: 1.4em;
+    }
+    .song-preview-container iframe.youtube {
+        margin-top: auto;
+    }
+    .song-preview-container .laylo-container {
+        margin-bottom: auto;
+    }
+    .repair-container img {
+        max-width: 70vw;
+    }
 }

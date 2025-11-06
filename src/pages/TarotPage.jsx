@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useMemo, useState } from "react";
 import { Howl } from "howler";
 import TarotModal from "../components/TarotPage/TarotModal";
 import WaveText from "../components/WaveText";
-import { getCardInfo, tarotCardData } from "../data/tarotCards";
+import { getCardInfo, tarotCards } from "../data/tarotCards"; // <-- UPDATED
 import { useGameState } from "../context/GameStateContext";
 import LinkButton from "../components/LinkButton";
 // eslint-disable-next-line no-unused-vars
@@ -11,10 +11,11 @@ import { motion, useAnimate } from "motion/react";
 // ----- Constants -----
 const SLOT_COUNT = 3;
 const CARD_COUNT = 5;
-const CARD_IMAGE = "/images/tarot/back.png"; // back image
+const CARD_BACK_IMAGE = "/images/tarot/back.png"; // back image
+const NO_ART_FALLBACK = "/images/tarot/noart.png"; // <-- NEW fallback
 const MOBILE_TRIGGER_WIDTH = 700;
-const DEFAULT_CARD_HEIGHT = 300;
-const MOBILE_CARD_HEIGHT = 140;
+const DEFAULT_CARD_HEIGHT = 250;
+const MOBILE_CARD_HEIGHT = 160;
 const CARD_RATIO = 11 / 19;
 const CARD_FLIP_DURATION = 0.14; // seconds
 const CARD_FLIP_DELAY = 0.5; // seconds between flips
@@ -38,9 +39,9 @@ const shuffleTake = (arr, n) => {
     return copy.slice(0, n);
 };
 
-const pickFortunes = (images) => {
-    return images.map((src, i) => {
-        const info = getCardInfo(src);
+const pickFortunes = (ids) => {
+    return ids.map((id, i) => {
+        const info = getCardInfo(id);
         const pools = info?.fortunes || {};
         const group = i === 0 ? "past" : i === 1 ? "present" : "future";
         const options = pools[group] || [""];
@@ -70,6 +71,14 @@ function computeFanTransforms({ visibleCount, cardWidth, mobile }) {
     });
 }
 
+// ---- Small helper to safely get image sources w/ fallbacks ----
+function getImagesForId(id) {
+    const info = getCardInfo(id);
+    const loadingImage = info?.image?.loadingImage || NO_ART_FALLBACK;
+    const fullSrc = info?.image?.src || NO_ART_FALLBACK;
+    return { loadingImage, fullSrc, name: info?.name || "Tarot Card" };
+}
+
 // ----- Component -----
 export default function TarotPage() {
     // ----- Context -----
@@ -77,6 +86,7 @@ export default function TarotPage() {
 
     // ----- Layout / Responsive -----
     const initialCardHeight = () =>
+        typeof window !== "undefined" &&
         window.innerWidth < MOBILE_TRIGGER_WIDTH
             ? MOBILE_CARD_HEIGHT
             : DEFAULT_CARD_HEIGHT;
@@ -108,9 +118,14 @@ export default function TarotPage() {
 
     const [selectedCards, setSelectedCards] = useState([]); // indices from fan
     const [removedCards, setRemovedCards] = useState([]); // removed from fan
+
+    // store selected "faces" as card IDs now
     const [revealedFaces, setRevealedFaces] = useState(
-        Array(SLOT_COUNT).fill(null)
+        Array(SLOT_COUNT).fill(null) // ids
     );
+
+    // loading state for each revealed face (id -> boolean)
+    const [loadedMap, setLoadedMap] = useState({}); // { [id]: true }
 
     const [fortuneParts, setFortuneParts] = useState([
         "line1",
@@ -131,7 +146,7 @@ export default function TarotPage() {
     const slotTiltRefs = useRef([]); // hover tilt inner
 
     // ----- Modal -----
-    const [modalCard, setModalCard] = useState(null);
+    const [modalCard, setModalCard] = useState(null); // will hold the card id
 
     // ----- Animations -----
     const [scope, animate] = useAnimate();
@@ -139,6 +154,9 @@ export default function TarotPage() {
 
     useEffect(() => {
         const revealCardsAnimation = async () => {
+            animate(".learn-more", {
+                opacity: 0.45,
+            });
             await animate(".tarot-buttons", {
                 opacity: 1,
                 pointerEvents: "auto",
@@ -153,12 +171,19 @@ export default function TarotPage() {
             await animate(
                 ".tarot-intro-container .line1",
                 { opacity: 1 },
-                { duration: 1 }
+                { duration: 1.2 }
             );
+            await new Promise((resolve) => setTimeout(resolve, 600));
             await animate(
                 ".tarot-intro-container .line2",
                 { opacity: 1 },
-                { duration: 1 }
+                { duration: 1.2 }
+            );
+            await new Promise((resolve) => setTimeout(resolve, 600));
+            await animate(
+                ".tarot-intro-container .line3",
+                { opacity: 1.2 },
+                { duration: 1.2 }
             );
             await new Promise((resolve) => setTimeout(resolve, 1000));
             await animate(scope.current, { opacity: 0 }, { duration: 1 });
@@ -176,7 +201,8 @@ export default function TarotPage() {
     );
 
     // ----- Data -----
-    const tarotKeys = useMemo(() => Object.keys(tarotCardData), []);
+    // use ids instead of image paths now
+    const tarotIds = useMemo(() => Object.keys(tarotCards), []);
 
     // ----- Fan transforms cache -----
     const visibleIdx = useMemo(
@@ -260,18 +286,27 @@ export default function TarotPage() {
     useEffect(() => {
         if (hasRevealed || selectedCards.length !== SLOT_COUNT) return;
 
-        // Pick faces + fortunes
-        const slotImages = shuffleTake(tarotKeys, SLOT_COUNT);
-        const fortunes = pickFortunes(slotImages);
+        // Pick faces (ids) + fortunes
+        const slotIds = shuffleTake(tarotIds, SLOT_COUNT);
+        const fortunes = pickFortunes(slotIds);
 
-        // Preload
-        slotImages.forEach((src) => {
-            if (!src) return;
+        // Preload full images; show loading until they load
+        slotIds.forEach((id) => {
+            if (!id) return;
+            const { fullSrc } = getImagesForId(id);
             const img = new Image();
-            img.src = src;
+            img.onload = () =>
+                setLoadedMap((prev) =>
+                    prev[id] ? prev : { ...prev, [id]: true }
+                );
+            img.onerror = () =>
+                setLoadedMap((prev) =>
+                    prev[id] ? prev : { ...prev, [id]: false }
+                );
+            img.src = fullSrc;
         });
 
-        setRevealedFaces(slotImages);
+        setRevealedFaces(slotIds);
         setFortuneParts(fortunes);
 
         const doReveal = async () => {
@@ -311,12 +346,16 @@ export default function TarotPage() {
             }
 
             updateGameState({ tarotCompleted: true });
+            updateGameState({
+                tarotCompletedCount:
+                    (gameState.flags.tarotCompletedCount || 0) + 1,
+            });
             setHasRevealed(true);
             setIsRevealing(false);
         };
 
         doReveal();
-    }, [selectedCards, hasRevealed, tarotKeys, animate, updateGameState]);
+    }, [selectedCards, hasRevealed, tarotIds, animate, updateGameState]);
 
     // ----- Draw Again Handler -----
     const handleDrawAgain = async () => {
@@ -326,6 +365,9 @@ export default function TarotPage() {
                 { opacity: 0 },
                 { duration: DEFAULT_DURATION }
             ).finished,
+            animate(".learn-more", {
+                opacity: 0,
+            }).finished,
             animate(
                 ".tarot-buttons",
                 { opacity: 0, pointerEvents: "none" },
@@ -358,6 +400,7 @@ export default function TarotPage() {
         setIsRevealing(false);
         setModalCard(null);
         setFanHidden(false);
+        setLoadedMap({});
 
         requestAnimationFrame(() => {
             animate(".tarot-card-slots img", { opacity: 1 }, { duration: 0 });
@@ -370,158 +413,197 @@ export default function TarotPage() {
             {playTarotIntro ? (
                 <div className="tarot-intro-container typewriter">
                     <span style={{ opacity: 0 }} className="line1">
-                        Choose 3 cards
+                        Hold an uncertainty in your mind
                     </span>
                     <span style={{ opacity: 0 }} className="line2">
-                        Your fortune will be made clear
+                        Choose 3 cards
+                    </span>
+                    <span style={{ opacity: 0 }} className="line3">
+                        The answer will be made clear
                     </span>
                 </div>
             ) : (
-                <>
+                <div>
                     <div className="tarot-card-slots">
-                        {Array.from({ length: SLOT_COUNT }).map((_, i) => (
-                            <div
-                                key={i}
-                                style={{
-                                    width: `${cardWidth * 1.2}px`,
-                                    height: `${cardHeight * 1.2}px`,
-                                    opacity: 1,
-                                }}
-                            >
-                                {selectedCards[i] !== undefined && (
-                                    <div
-                                        ref={(el) =>
-                                            (slotOuterRefs.current[i] = el)
-                                        }
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            position: "relative",
-                                            borderRadius: CARD_BORDER_RADIUS,
-                                            transformStyle: "preserve-3d",
-                                            cursor:
-                                                hasRevealed && !isRevealing
-                                                    ? "pointer"
-                                                    : "default",
-                                            transform:
-                                                "perspective(800px) rotateY(0deg)",
-                                            transition: "transform 0.3s ease",
-                                            zIndex: hasRevealed ? 3 : 1,
-                                        }}
-                                        onMouseMove={(e) =>
-                                            handleSlotHoverMove(e, i)
-                                        }
-                                        onMouseLeave={() =>
-                                            handleSlotHoverLeave(i)
-                                        }
-                                        // <<< Tap/Click lives on the wrapper >>>
-                                        onClick={() => {
-                                            if (
-                                                hasRevealed &&
-                                                !isRevealing &&
-                                                revealedFaces[i]
-                                            ) {
-                                                setModalCard(revealedFaces[i]);
-                                            }
-                                        }}
-                                        role="button"
-                                        tabIndex={0}
-                                        onKeyDown={(e) => {
-                                            if (
-                                                (e.key === "Enter" ||
-                                                    e.key === " ") &&
-                                                hasRevealed &&
-                                                !isRevealing &&
-                                                revealedFaces[i]
-                                            ) {
-                                                setModalCard(revealedFaces[i]);
-                                                e.preventDefault();
-                                            }
-                                        }}
-                                    >
+                        {Array.from({ length: SLOT_COUNT }).map((_, i) => {
+                            const id = revealedFaces[i];
+                            const info = id ? getCardInfo(id) : null;
+                            const { loadingImage, fullSrc, name } = id
+                                ? getImagesForId(id)
+                                : {
+                                      loadingImage: null,
+                                      fullSrc: null,
+                                      name: "Tarot Card",
+                                  };
+
+                            // choose which front img to show (loading vs full) when flipped
+                            const showFull = id && loadedMap[id];
+
+                            return (
+                                <div
+                                    key={i}
+                                    style={{
+                                        width: `${cardWidth * 1.2}px`,
+                                        height: `${cardHeight * 1.2}px`,
+                                        opacity: 1,
+                                    }}
+                                >
+                                    {selectedCards[i] !== undefined && (
                                         <div
                                             ref={(el) =>
-                                                (slotTiltRefs.current[i] = el)
+                                                (slotOuterRefs.current[i] = el)
                                             }
                                             style={{
-                                                position: "absolute",
-                                                inset: 0,
-                                                transformStyle: "preserve-3d",
+                                                width: "100%",
+                                                height: "100%",
+                                                position: "relative",
                                                 borderRadius:
                                                     CARD_BORDER_RADIUS,
-                                                transformOrigin: "50% 50%",
-                                                pointerEvents: isRevealing
-                                                    ? "none"
-                                                    : "auto",
-                                                backfaceVisibility: "hidden",
+                                                transformStyle: "preserve-3d",
+                                                cursor:
+                                                    hasRevealed && !isRevealing
+                                                        ? "pointer"
+                                                        : "default",
+                                                transform:
+                                                    "perspective(800px) rotateY(0deg)",
+                                                transition:
+                                                    "transform 0.3s ease",
+                                                zIndex: hasRevealed ? 3 : 1,
+                                            }}
+                                            onMouseMove={(e) =>
+                                                handleSlotHoverMove(e, i)
+                                            }
+                                            onMouseLeave={() =>
+                                                handleSlotHoverLeave(i)
+                                            }
+                                            // Tap/Click lives on the wrapper
+                                            onClick={() => {
+                                                if (
+                                                    hasRevealed &&
+                                                    !isRevealing &&
+                                                    id
+                                                ) {
+                                                    setModalCard(id); // pass id to modal
+                                                }
+                                            }}
+                                            role="button"
+                                            tabIndex={0}
+                                            onKeyDown={(e) => {
+                                                if (
+                                                    (e.key === "Enter" ||
+                                                        e.key === " ") &&
+                                                    hasRevealed &&
+                                                    !isRevealing &&
+                                                    id
+                                                ) {
+                                                    setModalCard(id);
+                                                    e.preventDefault();
+                                                }
                                             }}
                                         >
-                                            {/* Back */}
-                                            <img
-                                                draggable={false}
-                                                src={CARD_IMAGE}
-                                                alt={`Back of Selected Card ${
-                                                    selectedCards[i] + 1
-                                                }`}
+                                            <div
+                                                ref={(el) =>
+                                                    (slotTiltRefs.current[i] =
+                                                        el)
+                                                }
                                                 style={{
-                                                    userSelect: "none",
-                                                    touchAction: "manipulation",
                                                     position: "absolute",
                                                     inset: 0,
-                                                    width: "100%",
-                                                    height: "100%",
+                                                    transformStyle:
+                                                        "preserve-3d",
                                                     borderRadius:
                                                         CARD_BORDER_RADIUS,
-                                                    backfaceVisibility:
-                                                        "hidden",
-                                                    transform: "rotateY(0deg)",
-                                                    // Make the back non-interactive after reveal to avoid iOS hit-test quirks
-                                                    pointerEvents: hasRevealed
+                                                    transformOrigin: "50% 50%",
+                                                    pointerEvents: isRevealing
                                                         ? "none"
                                                         : "auto",
-                                                }}
-                                            />
-                                            {/* Front */}
-                                            <img
-                                                draggable={false}
-                                                src={
-                                                    revealedFaces[i] ||
-                                                    CARD_IMAGE
-                                                }
-                                                alt={
-                                                    revealedFaces[i]
-                                                        ? getCardInfo(
-                                                              revealedFaces[i]
-                                                          ).name || "Tarot Card"
-                                                        : "Tarot Card"
-                                                }
-                                                style={{
-                                                    userSelect: "none",
-                                                    touchAction: "manipulation",
-                                                    position: "absolute",
-                                                    inset: 0,
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    borderRadius:
-                                                        CARD_BORDER_RADIUS,
                                                     backfaceVisibility:
                                                         "hidden",
-                                                    transform:
-                                                        "rotateY(180deg)",
-                                                    cursor:
-                                                        hasRevealed &&
-                                                        !isRevealing
-                                                            ? "pointer"
-                                                            : "default",
                                                 }}
-                                            />
+                                            >
+                                                {/* Back */}
+                                                <img
+                                                    draggable={false}
+                                                    src={CARD_BACK_IMAGE}
+                                                    alt={`Back of Selected Card ${
+                                                        selectedCards[i] + 1
+                                                    }`}
+                                                    style={{
+                                                        userSelect: "none",
+                                                        touchAction:
+                                                            "manipulation",
+                                                        position: "absolute",
+                                                        inset: 0,
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        borderRadius:
+                                                            CARD_BORDER_RADIUS,
+                                                        backfaceVisibility:
+                                                            "hidden",
+                                                        transform:
+                                                            "rotateY(0deg)",
+                                                        // Make the back non-interactive after reveal to avoid iOS hit-test quirks
+                                                        pointerEvents:
+                                                            hasRevealed
+                                                                ? "none"
+                                                                : "auto",
+                                                    }}
+                                                />
+                                                {/* Front */}
+                                                <img
+                                                    draggable={false}
+                                                    src={
+                                                        id
+                                                            ? showFull
+                                                                ? fullSrc
+                                                                : loadingImage ||
+                                                                  NO_ART_FALLBACK
+                                                            : CARD_BACK_IMAGE
+                                                    }
+                                                    alt={
+                                                        id ? name : "Tarot Card"
+                                                    }
+                                                    onError={(e) => {
+                                                        e.currentTarget.src =
+                                                            NO_ART_FALLBACK;
+                                                    }}
+                                                    style={{
+                                                        userSelect: "none",
+                                                        touchAction:
+                                                            "manipulation",
+                                                        position: "absolute",
+                                                        inset: 0,
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        borderRadius:
+                                                            CARD_BORDER_RADIUS,
+                                                        backfaceVisibility:
+                                                            "hidden",
+                                                        transform:
+                                                            "rotateY(180deg)",
+                                                        cursor:
+                                                            hasRevealed &&
+                                                            !isRevealing
+                                                                ? "pointer"
+                                                                : "default",
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
-                </>
+                    <div
+                        className="learn-more"
+                        style={{
+                            opacity: 0,
+                        }}
+                    >
+                        {isMobile ? "Tap" : "Click"} each card to learn more
+                    </div>
+                </div>
             )}
 
             {/* Fan (Framer Motion) */}
@@ -573,7 +655,7 @@ export default function TarotPage() {
                                 draggable={false}
                                 key={i}
                                 ref={(el) => (cardsRef.current[i] = el)}
-                                src={CARD_IMAGE}
+                                src={CARD_BACK_IMAGE}
                                 alt={`Tarot Card ${i + 1}`}
                                 data-orig-y={t.origY}
                                 initial={{
@@ -645,14 +727,22 @@ export default function TarotPage() {
                 className="tarot-buttons"
                 style={{ opacity: 0, pointerEvents: "none" }}
             >
-                <button onClick={handleDrawAgain}>Draw Again</button>
                 <LinkButton style={{ justifySelf: "flex-end" }} to="/kit">
                     Return to Kit
                 </LinkButton>
+                <button onClick={handleDrawAgain}>Draw Again</button>
+                {gameState.flags.tarotCompletedCount >= 2 && (
+                    <LinkButton
+                        style={{ justifySelf: "flex-end" }}
+                        to="/tarot/gallery"
+                    >
+                        Tarot Gallery
+                    </LinkButton>
+                )}
             </div>
 
             <TarotModal
-                selectedCard={modalCard}
+                selectedCard={modalCard} // <-- now an id; update TarotModal to read by id via getCardInfo
                 onClose={() => setModalCard(null)}
             />
         </div>

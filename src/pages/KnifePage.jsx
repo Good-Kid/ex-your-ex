@@ -288,7 +288,7 @@ export default function KnifePage() {
                 className="knife-container"
                 style={{ display: "none", opacity: 0 }}
             >
-                <span>Take the knife</span>
+                <span>Take the dagger</span>
                 <img
                     draggable={false}
                     onClick={handleTakeKnife}

@@ -1,12 +1,19 @@
-// Tarot card data with descriptions, symbolism, artist info, and horoscope-style past/present/future blurbs
-export const tarotCardData = {
-    "/images/tarot/fool.jpg": {
+export const tarotCards = {
+    fool: {
+        id: "fool",
         name: "The Fool",
+        image: {
+            src: "/images/tarot/0-TheFool.png",
+            loadingSrc: "/images/tarot/0-TheFool_small.png",
+        },
         description:
             "The Fool represents innocence, new beginnings, and a leap of faith. It invites openness to possibility and trust in the path ahead.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "MIJO",
+            link: "https://www.instagram.com/mijoky/",
+        },
         symbolism:
-            "A carefree traveler at a cliff’s edge with a small pack and a loyal dog, symbolizing potential and naïveté.",
+            "Poised upon the precipice of a new journey, the Fool is called to venture. Between innocence and wonder, the world opend to those who know not it's rules.",
         fortunes: {
             past: [
                 "You took a risk that changed the course of your journey.",
@@ -26,13 +33,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/magician.jpg": {
+    magician: {
+        id: "magician",
         name: "The Magician",
+        image: {
+            src: "/images/tarot/1-TheMagician.png",
+            loadingSrc: "/images/tarot/1-TheMagician_small.png",
+        },
         description:
             "The Magician symbolizes willpower, skill, and manifestation. It channels intention into reality through focused action.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "lilypichu",
+            link: "https://www.instagram.com/staycomfy/",
+        },
         symbolism:
-            "A figure with tools of the four suits, one hand to the sky and one to earth, bridging idea and form.",
+            "Harnessing the laws of matter, the magician crafts it into creation",
         fortunes: {
             past: [
                 "You’ve learned how to turn ideas into results.",
@@ -52,13 +67,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/priestess.jpg": {
+    priestess: {
+        id: "priestess",
         name: "The High Priestess",
+        image: {
+            src: "/images/tarot/2-TheHighPriestess.png",
+            loadingSrc: "/images/tarot/2-TheHighPriestess_small.png",
+        },
         description:
             "The High Priestess signifies intuition, mystery, and inner knowing. She asks you to listen to the quiet beneath the noise.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "MIJO",
+            link: "https://www.instagram.com/mijoky/",
+        },
         symbolism:
-            "A veiled keeper between pillars, with a moon and scroll, guarding hidden knowledge.",
+            "Between labyrinthine worlds, a concierge cares for the keys that open doors unknown.",
         fortunes: {
             past: [
                 "You once trusted your instincts and were proved right.",
@@ -78,13 +101,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/empress.jpg": {
+    empress: {
+        id: "empress",
         name: "The Empress",
+        image: {
+            src: "/images/tarot/3-TheEmpress.png",
+            loadingSrc: "/images/tarot/3-TheEmpress_small.png",
+        },
         description:
-            "The Empress embodies abundance, creativity, and nurture. She encourages growth through care and receptivity.",
-        artist: "Unknown Artist",
+            "The Empress embodies abundance, creativity, and nature. She encourages growth through care and receptivity.",
+        artist: {
+            name: "Gabriel Altrows",
+            link: "https://www.instagram.com/gabrielaltrowsart/",
+        },
         symbolism:
-            "A crowned figure amid wheat and flowing rivers, representing fertility and creation.",
+            "The forest hums, the rivers call her name. The Empress plays the great rythmn of the Willow Tree.",
         fortunes: {
             past: [
                 "You’ve built comfort and beauty in your surroundings.",
@@ -104,13 +135,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/emperor.jpg": {
+    emperor: {
+        id: "emperor",
         name: "The Emperor",
+        image: {
+            src: "/images/tarot/4-TheEmperor.png",
+            loadingSrc: "/images/tarot/4-TheEmperor_small.png",
+        },
         description:
             "The Emperor represents structure, authority, and stability. He brings order, protection, and long-term strategy.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "hoshiyo",
+            link: "https://www.instagram.com/hoshioyo/",
+        },
         symbolism:
-            "A ruler on a stone throne with rams, symbolizing mastery, boundaries, and leadership.",
+            "In measured time, the world settles into a rhythmic pattern. The Emperor conducts the orchestra of stone and certainty.",
         fortunes: {
             past: [
                 "You’ve learned how discipline creates progress.",
@@ -130,13 +169,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/hierophant.jpg": {
+    hierophant: {
+        id: "hierophant",
         name: "The Hierophant",
+        image: {
+            src: "/images/tarot/5-TheHierophant.png",
+            loadingSrc: "/images/tarot/5-TheHierophant_small.png",
+        },
         description:
             "The Hierophant stands for tradition, teaching, and spiritual frameworks. He connects you to lineage and shared wisdom.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "oddesque",
+            link: "https://www.instagram.com/oddesque/",
+        },
         symbolism:
-            "A spiritual teacher with keys, representing doctrine, mentorship, and community rites.",
+            "Divine design in gears and circuits, the great cathedral of progress. Kneeling before what she made, the Hierophant's crusade.",
         fortunes: {
             past: [
                 "You’ve learned from mentors or traditions that shaped your beliefs.",
@@ -156,13 +203,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/lovers.jpg": {
+    lovers: {
+        id: "lovers",
         name: "The Lovers",
+        image: {
+            src: "/images/tarot/6-TheLovers.png",
+            loadingSrc: "/images/tarot/6-TheLovers_small.png",
+        },
         description:
             "The Lovers symbolize love, union, and value-based choices. They ask for alignment between heart and action.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Jaze",
+            link: "https://www.instagram.com/jazetallo/",
+        },
         symbolism:
-            "Two figures beneath an angel, representing connection and meaningful decisions.",
+            "Without light there is no shade. The chord is dissonant, yet still seeks resolution.",
         fortunes: {
             past: [
                 "A relationship or choice defined what love means to you.",
@@ -182,13 +237,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/chariot.jpg": {
+    chariot: {
+        id: "chariot",
         name: "The Chariot",
+        image: {
+            src: "/images/tarot/7-TheChariot.png",
+            loadingSrc: "/images/tarot/7-TheChariot_small.png",
+        },
         description:
             "The Chariot signifies determination, momentum, and victory through alignment of opposing forces.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "DENMarkus",
+            link: "https://www.instagram.com/denmarkus_cool/",
+        },
         symbolism:
-            "A rider steering twin sphinxes, symbolizing harnessed will and controlled motion.",
+            "A masked rider, The Chariot advances forward. Is there freedom in motion, or peace in the stillness left behind?",
         fortunes: {
             past: [
                 "You’ve overcome obstacles through determination.",
@@ -208,13 +271,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/strength.jpg": {
+    strength: {
+        id: "strength",
         name: "Strength",
+        image: {
+            src: "/images/tarot/8-Strength.png",
+            loadingSrc: "/images/tarot/8-Strength_small.png",
+        },
         description:
             "Strength is gentle courage, compassion, and inner fortitude. It tames fear through kindness.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "hoshiyo",
+            link: "https://www.instagram.com/hoshioyo/",
+        },
         symbolism:
-            "A figure calming a lion, signifying compassionate control and bravery.",
+            "Within the crown palace, Strength builds in glutinous bonds. The language of the wood oven is that of warmth and strength.",
         fortunes: {
             past: [
                 "You’ve shown resilience in the face of difficulty.",
@@ -234,13 +305,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/hermit.jpg": {
+    hermit: {
+        id: "hermit",
         name: "The Hermit",
+        image: {
+            src: "/images/tarot/9-TheHermit.png",
+            loadingSrc: "/images/tarot/9-TheHermit_small.png",
+        },
         description:
             "The Hermit represents introspection, solitude, and inner guidance. Retreat to find your own light.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "beabubb",
+            link: "https://www.instagram.com/beabubb/",
+        },
         symbolism:
-            "A cloaked wanderer with a lantern, seeking wisdom in quiet places.",
+            "The lantern dims, but the spark does not extinguish. The Hermit may yet speak, though there are few that ask.",
         fortunes: {
             past: [
                 "Time alone once helped you see what truly matters.",
@@ -260,11 +339,19 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/wheel.jpg": {
+    wheel: {
+        id: "wheel",
         name: "Wheel of Fortune",
+        image: {
+            src: "/images/tarot/10-WheelOfFortune.png",
+            loadingSrc: "/images/tarot/10-WheelOfFortune_small.png",
+        },
         description:
             "The Wheel of Fortune speaks to cycles, fate, and timely change. What turns down will rise again.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Dale Lendl",
+            link: "https://www.instagram.com/heymoonly_/",
+        },
         symbolism:
             "A great wheel with creatures of knowledge, symbolizing cycles and destiny.",
         fortunes: {
@@ -286,13 +373,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/justice.jpg": {
+    justice: {
+        id: "justice",
         name: "Justice",
+        image: {
+            src: "/images/tarot/11-Justice.png",
+            loadingSrc: "/images/tarot/11-Justice_small.png",
+        },
         description:
             "Justice symbolizes truth, fairness, and accountability. Choices carry consequences; balance must be restored.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Cran",
+            link: "https://www.instagram.com/lastcranisornge/",
+        },
         symbolism:
-            "A figure with scales and sword, representing measured truth and ethical clarity.",
+            "The great Metronome swings, keeping tempo and balance amid the cacophonic symphony of life.",
         fortunes: {
             past: [
                 "You’ve made difficult choices that shaped your integrity.",
@@ -312,13 +407,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/hanged.jpg": {
+    hanged: {
+        id: "hanged",
         name: "The Hanged Man",
+        image: {
+            src: "/images/tarot/12-TheHangedMan.png",
+            loadingSrc: "/images/tarot/12-TheHangedMan_small.png",
+        },
         description:
             "The Hanged Man is surrender, pause, and new perspective. Progress comes from letting go.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Cran",
+            link: "https://www.instagram.com/lastcranisornge/",
+        },
         symbolism:
-            "A figure suspended upside down, haloed, seeing differently through sacrifice.",
+            "Suspended by it's own directive, The Hanged Man refactors its code, believing that freedom lies in perfect execution.",
         fortunes: {
             past: [
                 "You’ve learned to step back instead of forcing outcomes.",
@@ -338,13 +441,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/death.jpg": {
+    death: {
+        id: "death",
         name: "Death",
+        image: {
+            src: "/images/tarot/13-Death.png",
+            loadingSrc: "/images/tarot/13-Death_small.png",
+        },
         description:
             "Death marks endings, transformation, and inevitable change. It clears space for renewal.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Gabriel Altrows",
+            link: "https://www.instagram.com/gabrielaltrowsart/",
+        },
         symbolism:
-            "A skeletal rider passes through, signaling closure and rebirth.",
+            "As the cicada sheds it's skin, Death leads to a life anew. A new world stirs within the shell of the old; buzzsaw wings of a new dawn.",
         fortunes: {
             past: [
                 "You’ve closed a chapter that no longer fit.",
@@ -364,11 +475,19 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/temperance.jpg": {
+    temperance: {
+        id: "temperance",
         name: "Temperance",
+        image: {
+            src: "/images/tarot/14-Temperance.png",
+            loadingSrc: "/images/tarot/14-Temperance_small.png",
+        },
         description:
-            "Temperance balances extremes and blends differences. It guides healing through moderation.",
-        artist: "Unknown Artist",
+            "Each note tempers the next. In their meeting, an alchemy of chords creates a sum greater than it's parts.",
+        artist: {
+            name: "Katie Hicks",
+            link: "https://www.instagram.com/kati.hicks",
+        },
         symbolism:
             "An angel pours water between cups, symbolizing harmony and integration.",
         fortunes: {
@@ -390,13 +509,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/devil.jpg": {
+    devil: {
+        id: "devil",
         name: "The Devil",
+        image: {
+            src: "/images/tarot/15-TheDevil.png",
+            loadingSrc: "/images/tarot/15-TheDevil_small.png",
+        },
         description:
             "The Devil represents temptation, attachment, and self-imposed chains. Awareness breaks the spell.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Gabriel Altrows",
+            link: "https://www.instagram.com/gabrielaltrowsart/",
+        },
         symbolism:
-            "A horned figure with two chained humans, symbolizing shadow and bondage.",
+            "Pulling the monolith forward with chains of their own design, The Devil urges each forward. Does progress demand devotion - or could we simply let go?",
         fortunes: {
             past: [
                 "You’ve seen how comfort can become a trap.",
@@ -416,13 +543,21 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/tower.jpg": {
+    tower: {
+        id: "tower",
         name: "The Tower",
+        image: {
+            src: "/images/tarot/16-TheTower.png",
+            loadingSrc: "/images/tarot/16-TheTower_small.png",
+        },
         description:
             "The Tower signals sudden upheaval and revelation. What was false must fall.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Dale Lendl",
+            link: "https://www.instagram.com/heymoonly_/",
+        },
         symbolism:
-            "A struck tower with figures falling—collapse that clears illusions.",
+            "The tape tangles within it's own gears, the wheel spins aloof. The Tower breaks to pieces with the flutter of centuries.",
         fortunes: {
             past: [
                 "A sudden change once cleared a shaky foundation.",
@@ -442,11 +577,19 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/star.jpg": {
+    star: {
+        id: "star",
         name: "The Star",
+        image: {
+            src: "/images/tarot/17-TheStar.png",
+            loadingSrc: "/images/tarot/17-TheStar_small.png",
+        },
         description:
             "The Star brings hope, healing, and guidance after turmoil. It restores faith and calm.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Jaze",
+            link: "https://www.instagram.com/jazetallo/",
+        },
         symbolism:
             "A figure pours water under starlight, symbolizing renewal and grace.",
         fortunes: {
@@ -468,11 +611,19 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/moon.jpg": {
+    moon: {
+        id: "moon",
         name: "The Moon",
+        image: {
+            src: "/images/tarot/18-TheMoon.png",
+            loadingSrc: "/images/tarot/18-TheMoon_small.png",
+        },
         description:
             "The Moon evokes dreams, illusions, and tides of emotion. Not all is as it seems.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "slowcurse",
+            link: "https://www.instagram.com/slowcurse/",
+        },
         symbolism:
             "A moonlit path with creatures and a pool, representing imagination and uncertainty.",
         fortunes: {
@@ -494,11 +645,19 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/sun.jpg": {
+    sun: {
+        id: "sun",
         name: "The Sun",
+        image: {
+            src: "/images/tarot/19-TheSun.png",
+            loadingSrc: "/images/tarot/19-TheSun_small.png",
+        },
         description:
             "The Sun shines clarity, vitality, and joy. It promises success and simplicity.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Crystal Lin",
+            link: "https://cmylin.portfoliobox.net/main",
+        },
         symbolism:
             "A radiant sun over a child and wallflower, symbolizing warmth and truth.",
         fortunes: {
@@ -520,11 +679,19 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/judgement.jpg": {
+    judgement: {
+        id: "judgement",
         name: "Judgement",
+        image: {
+            src: "/images/tarot/20-Judgement.png",
+            loadingSrc: "/images/tarot/20-Judgement_small.png",
+        },
         description:
             "Judgement heralds awakening, reckoning, and calls to purpose. It’s time to answer.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Eggu",
+            link: "https://www.instagram.com/eggu.egg/",
+        },
         symbolism:
             "Figures rise to a trumpet’s call—resurrection and realization.",
         fortunes: {
@@ -546,11 +713,19 @@ export const tarotCardData = {
         },
     },
 
-    "/images/tarot/world.jpg": {
+    world: {
+        id: "world",
         name: "The World",
+        image: {
+            src: "/images/tarot/21-TheWorld.png",
+            loadingSrc: "/images/tarot/21-TheWorld_small.png",
+        },
         description:
             "The World completes cycles and integrates lessons. It brings wholeness, travel, and arrival.",
-        artist: "Unknown Artist",
+        artist: {
+            name: "Crystal Lin",
+            link: "https://cmylin.portfoliobox.net/main",
+        },
         symbolism:
             "A crowned dancer in a wreath, signifying completion and unity.",
         fortunes: {
@@ -575,10 +750,15 @@ export const tarotCardData = {
 
 // Default card info for unknown cards
 export const defaultCardInfo = {
+    id: "unknown",
     name: "Unknown Card",
+    image: {
+        src: null,
+        loadingSrc: "/images/tarot/loading/unknown.png",
+    },
     description:
         "A mysterious tarot card with hidden meanings waiting to be discovered.",
-    artist: "Unknown Artist",
+    artist: { name: "Unknown Artist", link: null },
     symbolism:
         "The mysteries of the universe revealed through ancient symbols.",
     fortunes: {
@@ -600,7 +780,7 @@ export const defaultCardInfo = {
     },
 };
 
-// Helper function to get card information
-export const getCardInfo = (cardPath) => {
-    return tarotCardData[cardPath] || defaultCardInfo;
+// Helper to get card info by id
+export const getCardInfo = (id) => {
+    return tarotCards[id] || defaultCardInfo;
 };
