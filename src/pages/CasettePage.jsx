@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import { useAnimate } from "motion/react";
 import { Howl } from "howler";
@@ -138,63 +139,70 @@ export default function CassettePage() {
 
     // ---- Render ----
     return (
-        <div id="CassettePage" className={"typewriter"} ref={scope}>
-            <div
-                className={`repair-container ${
-                    tapeHoverable ? "hoverable" : ""
-                }`}
-                style={{
-                    display: "none",
-                    pointerEvents: "none",
-                    opacity: 0,
-                }}
-            >
-                <span>{isMobile ? "Tap" : "Click"} to fix the Cassette</span>
-                <img
-                    draggable={false}
-                    className={`tape-img`}
-                    src={tapeSrc}
-                    alt=""
-                    onClick={handleClickCasette}
-                />
-            </div>
-            <div
-                className={`song-preview-container `}
-                style={{
-                    display: "none",
-                    opacity: 0,
-                }}
-            >
-                <iframe
-                    className="youtube"
-                    width="100%"
-                    height="auto"
-                    src="https://www.youtube.com/embed/RFuXdBOXtHI?si=sZzmJsqha_A_AUuZ"
-                    title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen
-                ></iframe>
-                <div className="laylo-container">
-                    {showLaylo && (
-                        <iframe
-                            id="laylo-drop-f1a526de-0264-47bc-a2b2-257e19be0c67"
-                            frameborder="0"
-                            scrolling="no"
-                            allow="web-share"
-                            allowtransparency="true"
-                            style={{
-                                zIndex: 99999,
-                                width: "100%",
-                                backgroundColor: "black",
-                            }}
-                            src="https://embed.laylo.com?dropId=f1a526de-0264-47bc-a2b2-257e19be0c67&color=ffffff&minimal=false&theme=dark&background=translucent&customTitle=PRESAVE%20%22RIFT%22"
-                        ></iframe>
-                    )}
+        <>
+            <Helmet>
+                <title>Exorcise Your Ex - Cassette</title>
+            </Helmet>
+            <div id="CassettePage" className={"typewriter"} ref={scope}>
+                <div
+                    className={`repair-container ${
+                        tapeHoverable ? "hoverable" : ""
+                    }`}
+                    style={{
+                        display: "none",
+                        pointerEvents: "none",
+                        opacity: 0,
+                    }}
+                >
+                    <span>
+                        {isMobile ? "Tap" : "Click"} to fix the Cassette
+                    </span>
+                    <img
+                        draggable={false}
+                        className={`tape-img`}
+                        src={tapeSrc}
+                        alt=""
+                        onClick={handleClickCasette}
+                    />
                 </div>
-                <LinkButton to="/kit">Back to Kit</LinkButton>
+                <div
+                    className={`song-preview-container `}
+                    style={{
+                        display: "none",
+                        opacity: 0,
+                    }}
+                >
+                    <iframe
+                        className="youtube"
+                        width="100%"
+                        height="auto"
+                        src="https://www.youtube.com/embed/RFuXdBOXtHI?si=sZzmJsqha_A_AUuZ"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                    ></iframe>
+                    <div className="laylo-container">
+                        {showLaylo && (
+                            <iframe
+                                id="laylo-drop-f1a526de-0264-47bc-a2b2-257e19be0c67"
+                                frameborder="0"
+                                scrolling="no"
+                                allow="web-share"
+                                allowtransparency="true"
+                                style={{
+                                    zIndex: 99999,
+                                    width: "100%",
+                                    backgroundColor: "black",
+                                }}
+                                src="https://embed.laylo.com?dropId=f1a526de-0264-47bc-a2b2-257e19be0c67&color=ffffff&minimal=false&theme=dark&background=translucent&customTitle=PRESAVE%20%22RIFT%22"
+                            ></iframe>
+                        )}
+                    </div>
+                    <LinkButton to="/kit">Back to Kit</LinkButton>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

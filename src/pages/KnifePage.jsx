@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { useState, useEffect, useRef } from "react";
 import { useAnimate } from "motion/react";
 import { Howl } from "howler";
@@ -267,113 +268,122 @@ export default function KnifePage() {
 
     // ---- Render ----
     return (
-        <div
-            id="KnifePage"
-            className={
-                "typewriter " +
-                (knifeCursorEnabled && !isMobile ? "cursor-none" : "")
-            }
-            ref={scope}
-        >
-            <div className="intro-container">
-                <span className="line1" style={{ opacity: 0 }}>
-                    The ritual demands a sacrifice
-                </span>
-                <span className="line2 red" style={{ opacity: 0 }}>
-                    Offer what flows within
-                </span>
-            </div>
-
-            <div
-                className="knife-container"
-                style={{ display: "none", opacity: 0 }}
-            >
-                <span>Take the dagger</span>
-                <img
-                    draggable={false}
-                    onClick={handleTakeKnife}
-                    src="/images/kit/full/knife.png"
-                    alt=""
+        <>
+            <Helmet>
+                <title>Exorcise Your Ex - Dagger</title>
+                <meta
+                    name="description"
+                    content="Chopping onions always makes me cry."
                 />
-            </div>
-
+            </Helmet>
             <div
-                className="onion-container"
-                style={{
-                    display: "none",
-                    opacity: 0,
-                    transform: "translate(0%, 0%)",
-                }}
+                id="KnifePage"
+                className={
+                    "typewriter " +
+                    (knifeCursorEnabled && !isMobile ? "cursor-none" : "")
+                }
+                ref={scope}
             >
-                <span>{isMobile && "Tap to "}Chop</span>
-                <img
-                    style={{
-                        zIndex: 200,
-                    }}
-                    className={onionGlow ? "glow" : undefined}
-                    draggable={false}
-                    src={ONION_STAGES[onionIndex]}
-                    alt=""
-                />
+                <div className="intro-container">
+                    <span className="line1" style={{ opacity: 0 }}>
+                        The ritual demands a sacrifice
+                    </span>
+                    <span className="line2 red" style={{ opacity: 0 }}>
+                        Offer what flows within
+                    </span>
+                </div>
+
                 <div
-                    className="onion-click-zone"
-                    onClick={handleOnionChop}
-                    onMouseEnter={() => {
-                        setOnionGlow(true);
-                    }}
-                    onMouseLeave={() => {
-                        setOnionGlow(false);
-                    }}
-                ></div>
-            </div>
+                    className="knife-container"
+                    style={{ display: "none", opacity: 0 }}
+                >
+                    <span>Take the dagger</span>
+                    <img
+                        draggable={false}
+                        onClick={handleTakeKnife}
+                        src="/images/kit/full/knife.png"
+                        alt=""
+                    />
+                </div>
 
-            <div
-                className="bottle-container"
-                style={{
-                    opacity: 0,
-                    pointerEvents: "none",
-                }}
-            >
-                <span
-                    className="bottle-text"
+                <div
+                    className="onion-container"
                     style={{
+                        display: "none",
                         opacity: 0,
+                        transform: "translate(0%, 0%)",
                     }}
                 >
-                    You filled the bottle with tears
-                </span>
-                <img
-                    className="bottle-img"
-                    draggable={false}
-                    src={BOTTLE_STAGES[bottleIndex]}
-                    alt=""
-                />
-                <LinkButton
-                    className="bottle-text"
+                    <span>{isMobile && "Tap to "}Chop</span>
+                    <img
+                        style={{
+                            zIndex: 200,
+                        }}
+                        className={onionGlow ? "glow" : undefined}
+                        draggable={false}
+                        src={ONION_STAGES[onionIndex]}
+                        alt=""
+                    />
+                    <div
+                        className="onion-click-zone"
+                        onClick={handleOnionChop}
+                        onMouseEnter={() => {
+                            setOnionGlow(true);
+                        }}
+                        onMouseLeave={() => {
+                            setOnionGlow(false);
+                        }}
+                    ></div>
+                </div>
+
+                <div
+                    className="bottle-container"
                     style={{
                         opacity: 0,
-                    }}
-                    to="/kit"
-                >
-                    Return to Kit
-                </LinkButton>
-            </div>
-
-            {knifeCursorEnabled && (
-                <img
-                    draggable={false}
-                    src="/images/kit/full/knife.png"
-                    alt=""
-                    className="knife-cursor"
-                    style={{
-                        position: "fixed",
-                        opacity: 1,
-                        left: `${knifePos.x + 100}px`,
-                        top: `${knifePos.y - 100}px`,
                         pointerEvents: "none",
                     }}
-                />
-            )}
-        </div>
+                >
+                    <span
+                        className="bottle-text"
+                        style={{
+                            opacity: 0,
+                        }}
+                    >
+                        You filled the bottle with tears
+                    </span>
+                    <img
+                        className="bottle-img"
+                        draggable={false}
+                        src={BOTTLE_STAGES[bottleIndex]}
+                        alt=""
+                    />
+                    <LinkButton
+                        className="bottle-text"
+                        style={{
+                            opacity: 0,
+                        }}
+                        to="/kit"
+                    >
+                        Return to Kit
+                    </LinkButton>
+                </div>
+
+                {knifeCursorEnabled && (
+                    <img
+                        draggable={false}
+                        src="/images/kit/full/knife.png"
+                        alt=""
+                        className="knife-cursor"
+                        style={{
+                            position: "fixed",
+                            opacity: 1,
+                            left: `${knifePos.x + 100}px`,
+                            top: `${knifePos.y - 100}px`,
+                            pointerEvents: "none",
+                        }}
+                    />
+                )}
+            </div>
+        </>
     );
 }

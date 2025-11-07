@@ -135,6 +135,11 @@ const TarotModal = ({ selectedCard, onClose }) => {
                             src={cardInfo.image?.src || NO_ART_FALLBACK}
                             alt={cardInfo.name}
                             className="tarot-modal-image"
+                            onClick={() => {
+                                if (isMobile) {
+                                    onClose();
+                                }
+                            }}
                             onError={(e) => {
                                 if (
                                     e.target.src !==
@@ -158,12 +163,12 @@ const TarotModal = ({ selectedCard, onClose }) => {
                     <div className="tarot-card-name typewriter">
                         <WaveText intensity="low">{cardInfo.name}</WaveText>
                     </div>
-                    <div className="tarot-card-description">
-                        <p>{cardInfo.description}</p>
-                    </div>
                     <div className="tarot-card-symbolism">
-                        <h4>Symbolism</h4>
                         <p>{cardInfo.symbolism}</p>
+                    </div>
+                    <div className="tarot-card-description">
+                        <h4>Description</h4>
+                        <p>{cardInfo.description}</p>
                     </div>
                     <div className="tarot-card-artist">
                         <h4>Artist</h4>

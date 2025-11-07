@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
 import { Howl } from "howler";
 import CursorZone from "../components/CursorZone";
@@ -67,68 +68,79 @@ export default function EntryPage() {
     }, [fadeOut, navigate]);
 
     return (
-        <div
-            id="EntryPage"
-            style={{
-                transition: "opacity 1s",
-                opacity: fadeOut ? 0 : 1,
-            }}
-        >
-            <div className="logo">
-                <img src="/images/logo_full_white.png" alt="" />
-            </div>
+        <>
+            <Helmet>
+                <title>Exorcise Your Ex - Call Now!</title>
+                <meta
+                    name="description"
+                    content="Are you a victim of heartbreak? Call today!"
+                />
+            </Helmet>
             <div
-                className="candle"
+                id="EntryPage"
                 style={{
-                    ["--flame-x"]: FLAME_X,
-                    ["--flame-y"]: FLAME_Y,
-                    ["--flame-w"]: FLAME_W,
+                    transition: "opacity 1s",
+                    opacity: fadeOut ? 0 : 1,
                 }}
             >
-                <div className="skull">
-                    <img src="/images/homepage/skull.webp" alt="" />
+                <div className="logo">
+                    <img src="/images/logo_full_white.png" alt="" />
                 </div>
-                <img
-                    className="stick"
-                    src="/images/homepage/candle.png"
-                    alt=""
-                />
-                <img
-                    className="flame"
-                    src="/images/homepage/flame.gif"
-                    alt=""
-                />
+                <div
+                    className="candle"
+                    style={{
+                        ["--flame-x"]: FLAME_X,
+                        ["--flame-y"]: FLAME_Y,
+                        ["--flame-w"]: FLAME_W,
+                    }}
+                >
+                    <div className="skull">
+                        <img src="/images/homepage/skull.webp" alt="" />
+                    </div>
+                    <img
+                        className="stick"
+                        src="/images/homepage/candle.png"
+                        alt=""
+                    />
+                    <img
+                        className="flame"
+                        src="/images/homepage/flame.gif"
+                        alt=""
+                    />
+                </div>
+                <div
+                    className={`phone ${
+                        phoneAnswered ? "answered" : "hoverable"
+                    }`}
+                    onClick={handlePhoneClick}
+                >
+                    <img
+                        draggable={false}
+                        src={phoneAnswered ? PHONE_ANSWERED_SRC : PHONE_SRC}
+                        alt=""
+                    />
+                    <div className="prompt typewriter">CALL NOW!</div>
+                </div>
+                <div
+                    className="candle"
+                    style={{
+                        ["--flame-x"]: FLAME_X,
+                        ["--flame-y"]: FLAME_Y,
+                        ["--flame-w"]: FLAME_W,
+                    }}
+                >
+                    <img
+                        className="stick"
+                        src="/images/homepage/candle.png"
+                        alt=""
+                    />
+                    <img
+                        className="flame"
+                        src="/images/homepage/flame.gif"
+                        alt=""
+                    />
+                </div>
             </div>
-            <div
-                className={`phone ${phoneAnswered ? "answered" : "hoverable"}`}
-                onClick={handlePhoneClick}
-            >
-                <img
-                    draggable={false}
-                    src={phoneAnswered ? PHONE_ANSWERED_SRC : PHONE_SRC}
-                    alt=""
-                />
-                <div className="prompt typewriter">CALL NOW!</div>
-            </div>
-            <div
-                className="candle"
-                style={{
-                    ["--flame-x"]: FLAME_X,
-                    ["--flame-y"]: FLAME_Y,
-                    ["--flame-w"]: FLAME_W,
-                }}
-            >
-                <img
-                    className="stick"
-                    src="/images/homepage/candle.png"
-                    alt=""
-                />
-                <img
-                    className="flame"
-                    src="/images/homepage/flame.gif"
-                    alt=""
-                />
-            </div>
-        </div>
+        </>
     );
 }

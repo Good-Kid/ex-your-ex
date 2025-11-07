@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import React, { useEffect, useState } from "react";
 
 import ghostQuizData, {
@@ -5,7 +6,7 @@ import ghostQuizData, {
     resultFromScores,
     computeMaxWeights,
     normalizeScores,
-} from "../data/ghostData";
+} from "../data/quizData";
 import { motion, AnimatePresence, useAnimate } from "motion/react";
 import WaveText from "../components/WaveText";
 import { useGameState } from "../context/GameStateContext";
@@ -98,8 +99,9 @@ const QuizPage = () => {
         setBookSrcReal(finalSrc);
     };
 
-    const renderQuestion = () => {
+    const renderQuestion = (rawText = false) => {
         const text = ghostQuizData.questions[qIndex].text;
+        if (rawText) return text;
         return (
             <>
                 {text.split("\n").map((line, idx) => (
@@ -249,15 +251,6 @@ const QuizPage = () => {
         const nextScores = scoreAnswers(scores, weights);
         setScores(nextScores);
 
-        // TODO: REMOVE DEBUG
-        const maxima = computeMaxWeights(ghostQuizData.questions);
-        const { nVoice, nTemper } = normalizeScores(nextScores, maxima);
-        console.log(
-            `[Q${question_index + 1}] voice=${nextScores.voice} temper=${
-                nextScores.temper
-            } | nVoice=${nVoice.toFixed(3)} nTemper=${nTemper.toFixed(3)}`
-        );
-
         const quizOver = qIndex + 1 >= ghostQuizData.questions.length;
         if (quizOver) {
             await quizOverAnimation(nextScores);
@@ -375,43 +368,109 @@ const QuizPage = () => {
     };
 
     // ----- Render -----
-    if (quizResult) {
-        // Results page
-        return (
-            <div id="QuizPageResults" ref={scope}>
-                <div className="img-container">
-                    <img
-                        id="quiz-result-img"
-                        src={`/images/quiz/result_art/${quizResult.id}.png`}
-                        onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src =
-                                "/images/quiz/result_art/poltergeist.png";
-                        }}
-                        alt=""
-                    />
-                </div>
-                <div className="buttons">
-                    <LinkButton to="/kit">Back to Kit</LinkButton>
-                    <button onClick={handleShareClick}>Share Result</button>
-                </div>
+    // ----- Render -----
+
+    // Prebuild the three views so the final return is clean
+    const ResultsView = (
+        <div id="QuizPageResults" ref={scope}>
+            <div className="img-container">
+                <img
+                    id="quiz-result-img"
+                    src={`/images/quiz/result_art/${quizResult?.id}.png`}
+                    onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src =
+                            "/images/quiz/result_art/poltergeist.png";
+                    }}
+                    alt=""
+                />
             </div>
-        );
-    } else if (isMobile) {
-        // Mobile Quiz
-        return (
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="intro-container"
-                id="QuizPageMobile"
-                ref={scope}
-            >
+            <div className="buttons">
+                <LinkButton to="/kit">Back to Kit</LinkButton>
+                <button onClick={handleShareClick}>Share Result</button>
+            </div>
+        </div>
+    );
+
+    const MobileView = (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="intro-container"
+            id="QuizPageMobile"
+            ref={scope}
+        >
+            <AnimatePresence>
+                {!quizStarted ? (
+                    <>
+                        <div className="intro-container">
+                            <div className="top">
+                                <div className="title typewriter">
+                                    <WaveText intensity="low" noWrap>
+                                        Personality Quiz
+                                    </WaveText>
+                                </div>
+                                <div className="description">
+                                    What kind of spirit will you become when you
+                                    die?
+                                </div>
+                            </div>
+                            <img
+                                className="book-img"
+                                src={bookSrc}
+                                alt=""
+                                onClick={mobileStartQuiz}
+                            />
+                            <div className="bottom">
+                                {isMobile ? "Tap" : "Click"} the Book to begin
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="quiz-container-mobile"
+                    >
+                        <div className="question typewriter-lite-bold ">
+                            {`Q${qIndex + 1}/${ghostQuizData.questions.length}`}
+                            : {renderQuestion(true)}
+                        </div>
+                        <div className="question-art">
+                            <img
+                                src={ghostQuizData.questions[qIndex].imageSrc}
+                                alt=""
+                            />
+                        </div>
+                        <div className="answer-choices">{renderChoices()}</div>
+                        <span className="watermark">exorciseyourex.com</span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
+    );
+
+    const DesktopView = (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="intro-container"
+            id="QuizPage"
+            ref={scope}
+        >
+            <div className="book-container">
                 <AnimatePresence>
-                    {!quizStarted ? (
+                    {!quizStarted && (
                         <>
-                            <div className="intro-container">
+                            <motion.div
+                                initial={{ opacity: 1 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="intro-container"
+                            >
                                 <div className="top">
                                     <div className="title typewriter">
                                         <WaveText intensity="low" noWrap>
@@ -423,40 +482,45 @@ const QuizPage = () => {
                                         you die?
                                     </div>
                                 </div>
-                                <img
-                                    className="book-img"
-                                    src={bookSrc}
-                                    alt=""
-                                    onClick={mobileStartQuiz}
-                                />
-
                                 <div className="bottom">
-                                    {isMobile ? "Tap" : "Click"} the Book to
-                                    begin
+                                    Click the Book to begin
                                 </div>
-                            </div>
+                            </motion.div>
                         </>
-                    ) : (
+                    )}
+                </AnimatePresence>
+
+                <img
+                    draggable={false}
+                    className={`book-img ${!quizStarted && "hoverable"}`}
+                    onClick={desktopStartQuiz}
+                    src={bookSrc}
+                    style={quizStarted ? {} : { transform: "translateX(-70%)" }}
+                />
+
+                <AnimatePresence>
+                    {renderBookContent && (
                         <motion.div
+                            key="book-text"
+                            className="book-text-container"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="quiz-container-mobile"
                         >
                             <div className="question-number typewriter">
-                                {`Question ${qIndex + 1}/${
-                                    ghostQuizData.questions.length
-                                }`}
+                                <WaveText intensity="low">
+                                    {`Question ${qIndex + 1}/${
+                                        ghostQuizData.questions.length
+                                    }`}
+                                </WaveText>
                             </div>
-                            <div className="question-art">
+                            <div className="question typewriter">
                                 <img
                                     src={
                                         ghostQuizData.questions[qIndex].imageSrc
                                     }
                                     alt=""
                                 />
-                            </div>
-                            <div className="question typewriter ">
                                 {renderQuestion()}
                             </div>
                             <div className="answer-choices">
@@ -465,96 +529,24 @@ const QuizPage = () => {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </motion.div>
-        );
-    } else {
-        // Desktop Quiz
-        return (
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="intro-container"
-                id="QuizPage"
-                ref={scope}
-            >
-                <div className="book-container">
-                    <AnimatePresence>
-                        {!quizStarted && (
-                            <>
-                                <motion.div
-                                    initial={{ opacity: 1 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="intro-container"
-                                >
-                                    <div className="top">
-                                        <div className="title typewriter">
-                                            <WaveText intensity="low" noWrap>
-                                                Personality Quiz
-                                            </WaveText>
-                                        </div>
-                                        <div className="description">
-                                            What kind of spirit will you become
-                                            when you die?
-                                        </div>
-                                    </div>
-                                    <div className="bottom">
-                                        Click the Book to begin
-                                    </div>
-                                </motion.div>
-                            </>
-                        )}
-                    </AnimatePresence>
-                    <img
-                        draggable={false}
-                        className={`book-img ${!quizStarted && "hoverable"}`}
-                        onClick={desktopStartQuiz}
-                        src={bookSrc}
-                        style={
-                            quizStarted
-                                ? {}
-                                : {
-                                      transform: "translateX(-70%)",
-                                  }
-                        }
-                    />
-                    <AnimatePresence>
-                        {renderBookContent && (
-                            <motion.div
-                                key="book-text"
-                                className="book-text-container"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                            >
-                                <div className="question-number typewriter">
-                                    <WaveText intensity="low">
-                                        {`Question ${qIndex + 1}/${
-                                            ghostQuizData.questions.length
-                                        }`}
-                                    </WaveText>
-                                </div>
-                                <div className="question typewriter">
-                                    <img
-                                        src={
-                                            ghostQuizData.questions[qIndex]
-                                                .imageSrc
-                                        }
-                                        alt=""
-                                    />
-                                    {renderQuestion()}
-                                </div>
-                                <div className="answer-choices ">
-                                    {renderChoices()}
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            </motion.div>
-        );
-    }
+            </div>
+        </motion.div>
+    );
+
+    // Single unified return — between two React fragments as requested
+    return (
+        <>
+            <Helmet>
+                <title>Exorcise Your Ex - Personality Quiz</title>
+                <meta
+                    name="description"
+                    content="What kind of ghost will you be when you die?"
+                />
+                {/* TODO: Add more metadata for this page */}
+            </Helmet>
+            {quizResult ? ResultsView : isMobile ? MobileView : DesktopView}
+        </>
+    );
 };
 
 export default QuizPage;

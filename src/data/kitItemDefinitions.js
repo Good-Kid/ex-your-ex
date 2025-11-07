@@ -19,7 +19,7 @@ const kitItemDefinitions = {
     book: {
         name: "Grimoire",
         description:
-            "Find out awaits you in the afterlife by taking a walk through a mysterious house in the woods.",
+            "Find out what awaits you in the afterlife by taking a walk through a mysterious house in the woods.",
         imageSrc: "/images/kit/full/book.png",
         maxWidth: 400,
         inspectLink: "/quiz",
@@ -43,7 +43,7 @@ const kitItemDefinitions = {
     knife: {
         name: "Ritual Dagger",
         description:
-            "A ceremonial blade used in ancient rituals. Its edge remains eternally sharp.",
+            "A ceremonial blade used in rituals. Its edge is very sharp.",
         imageSrc: "/images/kit/full/knife.png",
         rotation: -45,
         maxHeight: 400,
@@ -66,8 +66,7 @@ const kitItemDefinitions = {
     },
     candles: {
         name: "Ritual Candles",
-        description:
-            "Ancient candles used in summoning rituals. Their flickering flames guide spirits from the other side.",
+        description: "Basic candles used in summoning rituals.",
         imageSrc: "/images/kit/full/candles.png",
         maxWidth: 300,
     },

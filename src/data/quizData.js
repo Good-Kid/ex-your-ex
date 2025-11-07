@@ -131,7 +131,7 @@ const ghostQuizData = {
         },
         {
             id: 2,
-            text: "As you approach, you notice the door creek open\n You decide to go in.\n How do you enter?",
+            text: "As you approach, you notice the door creek open.\n You decide to go in.\n How do you enter?",
             imageSrc: "/images/quiz/question_art/circle.png",
             answers: [
                 {

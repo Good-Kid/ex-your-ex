@@ -7,6 +7,8 @@ import QuizPage from "./pages/QuizPage";
 import KnifePage from "./pages/KnifePage";
 import CassettePage from "./pages/CasettePage";
 import GalleryPage from "./pages/GalleryPage";
+import RitualPage from "./pages/RitualPage";
+import FinalPage from "./pages/FinalPage";
 
 function App() {
     return (
@@ -20,6 +22,8 @@ function App() {
                     <Route path="/quiz" element={<QuizPage />} />
                     <Route path="/knife" element={<KnifePage />} />
                     <Route path="/cassette" element={<CassettePage />} />
+                    <Route path="/ritual" element={<RitualPage />} />
+                    <Route path="/final" element={<FinalPage />} />
                 </Routes>
             </Router>
         </GameStateProvider>
