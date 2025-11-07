@@ -159,7 +159,7 @@ export default function KitPage() {
                     { text: "the time has come...", red_eyes: true },
                 ]);
             }
-            if (!gameState.flags.ritualCompleted) {
+            if (gameState.flags.ritualCompleted) {
                 whisper_pool = [
                     { text: "thanks for playing..." },
                     { text: "come back nov 21..." },
@@ -623,7 +623,8 @@ export default function KitPage() {
                             {gameState.flags.quizCompleted &&
                             gameState.flags.cassetteCompleted &&
                             gameState.flags.tarotCompleted &&
-                            gameState.flags.bottleCompleted ? (
+                            gameState.flags.bottleCompleted &&
+                            !gameState.flags.ritualCompleted ? (
                                 <image
                                     id="note_normal"
                                     width="808"

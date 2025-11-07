@@ -1,12 +1,54 @@
-# React + Vite
+<p align="left">
+  <img src="public/images/logo_full_white.png" alt="Exorcise Your Ex Logo" width="300"/>
+</p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Website Status](https://img.shields.io/website?url=https://exorciseyourex.com)
+![Firebase Hosting](https://img.shields.io/badge/hosting-firebase-orange)
+![React](https://img.shields.io/badge/react-19.1.1-blue)
 
-Currently, two official plugins are available:
+# Exorcise Your Ex
 
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Exorcise Your Ex is an interactive web experience created to promo Good Kid Band's new song Rift. It follows the player receiving and using a fictional exorcism kit to "exorcise" the feelings of heartbreak and emptiness that one might feel after a breakup.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-   **Quiz:** Personality quiz determines what kind of spirit the user will become when they die.
+-   **Tarot:** Interactive tarot reading lets users diving their future with Good Kid themed tarot cards from 11 differt artists.
+-   **Ritual:** Final interactive ritual cutscene where users summon the spirit of their heartbreak and let it go.
+-   **Mobile Friendly:** Responsive, often completely different design for desktop and mobile.
+-   **Shareable Results:** Users can share their quiz results with in-depth metadata.
+-   **Metadata for Bots:** Static metadata pages can be generated for better link previews and SEO.
+
+## Tech Stack
+
+-   **React** (SPA)
+-   **Vite** (build tool)
+-   **Firebase** (hosting, database)
+-   **Howler.js** (audio)
+-   **react-helmet** (metadata management)
+-   **React Router** (routing)
+
+## Development
+
+-   Hot Module Replacement (HMR) for fast development.
+-   ESLint for code quality.
+-   Easily extensible for new ritual steps or features.
+
+## Getting Started
+
+1. Install dependencies:
+    ```bash
+    npm install
+    ```
+2. Start development server:
+    ```bash
+    npm run dev
+    ```
+3. Build for production:
+    ```bash
+    npm run build
+    ```
+4. Deploy to Firebase:
+    ```bash
+    firebase deploy --only hosting
+    ```

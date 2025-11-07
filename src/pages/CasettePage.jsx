@@ -176,7 +176,7 @@ export default function CassettePage() {
                         className="youtube"
                         width="100%"
                         height="auto"
-                        src="https://www.youtube.com/embed/RFuXdBOXtHI?si=sZzmJsqha_A_AUuZ"
+                        src="https://www.youtube.com/embed/jj6CBSG5ZQE?si=sZzmJsqha_A_AUuZ"
                         title="YouTube video player"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

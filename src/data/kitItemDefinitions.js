@@ -4,6 +4,7 @@ const kitItemDefinitions = {
         description:
             "Consult the cards to gain insight on your past, present, and future.",
         imageSrc: "/images/kit/full/tarot.png",
+        smallImageSrc: "/images/kit/small/tarot.png",
         maxHeight: 360,
         inspectLink: "/tarot",
         noFloat: true,
@@ -21,6 +22,7 @@ const kitItemDefinitions = {
         description:
             "Find out what awaits you in the afterlife by taking a walk through a mysterious house in the woods.",
         imageSrc: "/images/kit/full/book.png",
+        smallImageSrc: "/images/kit/small/book.png",
         maxWidth: 400,
         inspectLink: "/quiz",
     },
@@ -29,6 +31,7 @@ const kitItemDefinitions = {
         description:
             "An antique lighter. Used to light the candles during the ritual.",
         imageSrc: "/images/kit/full/lighter.png",
+        smallImageSrc: "/images/kit/small/lighter.png",
         maxHeight: 350,
         maxWidth: 150,
         rotation: -15,
@@ -45,6 +48,7 @@ const kitItemDefinitions = {
         description:
             "A ceremonial blade used in rituals. Its edge is very sharp.",
         imageSrc: "/images/kit/full/knife.png",
+        smallImageSrc: "/images/kit/small/knife.png",
         rotation: -45,
         maxHeight: 400,
         inspectLink: "/knife",
@@ -54,6 +58,7 @@ const kitItemDefinitions = {
         description:
             "A cassette tape that contains audio imperative to the ritual.",
         imageSrc: "/images/kit/full/cassette.png",
+        smallImageSrc: "/images/kit/small/cassette.png",
         maxWidth: 400,
         inspectLink: "/cassette",
     },
@@ -61,6 +66,7 @@ const kitItemDefinitions = {
         name: "Empty Bottle",
         description: "A small glass dropper bottle. It is currently empty.",
         imageSrc: "/images/kit/full/bottle.png",
+        smallImageSrc: "/images/kit/small/bottle.png",
         maxHeight: 350,
         rotation: 8,
     },
@@ -68,6 +74,7 @@ const kitItemDefinitions = {
         name: "Ritual Candles",
         description: "Basic candles used in summoning rituals.",
         imageSrc: "/images/kit/full/candles.png",
+        smallImageSrc: "/images/kit/small/candles.png",
         maxWidth: 300,
     },
 };

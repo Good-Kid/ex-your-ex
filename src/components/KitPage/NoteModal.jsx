@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGameState } from "../../context/GameStateContext";
 
 import { GrCheckbox } from "react-icons/gr";
@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 const NoteModal = ({ modalOpen, onClose }) => {
     const { gameState } = useGameState();
 
-    // ----- Detect Mobile -----
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -36,8 +35,6 @@ const NoteModal = ({ modalOpen, onClose }) => {
     }, [modalOpen]);
 
     const handleClickOutside = () => {
-        console.log("closin");
-
         onClose();
     };
 
@@ -46,12 +43,37 @@ const NoteModal = ({ modalOpen, onClose }) => {
     );
     const [imgLoaded, setImgLoaded] = useState(false);
 
-    // Preload ritual button image on mount
     useEffect(() => {
         const img = new window.Image();
         img.onload = () => setImgLoaded(true);
         img.src = "images/kit/ritualbutton.gif";
     }, []);
+
+    // Wait for paper/background image
+    const noteRef = useRef(null);
+    const [paperLoaded, setPaperLoaded] = useState(false);
+
+    useEffect(() => {
+        if (!modalOpen) return;
+        const el = noteRef.current;
+        if (!el) return;
+
+        const bg = window.getComputedStyle(el).backgroundImage || "";
+        const match = bg.match(/url\((['"]?)(.*?)\1\)/i);
+        const src = match?.[2];
+
+        if (!src) {
+            setPaperLoaded(true);
+            return;
+        }
+
+        const img = new window.Image();
+        img.onload = () => setPaperLoaded(true);
+        img.onerror = () => setPaperLoaded(true);
+        img.src = src.startsWith("data:") ? src : src;
+    }, [modalOpen]);
+
+    const ready = imgLoaded && paperLoaded;
 
     return (
         <div
@@ -62,8 +84,9 @@ const NoteModal = ({ modalOpen, onClose }) => {
             <div
                 className="note-container"
                 onClick={(e) => e.stopPropagation()}
+                ref={noteRef}
             >
-                {imgLoaded &&
+                {ready &&
                     (gameState.flags.quizCompleted &&
                     gameState.flags.cassetteCompleted &&
                     gameState.flags.tarotCompleted &&
@@ -101,93 +124,95 @@ const NoteModal = ({ modalOpen, onClose }) => {
                             </Link>
                         </div>
                     ) : (
-                        <div className="note-content handwritten">
-                            <span>
-                                Thank you for ordering an{" "}
-                                <i>Exorcise your Ex</i>
-                                <sup>™</sup> kit.
-                            </span>
-                            <span>
-                                It's our guarantee that by the time you complete
-                                the ritual, all of the heartbreak and grief
-                                you've been feeling will have left your body
-                                entirely.
-                            </span>
-                            <span>
-                                To get rid of those nasty feelings you've been
-                                dealing with, just follow these steps:
-                            </span>
-                            <div className="note-checklist">
-                                <span
-                                    className={
-                                        gameState.flags.cassetteCompleted
-                                            ? "completed"
-                                            : undefined
-                                    }
-                                >
-                                    {gameState.flags.cassetteCompleted ? (
-                                        <GrCheckboxSelected className="check-icon" />
-                                    ) : (
-                                        <GrCheckbox className="check-icon" />
-                                    )}
-                                    Listen to the Cassette
-                                </span>
-                                <span
-                                    className={
-                                        gameState.flags.tarotCompleted
-                                            ? "completed"
-                                            : undefined
-                                    }
-                                >
-                                    {gameState.flags.tarotCompleted ? (
-                                        <GrCheckboxSelected className="check-icon" />
-                                    ) : (
-                                        <GrCheckbox className="check-icon" />
-                                    )}
-                                    Read your Tarot
-                                </span>
-                                <span
-                                    className={
-                                        gameState.flags.quizCompleted
-                                            ? "completed"
-                                            : undefined
-                                    }
-                                >
-                                    {gameState.flags.quizCompleted ? (
-                                        <GrCheckboxSelected className="check-icon" />
-                                    ) : (
-                                        <GrCheckbox className="check-icon" />
-                                    )}
-                                    Consult the Grimoire
-                                </span>
-                                <span
-                                    className={
-                                        gameState.flags.bottleCompleted
-                                            ? "completed"
-                                            : undefined
-                                    }
-                                >
-                                    {gameState.flags.bottleCompleted ? (
-                                        <GrCheckboxSelected className="check-icon" />
-                                    ) : (
-                                        <GrCheckbox className="check-icon" />
-                                    )}
-                                    Fill the Bottle
+                        ready && (
+                            <div className="note-content handwritten">
+                                <span>
+                                    Thank you for ordering an{" "}
+                                    <i>Exorcise your Ex</i>
+                                    <sup>™</sup> kit.
                                 </span>
                                 <span>
-                                    {gameState.flags.ritualCompleted ? (
-                                        <GrCheckboxSelected className="check-icon" />
-                                    ) : (
-                                        <GrCheckbox className="check-icon" />
-                                    )}
-                                    Perform the Ritual
+                                    It's our guarantee that by the time you
+                                    complete the ritual, all of the heartbreak
+                                    and grief you've been feeling will have left
+                                    your body entirely.
+                                </span>
+                                <span>
+                                    To get rid of those nasty feelings you've
+                                    been dealing with, just follow these steps:
+                                </span>
+                                <div className="note-checklist">
+                                    <span
+                                        className={
+                                            gameState.flags.cassetteCompleted
+                                                ? "completed"
+                                                : undefined
+                                        }
+                                    >
+                                        {gameState.flags.cassetteCompleted ? (
+                                            <GrCheckboxSelected className="check-icon" />
+                                        ) : (
+                                            <GrCheckbox className="check-icon" />
+                                        )}
+                                        Listen to the Cassette
+                                    </span>
+                                    <span
+                                        className={
+                                            gameState.flags.tarotCompleted
+                                                ? "completed"
+                                                : undefined
+                                        }
+                                    >
+                                        {gameState.flags.tarotCompleted ? (
+                                            <GrCheckboxSelected className="check-icon" />
+                                        ) : (
+                                            <GrCheckbox className="check-icon" />
+                                        )}
+                                        Read your Tarot
+                                    </span>
+                                    <span
+                                        className={
+                                            gameState.flags.quizCompleted
+                                                ? "completed"
+                                                : undefined
+                                        }
+                                    >
+                                        {gameState.flags.quizCompleted ? (
+                                            <GrCheckboxSelected className="check-icon" />
+                                        ) : (
+                                            <GrCheckbox className="check-icon" />
+                                        )}
+                                        Consult the Grimoire
+                                    </span>
+                                    <span
+                                        className={
+                                            gameState.flags.bottleCompleted
+                                                ? "completed"
+                                                : undefined
+                                        }
+                                    >
+                                        {gameState.flags.bottleCompleted ? (
+                                            <GrCheckboxSelected className="check-icon" />
+                                        ) : (
+                                            <GrCheckbox className="check-icon" />
+                                        )}
+                                        Fill the Bottle
+                                    </span>
+                                    <span>
+                                        {gameState.flags.ritualCompleted ? (
+                                            <GrCheckboxSelected className="check-icon" />
+                                        ) : (
+                                            <GrCheckbox className="check-icon" />
+                                        )}
+                                        Perform the Ritual
+                                    </span>
+                                </div>
+                                <span>
+                                    P.S. If you get stuck, the skull might know
+                                    what to do.
                                 </span>
                             </div>
-                            <span>
-                                P.S. If you get stuck, the skull might know what
-                                to do.
-                            </span>
-                        </div>
+                        )
                     ))}
             </div>
             <span className="close-tip">
