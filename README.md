@@ -3,7 +3,7 @@
   <!-- Source for dark mode -->
   <source media="(prefers-color-scheme: dark)" srcset="public/images/logo_full_white.webp">
   <!-- Fallback image for light mode and other clients -->
-  <img alt="Ex Your Ex Logo" src="public/images/logo_full_dark.webp" width="300>
+  <img alt="Ex Your Ex Logo" src="public/images/logo_full_black.webp" width="300">
 </picture>
 
 </p>
