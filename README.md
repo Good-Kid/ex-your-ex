@@ -12,6 +12,8 @@
 ![Firebase Hosting](https://img.shields.io/badge/hosting-firebase-orange)
 ![React](https://img.shields.io/badge/react-19.1.1-blue)
 
+**🌐 [Visit Live Site](https://exorciseyourex.com)**
+
 # Exorcise Your Ex
 
 Exorcise Your Ex is an interactive web experience created to promo Good Kid Band's new song Rift. It follows the player receiving and using a fictional exorcism kit to "exorcise" the feelings of heartbreak and emptiness that one might feel after a breakup.
