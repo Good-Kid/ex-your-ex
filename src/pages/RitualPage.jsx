@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useGameState } from "../context/GameStateContext";
 import { useAnimate } from "motion/react";
 import { Howl } from "howler";
-import { incrementLetGoCount } from "../firebase";
+import { incrementLetGoCount, authReady } from "../firebase";
+import FinalPage from "./FinalPage";
 
 const ITEM_STEP_DIR = "images/ritual/item_step/";
 const RITUAL_STEP_DIR = "images/ritual/ritual_step/";
@@ -12,20 +13,20 @@ const STAGES = [
     {
         id: "bottle",
         prompt: "Click the bottle to create the circle",
-        item_steps: ["bottle1.png", "bottle2.png"],
-        ritual_steps: ["empty.png", "justthecircle.gif"],
+        item_steps: ["bottle1.webp", "bottle2.webp"],
+        ritual_steps: ["empty.webp", "justthecircle.gif"],
         sounds: ["clink.mp3"],
     },
     {
         id: "candles",
         prompt: "Click to place the candles",
         item_steps: [
-            "candleitem5.png",
-            "candleitem4.png",
-            "candleitem3.png",
-            "candleitem2.png",
-            "candleitem1.png",
-            "empty.png",
+            "candleitem5.webp",
+            "candleitem4.webp",
+            "candleitem3.webp",
+            "candleitem2.webp",
+            "candleitem1.webp",
+            "empty.webp",
         ],
         ritual_steps: [
             "justthecircle.gif",
@@ -47,14 +48,14 @@ const STAGES = [
     {
         id: "cassette",
         prompt: "Click to place the Cassette Player ",
-        item_steps: ["cassette_player.png", "empty.png"],
+        item_steps: ["cassette_player.webp", "empty.webp"],
         ritual_steps: ["5candlesadded.gif", "allcandlesandwalkman.gif"],
         sounds: ["put_down/put_down6.mp3"],
     },
     {
         id: "lighter",
         prompt: "Click to light the candles",
-        item_steps: ["lighter.png"],
+        item_steps: ["lighter.webp"],
         ritual_steps: [
             "allcandlesandwalkman.gif",
             "1candlelit.gif",
@@ -100,7 +101,7 @@ export default function RitualPage() {
     const { gameState, updateGameState } = useGameState();
     const navigate = useNavigate();
 
-    // Redirect if not all required flags are completed
+    // redirect if not all required flags are completed
     useEffect(() => {
         if (
             !(
@@ -114,7 +115,7 @@ export default function RitualPage() {
         }
     }, [gameState, navigate]);
 
-    // Finale background music
+    // Finale BGM
     const bgm = useRef(null);
     useEffect(() => {
         bgm.current = new Howl({
@@ -122,11 +123,13 @@ export default function RitualPage() {
             loop: true,
             volume: 0.6,
         });
-        // Optionally, stop music on unmount
         return () => {
-            if (bgm.current) bgm.current.stop();
+            try {
+                bgm.current?.stop();
+            } catch {}
         };
     }, []);
+
     const [stageIndex, setStageIndex] = useState(0);
     const [itemIndex, setItemIndex] = useState(0);
     const [ritualIndex, setRitualIndex] = useState(0);
@@ -136,6 +139,7 @@ export default function RitualPage() {
     const [playFinale, setPlayFinale] = useState(false);
     const [finaleText, setFinaleText] = useState("");
     const [hasLetGo, setHasLetGo] = useState(false);
+    const [finalVisible, setFinalVisible] = useState(false); // <- fixed typo
 
     const [scope, animate] = useAnimate();
 
@@ -157,12 +161,30 @@ export default function RitualPage() {
         });
     }, []);
 
+    // Detect Mobile
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(
+                /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                    navigator.userAgent
+                ) || window.matchMedia("(max-width: 768px)").matches
+            );
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
     const stage = STAGES[stageIndex];
     const safeItemIdx = Math.min(itemIndex, stage.item_steps.length - 1);
     const safeRitualIdx = Math.min(ritualIndex, stage.ritual_steps.length - 1);
     const itemSrc = ITEM_STEP_DIR + stage.item_steps[safeItemIdx];
     const ritualSrc = RITUAL_STEP_DIR + stage.ritual_steps[safeRitualIdx];
-    const itemPrompt = stage.prompt;
+
+    const itemPrompt = isMobile
+        ? stage.prompt.replace(/Click/g, "Tap")
+        : stage.prompt;
 
     const normalizeSoundSrc = (s) => (s.startsWith("/") ? s : `/sounds/${s}`);
     const playStageSound = (stg) => {
@@ -273,35 +295,51 @@ export default function RitualPage() {
         setIsBusy(false);
     };
 
+    // === FIXED: proceed even if counter fails ===
     const handleLettingGo = async () => {
         if (hasLetGo) return;
         setHasLetGo(true);
-        updateGameState({ ritualCompleted: true });
-        await incrementLetGoCount();
 
+        let order = null;
+        try {
+            if (gameState.flags.soulReleased == null) {
+                // new incrementLetGoCount returns a number (or throws)
+                await authReady;
+                const value = await incrementLetGoCount();
+                if (Number.isFinite(value)) order = value;
+            }
+        } catch (err) {
+            console.warn(
+                "[Ritual] incrementLetGoCount failed; continuing anyway:",
+                err
+            );
+            // swallow error and continue the ritual
+        } finally {
+            // Always mark ritual complete; include soulReleased only if we have a value
+            const patch = { ritualCompleted: true };
+            if (order != null) patch.soulReleased = order;
+            updateGameState(patch);
+        }
+
+        // Continue the finale regardless of counter result
         await animate(".finale-buttons", { opacity: 0 }, { duration: 1 });
 
-        animate(
-            ".ghost", // container
-            { bottom: 600, opacity: 0 }, // only vertical position + opacity
-            { duration: 1 }
-        );
+        try {
+            animate(".ghost img", { transform: "scale(0.2)" }, { duration: 3 });
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            await animate(
+                ".ghost",
+                { bottom: 600, opacity: 0 },
+                { duration: 3 }
+            );
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await animate(".vortex", { opacity: 0 }, { duration: 2 });
+        } catch {}
 
-        await animate(
-            ".ghost img",
-            { transform: "scale(0.2)" },
-            { duration: 1 }
-        );
-
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        bgm.current.fade(bgm.current.volume(), 0, 2000); // fade out over 2 seconds
-        await animate(".vortex", { opacity: 0 }, { duration: 2 });
-        navigate("/final", { replace: true });
+        setFinalVisible(true);
     };
 
-    // ----- Animations -----
-
+    // Intro / Finale animations
     const introAnimation = async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         await animate(
@@ -328,7 +366,7 @@ export default function RitualPage() {
             { duration: 1 }
         );
 
-        await preloadStage(STAGES[0]); // ensure bottle stage (all frames) is ready
+        await preloadStage(STAGES[0]); // ensure bottle stage is ready
 
         setPlayIntro(false);
 
@@ -345,7 +383,7 @@ export default function RitualPage() {
 
     const finaleAnimation = async () => {
         const showText = async (text) => {
-            const avgReadingSpeed = 150; // words per minute
+            const avgReadingSpeed = 150;
             const words = text.split(/\s+/).length;
             const ms = Math.max(
                 1200,
@@ -354,83 +392,48 @@ export default function RitualPage() {
             setFinaleText(text);
             await animate(
                 ".finale-text-stage",
-                {
-                    opacity: 1,
-                },
+                { opacity: 1 },
                 { duration: 0.8 }
             );
             await new Promise((resolve) => setTimeout(resolve, ms));
             await animate(
                 ".finale-text-stage",
-                {
-                    opacity: 0,
-                },
+                { opacity: 0 },
                 { duration: 0.8 }
             );
         };
 
-        animate(
-            ".item-stage",
-            {
-                opacity: 0,
-            },
-            { duration: 0.8 }
-        );
+        animate(".item-stage", { opacity: 0 }, { duration: 0.8 });
         await animate(
             ".ritual-complete-stage",
-            {
-                opacity: 1,
-            },
+            { opacity: 1 },
             { duration: 0.8 }
         );
-        animate(
-            ".ritual-stage",
-            {
-                opacity: 0,
-            },
-            { duration: 0 }
-        );
+        animate(".ritual-stage", { opacity: 0 }, { duration: 0 });
         setPlayFinale(true);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         await showText("Pain leaves the body, but not the room.");
-        new Howl({
-            src: ["/sounds/eject.mp3"],
-            volume: 0.5,
-        }).play();
+        new Howl({ src: ["/sounds/eject.mp3"], volume: 0.5 }).play();
         await new Promise((resolve) => setTimeout(resolve, 100));
-        bgm.current.play();
+        try {
+            bgm.current?.play();
+        } catch {}
         await new Promise((resolve) => setTimeout(resolve, 500));
-        await animate(
-            ".ghost",
-            {
-                opacity: 1,
-            },
-            { duration: 1.2 }
-        );
+        await animate(".ghost", { opacity: 1 }, { duration: 1.2 });
         await showText("This spirit is a culmination of your sadness.");
         await showText("A culmination of those empty feelings in your heart.");
         await showText("Doesn't it feel better to be free?");
+        await showText("All that's left to do is let go");
         await animate(
             ".ritual-complete-stage",
-            {
-                opacity: 0,
-            },
+            { opacity: 0 },
             { duration: 1.2 }
         );
-        await animate(
-            ".vortex",
-            {
-                opacity: 1,
-            },
-            { duration: 1.2 }
-        );
+        await animate(".vortex", { opacity: 1 }, { duration: 1.2 });
         await new Promise((resolve) => setTimeout(resolve, 1000));
         await animate(
             ".finale-buttons",
-            {
-                display: "flex",
-                opacity: 1,
-            },
+            { display: "flex", opacity: 1 },
             { duration: 1.2 }
         );
         setIsBusy(false);
@@ -440,66 +443,114 @@ export default function RitualPage() {
         if (playIntro) introAnimation();
     }, [playIntro]);
 
+    // click/tap guard
+    const clickGuardRef = useRef(false);
+    const lastTapRef = useRef(0);
+    const activatorRef = useRef(null);
+
+    const handleActivate = async (e) => {
+        if (e?.nativeEvent?.pointerType && e?.nativeEvent?.isPrimary === false)
+            return;
+        if (isBusy || playIntro) return;
+        const now = Date.now();
+        if (now - lastTapRef.current < 100) return;
+        lastTapRef.current = now;
+        if (clickGuardRef.current) return;
+        clickGuardRef.current = true;
+        if (activatorRef.current)
+            activatorRef.current.style.pointerEvents = "none";
+        try {
+            await handleItemClick();
+        } finally {
+            clickGuardRef.current = false;
+            if (activatorRef.current)
+                activatorRef.current.style.pointerEvents = "auto";
+        }
+    };
+
     return (
-        <div id="RitualPage" ref={scope} style={{ position: "relative" }}>
-            {playIntro ? (
-                <div className="ritual-intro-container typewriter">
-                    <span className="line1">The time has come.</span>
-                    <span className="line2">Perform the ritual.</span>
-                    <span className="line3">Free yourself of your pain.</span>
-                </div>
-            ) : (
-                <>
-                    {!playFinale ? (
-                        <div className="item-stage">
-                            <div className="prompt typewriter">
-                                {itemPrompt}
-                            </div>
-                            <img
-                                draggable={false}
-                                className={!isBusy ? "hoverable" : ""}
-                                onClick={handleItemClick}
-                                src={itemSrc}
-                                alt=""
-                                style={{
-                                    pointerEvents: isBusy ? "none" : "auto",
-                                }}
-                            />
+        <>
+            {!finalVisible ? (
+                <div
+                    id="RitualPage"
+                    ref={scope}
+                    style={{ position: "relative" }}
+                >
+                    {playIntro ? (
+                        <div className="ritual-intro-container typewriter">
+                            <span className="line1">The time has come.</span>
+                            <span className="line2">Perform the ritual.</span>
+                            <span className="line3">
+                                Free yourself of your pain.
+                            </span>
                         </div>
                     ) : (
-                        <div className="finale-text-stage">
-                            <div className="prompt typewriter">
-                                {finaleText}
+                        <>
+                            {!playFinale ? (
+                                <div className="item-stage">
+                                    <div className="prompt typewriter">
+                                        {itemPrompt}
+                                    </div>
+                                    <img
+                                        ref={activatorRef}
+                                        draggable={false}
+                                        className={
+                                            !isBusy && !isMobile
+                                                ? "hoverable ritual-activator"
+                                                : "ritual-activator"
+                                        }
+                                        onPointerUp={handleActivate}
+                                        src={itemSrc}
+                                        alt=""
+                                        style={{
+                                            pointerEvents: isBusy
+                                                ? "none"
+                                                : "auto",
+                                        }}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="finale-text-stage">
+                                    <div className="prompt typewriter">
+                                        {finaleText}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="ritual-complete-stage">
+                                <img
+                                    draggable={false}
+                                    src={`${RITUAL_STEP_DIR}ritualcomplete.gif`}
+                                    alt="Ritual Circle"
+                                />
                             </div>
-                        </div>
+
+                            <div className="ritual-stage">
+                                <img
+                                    draggable={false}
+                                    src={ritualSrc}
+                                    alt="Ritual Circle"
+                                />
+                            </div>
+
+                            <div className="vortex">
+                                <img src="/images/ritual/vortex.gif" alt="" />
+                            </div>
+
+                            <div className="ghost">
+                                <img src="/images/ritual/ghost.gif" alt="" />
+                                <div className="finale-buttons">
+                                    <button onClick={handleLettingGo}>
+                                        Let go
+                                    </button>
+                                </div>
+                            </div>
+                        </>
                     )}
-
-                    <div className="ritual-complete-stage">
-                        <img
-                            draggable={false}
-                            src={`${RITUAL_STEP_DIR}/ritualcomplete.gif`}
-                            alt="Ritual Circle"
-                        />
-                    </div>
-
-                    <div className="ritual-stage">
-                        <img
-                            draggable={false}
-                            src={ritualSrc}
-                            alt="Ritual Circle"
-                        />
-                    </div>
-                    <div className="vortex">
-                        <img src="/images/ritual/vortex.gif" alt="" />
-                    </div>
-                    <div className="ghost">
-                        <img src="/images/ritual/ghost.gif" alt="" />
-                        <div className="finale-buttons">
-                            <button onClick={handleLettingGo}>Let go</button>
-                        </div>
-                    </div>
-                </>
+                </div>
+            ) : (
+                <FinalPage />
             )}
-        </div>
+        </>
     );
 }

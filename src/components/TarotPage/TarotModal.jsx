@@ -3,6 +3,7 @@ import gsap from "gsap";
 import WaveText from "../WaveText";
 import { RiExternalLinkFill } from "react-icons/ri";
 import { getCardInfo } from "../../data/tarotCards";
+import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
 
 const TarotModal = ({ selectedCard, onClose }) => {
     const NO_ART_FALLBACK = "/images/tarot/noart.png";
@@ -11,6 +12,8 @@ const TarotModal = ({ selectedCard, onClose }) => {
     const rafRef = useRef(null);
 
     const cardInfo = selectedCard ? getCardInfo(selectedCard) : null;
+
+    useLockBodyScroll(!!selectedCard);
 
     // Throttled hover tilt effect - much more performant
     const MOBILE_TRIGGER_WIDTH = 700;
@@ -116,7 +119,13 @@ const TarotModal = ({ selectedCard, onClose }) => {
     const isMobile = window.innerWidth < MOBILE_TRIGGER_WIDTH;
 
     return (
-        <div className="tarot-modal" onClick={onClose}>
+        <div
+            className="tarot-modal"
+            onClick={onClose}
+            role="dialog"
+            aria-modal="true"
+            aria-label={cardInfo?.name || "Tarot card details"}
+        >
             <div className="tarot-modal-content">
                 <div className="tarot-card-container">
                     <div

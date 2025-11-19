@@ -128,7 +128,7 @@ const OuijaMenu = ({
                 }}
             >
                 <img
-                    src="/images/planchette.png"
+                    src="/images/planchette.webp"
                     alt=""
                     style={{ height: 120, width: "auto" }}
                 />

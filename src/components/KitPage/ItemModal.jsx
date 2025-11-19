@@ -9,8 +9,9 @@ const normalizeSrc = (path) => {
 };
 
 const ItemModal = ({ selectedItem, onClose }) => {
-    const [hiReady, setHiReady] = useState(false);
     const [previewReady, setPreviewReady] = useState(false);
+    const [sharp, setSharp] = useState(false); // controls blur off
+    const [shownSrc, setShownSrc] = useState(null); // current <img> src
 
     // ----- Detect Mobile -----
     const [isMobile, setIsMobile] = useState(false);
@@ -27,19 +28,13 @@ const ItemModal = ({ selectedItem, onClose }) => {
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
-    // Add 'modal-open' to <html> when modal is open
+    // Lock scroll when modal open
     useEffect(() => {
-        if (selectedItem) {
-            document.documentElement.classList.add("modal-open");
-        } else {
-            document.documentElement.classList.remove("modal-open");
-        }
-        return () => {
-            document.documentElement.classList.remove("modal-open");
-        };
+        if (selectedItem) document.documentElement.classList.add("modal-open");
+        else document.documentElement.classList.remove("modal-open");
+        return () => document.documentElement.classList.remove("modal-open");
     }, [selectedItem]);
 
-    // Compute sources
     const srcLarge = useMemo(
         () => normalizeSrc(selectedItem?.imageSrc),
         [selectedItem?.imageSrc]
@@ -52,35 +47,31 @@ const ItemModal = ({ selectedItem, onClose }) => {
         [selectedItem?.smallImageSrc, selectedItem?.imageSrc]
     );
 
-    // Reset readiness on source change
+    // Reset per item
     useEffect(() => {
-        setHiReady(false);
         setPreviewReady(false);
-    }, [srcLarge, srcPreview]);
+        setSharp(false);
+        setShownSrc(srcPreview || srcLarge || null); // start with preview (or large)
+    }, [srcPreview, srcLarge]);
 
-    // Decode hi-res in the background and fade in
+    // Decode hi-res in background; when done, swap src and unblur
     useEffect(() => {
         if (!srcLarge) return;
         let cancelled = false;
-
-        const probe = new Image();
-        probe.src = srcLarge;
+        const img = new Image();
+        img.src = srcLarge;
 
         const finish = () => {
             if (cancelled) return;
-            // double RAF to ensure DOM is ready and decode has committed
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => setHiReady(true));
-            });
+            setShownSrc(srcLarge);
+            requestAnimationFrame(() => setSharp(true));
         };
 
-        if (probe.decode) {
-            probe.decode().then(finish).catch(finish);
-        } else {
-            probe.onload = finish;
-            probe.onerror = finish;
+        if (img.decode) img.decode().then(finish).catch(finish);
+        else {
+            img.onload = finish;
+            img.onerror = finish;
         }
-
         return () => {
             cancelled = true;
         };
@@ -88,25 +79,36 @@ const ItemModal = ({ selectedItem, onClose }) => {
 
     if (!selectedItem) return null;
 
-    const handleClickOutside = () => {
-        onClose();
-    };
+    const handleClickOutside = () => onClose();
 
-    // Reserve image space & apply YOUR transforms (unchanged)
+    // Modal viewport bounds
+    const modalMaxW = isMobile ? "85vw" : "50vw";
+    const modalMaxH = isMobile ? "30vh" : "50vh";
+
+    // Compose final max-* so we honor BOTH the modal bounds AND kit limits.
+    const computedMaxWidth = selectedItem?.maxWidth
+        ? `min(${Number(selectedItem.maxWidth)}px, ${modalMaxW})`
+        : modalMaxW;
+
+    const computedMaxHeight = selectedItem?.maxHeight
+        ? `min(${Number(selectedItem.maxHeight)}px, ${modalMaxH})`
+        : modalMaxH;
+
+    // Your original transforms/constraints
     const imageConstraintStyles = {};
-    if (selectedItem.maxWidth)
-        imageConstraintStyles.maxWidth = selectedItem.maxWidth;
-    if (selectedItem.maxHeight)
-        imageConstraintStyles.maxHeight = selectedItem.maxHeight;
-    if (selectedItem.rotation)
+    if (selectedItem?.rotation)
         imageConstraintStyles.transform = `rotate(${selectedItem.rotation}deg)`;
 
-    // Extra style for cassette
-    const imageExtraStyles =
-        selectedItem.name === "Broken Cassette" ? { marginBottom: -100 } : {};
+    // Optional offset for the cassette (use position shift, not margin vs flex gap)
+    const wrapperExtraStyles =
+        selectedItem?.name === "Broken Cassette"
+            ? {
+                  position: "relative",
+                  top: isMobile ? 50 : 100,
+              }
+            : {};
 
-    // We can show the modal body as soon as either preview or hi-res is ready
-    const contentReady = previewReady || hiReady;
+    const contentReady = previewReady || !!shownSrc;
 
     return (
         <div className="item-modal" onClick={handleClickOutside}>
@@ -121,53 +123,31 @@ const ItemModal = ({ selectedItem, onClose }) => {
                     onClick={(e) => e.stopPropagation()}
                     className="item-modal-image"
                     style={{
-                        ...(selectedItem.noFloat ? { animation: "none" } : {}),
+                        ...(selectedItem?.noFloat ? { animation: "none" } : {}),
                         cursor: "default",
-                        position: "relative",
                         display: "inline-block",
+                        lineHeight: 0,
+                        ...wrapperExtraStyles,
                     }}
                 >
-                    {/* Preview (blurred) */}
-                    {srcPreview && (
+                    {shownSrc && (
                         <img
-                            src={srcPreview}
-                            alt={`${selectedItem.name} (preview)`}
+                            src={shownSrc}
+                            alt={selectedItem.name}
                             decoding="async"
                             loading="eager"
                             onLoad={() => setPreviewReady(true)}
                             style={{
-                                ...imageConstraintStyles, // your transform/size applied here
-                                ...imageExtraStyles,
+                                ...imageConstraintStyles,
                                 display: "block",
-                                width: "100%",
+                                width: "auto",
                                 height: "auto",
+                                // CRITICAL: these two lines replace the hard-coded 50vw/50vh
+                                maxWidth: computedMaxWidth,
+                                maxHeight: computedMaxHeight,
                                 cursor: "default",
-                                filter: hiReady ? "none" : "blur(8px)",
-                                opacity: hiReady ? 0 : 1,
-                                transition:
-                                    "filter .25s ease, opacity .25s ease",
-                            }}
-                        />
-                    )}
-
-                    {/* High-res (fades in on top of preview) */}
-                    {srcLarge && (
-                        <img
-                            src={srcLarge}
-                            alt={selectedItem.name}
-                            decoding="async"
-                            loading="lazy"
-                            style={{
-                                ...imageConstraintStyles, // same exact transform/size
-                                ...imageExtraStyles,
-                                display: "block",
-                                width: "100%",
-                                height: "auto",
-                                cursor: "default",
-                                position: srcPreview ? "absolute" : "static",
-                                inset: srcPreview ? 0 : "auto",
-                                opacity: hiReady ? 1 : 0,
-                                transition: "opacity .25s ease",
+                                filter: sharp ? "none" : "blur(8px)",
+                                transition: "filter .25s ease",
                             }}
                         />
                     )}

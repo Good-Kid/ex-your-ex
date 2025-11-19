@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { getCardInfo, tarotCards } from "../data/tarotCards";
 import TarotModal from "../components/TarotPage/TarotModal";
@@ -33,7 +33,7 @@ export default function GalleryPage() {
         tarotIds.forEach((id) => {
             if (startedRef.current[id]) return;
             const info = getCardInfo(id);
-            const fullSrc = info?.image?.src || "/images/tarot/noart.png";
+            const fullSrc = info?.image?.src || "/images/tarot/noart.webp";
             startedRef.current[id] = true;
 
             const img = new Image();
@@ -114,9 +114,9 @@ export default function GalleryPage() {
                         const info = getCardInfo(id);
                         const thumbSrc =
                             info?.image?.loadingSrc ||
-                            "/images/tarot/noart.png";
+                            "/images/tarot/noart.webp";
                         const fullSrc =
-                            info?.image?.src || "/images/tarot/noart.png";
+                            info?.image?.src || "/images/tarot/noart.webp";
                         const showFull = !!loadedMap[id];
 
                         return (
@@ -145,7 +145,7 @@ export default function GalleryPage() {
                                     alt={info?.name || "Tarot Card"}
                                     onError={(e) => {
                                         e.currentTarget.src =
-                                            "/images/tarot/noart.png";
+                                            "/images/tarot/noart.webp";
                                     }}
                                     draggable={false}
                                 />

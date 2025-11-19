@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import React, { useRef, useEffect, useMemo, useState } from "react";
 import { Howl } from "howler";
 import TarotModal from "../components/TarotPage/TarotModal";
@@ -8,12 +8,12 @@ import { useGameState } from "../context/GameStateContext";
 import LinkButton from "../components/LinkButton";
 // eslint-disable-next-line no-unused-vars
 import { motion, useAnimate } from "motion/react";
+import { log } from "../firebase";
 
 // ----- Constants -----
 const SLOT_COUNT = 3;
 const CARD_COUNT = 5;
-const CARD_BACK_IMAGE = "/images/tarot/back.png"; // back image
-const NO_ART_FALLBACK = "/images/tarot/noart.png"; // <-- NEW fallback
+const CARD_BACK_IMAGE = "/images/tarot/back.webp"; // back image
 const MOBILE_TRIGGER_WIDTH = 700;
 const DEFAULT_CARD_HEIGHT = 250;
 const MOBILE_CARD_HEIGHT = 160;
@@ -21,6 +21,7 @@ const CARD_RATIO = 11 / 19;
 const CARD_FLIP_DURATION = 0.14; // seconds
 const CARD_FLIP_DELAY = 0.5; // seconds between flips
 const CARD_BORDER_RADIUS = 6;
+const SLOT_TITLES = ["PAST", "PRESENT", "FUTURE"];
 
 const HAS_HOVER =
     typeof window !== "undefined" &&
@@ -75,8 +76,8 @@ function computeFanTransforms({ visibleCount, cardWidth, mobile }) {
 // ---- Small helper to safely get image sources w/ fallbacks ----
 function getImagesForId(id) {
     const info = getCardInfo(id);
-    const loadingImage = info?.image?.loadingImage || NO_ART_FALLBACK;
-    const fullSrc = info?.image?.src || NO_ART_FALLBACK;
+    const loadingImage = info?.image?.loadingImage;
+    const fullSrc = info?.image?.src;
     return { loadingImage, fullSrc, name: info?.name || "Tarot Card" };
 }
 
@@ -310,6 +311,9 @@ export default function TarotPage() {
         setRevealedFaces(slotIds);
         setFortuneParts(fortunes);
 
+        // Use a ref to hold the slotIds for update after animation
+        const slotIdsRef = { current: slotIds };
+
         const doReveal = async () => {
             setIsRevealing(true);
 
@@ -336,6 +340,11 @@ export default function TarotPage() {
 
                 // sound + line reveal
                 flipSoundRef.current.play();
+                animate(
+                    `.tarot-card-slots .slot-title.slot${s}`,
+                    { opacity: 1 },
+                    { duration: 0.5 }
+                );
                 await animate(
                     `.fortune-parts-container .line${s + 1}`,
                     { opacity: 1 },
@@ -346,8 +355,10 @@ export default function TarotPage() {
                 await new Promise((r) => setTimeout(r, CARD_FLIP_DELAY * 1000));
             }
 
-            updateGameState({ tarotCompleted: true });
+            // Only update gameState after animation, using the ref
             updateGameState({
+                tarotCompleted: true,
+                tarotLastDrawnCards: slotIdsRef.current,
                 tarotCompletedCount:
                     (gameState.flags.tarotCompletedCount || 0) + 1,
             });
@@ -358,9 +369,19 @@ export default function TarotPage() {
         doReveal();
     }, [selectedCards, hasRevealed, tarotIds, animate, updateGameState]);
 
+    // Log a 'tarot_draw' event with card IDs and device type every time a tarot reading is completed.
+    useEffect(() => {
+        if (!hasRevealed) return;
+        // Log tarot draw event with card IDs
+        log("tarot_draw", {
+            cards: revealedFaces.filter(Boolean),
+            device: isMobile ? "mobile" : "desktop",
+        });
+    }, [hasRevealed]);
+
     // ----- Draw Again Handler -----
     const handleDrawAgain = async () => {
-        await Promise.allSettled([
+        let cleanupAnimSignals = [
             animate(
                 ".tarot-card-slots img",
                 { opacity: 0 },
@@ -374,22 +395,26 @@ export default function TarotPage() {
                 { opacity: 0, pointerEvents: "none" },
                 { duration: DEFAULT_DURATION }
             ).finished,
-            animate(
-                ".fortune-parts-container .line1",
-                { opacity: 0 },
-                { duration: DEFAULT_DURATION }
-            ).finished,
-            animate(
-                ".fortune-parts-container .line2",
-                { opacity: 0 },
-                { duration: DEFAULT_DURATION }
-            ).finished,
-            animate(
-                ".fortune-parts-container .line3",
-                { opacity: 0 },
-                { duration: DEFAULT_DURATION }
-            ).finished,
-        ]);
+        ];
+
+        for (let i = 0; i < SLOT_COUNT; i++) {
+            cleanupAnimSignals.push(
+                animate(
+                    `.fortune-parts-container .line${i + 1}`,
+                    { opacity: 0 },
+                    { duration: DEFAULT_DURATION }
+                ).finished
+            );
+            cleanupAnimSignals.push(
+                animate(
+                    `.slot-title.slot${i}`,
+                    { opacity: 0 },
+                    { duration: DEFAULT_DURATION }
+                ).finished
+            );
+        }
+
+        await Promise.allSettled(cleanupAnimSignals);
 
         // Reset state
         setIsInitialAnimating(true);
@@ -457,6 +482,13 @@ export default function TarotPage() {
                                             opacity: 1,
                                         }}
                                     >
+                                        {SLOT_TITLES[i] ? (
+                                            <div
+                                                className={`slot-title slot${i}`}
+                                            >
+                                                {SLOT_TITLES[i]}
+                                            </div>
+                                        ) : undefined}
                                         {selectedCards[i] !== undefined && (
                                             <div
                                                 ref={(el) =>
@@ -572,8 +604,7 @@ export default function TarotPage() {
                                                             id
                                                                 ? showFull
                                                                     ? fullSrc
-                                                                    : loadingImage ||
-                                                                      NO_ART_FALLBACK
+                                                                    : loadingImage
                                                                 : CARD_BACK_IMAGE
                                                         }
                                                         alt={
@@ -581,10 +612,6 @@ export default function TarotPage() {
                                                                 ? name
                                                                 : "Tarot Card"
                                                         }
-                                                        onError={(e) => {
-                                                            e.currentTarget.src =
-                                                                NO_ART_FALLBACK;
-                                                        }}
                                                         style={{
                                                             userSelect: "none",
                                                             touchAction:

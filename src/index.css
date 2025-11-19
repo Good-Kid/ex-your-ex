@@ -513,7 +513,7 @@ button:hover {
     right: 10px;
     width: 600px;
     height: 600px; /* adjust for aspect ratio */
-    background: url("/images/warning.png") no-repeat top right;
+    background: url("/images/warning.webp") no-repeat top right;
     background-size: contain;
     z-index: 0;
     pointer-events: none;
@@ -538,9 +538,7 @@ button:hover {
     }
 }
 
-/* -----
-   OUIJA MENU / PLANCHETTE
-   ----- */
+/* ----- OUIJA MENU / PLANCHETTE ----- */
 
 .ouija-menu > * {
     font-size: 2em;
@@ -603,7 +601,7 @@ button:hover {
     height: 14px;
 
     /* draw sprite at native size (no scaling) */
-    background: url("/images/kit/scribble_spritesheet.png") no-repeat 0 0;
+    background: url("/images/kit/scribble_spritesheet.webp") no-repeat 0 0;
 
     /* 4 frames in 0.8s -> 5fps. steps(4) is correct for 4 frames */
     animation: crossout-sprite 0.8s steps(4) infinite;
@@ -617,6 +615,12 @@ button:hover {
     }
     to {
         background-position: -472px 0;
+    }
+}
+
+@media (max-width: 760px) {
+    .ouija-menu button {
+        font-size: 0.9em;
     }
 }
 
@@ -680,7 +684,7 @@ button:hover {
     aspect-ratio: 113 / 143;
     width: 100%;
     max-width: 600px;
-    background-image: url("/images/kit/full/note.png");
+    background-image: url("/images/kit/full/note.webp");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -831,6 +835,7 @@ button:hover {
 @media (max-width: 760px) {
     .item-modal-image img {
         max-height: 30vh !important;
+        width: auto;
     }
 
     .item-modal-text {
@@ -921,7 +926,8 @@ button:hover {
     position: relative;
     width: 100%;
     /* height comes from padding-top ratio below */
-    background: url("/images/kit/mobile/item_square.png") center/cover no-repeat;
+    background: url("/images/kit/mobile/item_square.webp") center/cover
+        no-repeat;
     /* overflow: hidden; */
     cursor: pointer;
 }
@@ -965,7 +971,9 @@ button:hover {
     justify-content: flex-start;
     height: 100svh;
     padding: 6vh 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    gap: 2em;
 }
 
 .tarot-card-slots {
@@ -977,6 +985,7 @@ button:hover {
 }
 
 .tarot-card-slots > div {
+    position: relative;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.05);
     display: "flex";
@@ -985,8 +994,17 @@ button:hover {
     perspective: 1000px;
 }
 
-.card-fan {
+.tarot-card-slots .slot-title {
+    font-weight: bold;
     position: absolute;
+    bottom: -1.5em;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+
+.card-fan {
+    position: fixed;
     bottom: -150px;
 
     width: 100%;
@@ -1007,9 +1025,9 @@ button:hover {
 .fortune-parts-container {
     width: 100%;
     max-width: 900px;
-    min-height: 1.2em;
+    height: 100%;
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.2em;
     color: #fff;
     z-index: 10;
     pointer-events: none;
@@ -1018,10 +1036,7 @@ button:hover {
     align-items: center;
     justify-content: center;
     padding: 0 2em;
-    gap: 0.5em;
-    margin-top: 1.5em;
-    margin-bottom: 4em;
-    margin-top: 4em;
+    gap: 0.8em;
 }
 
 .tarot-buttons {
@@ -1033,8 +1048,12 @@ button:hover {
     margin-top: auto;
 }
 
+.tarot-buttons button {
+    margin: 0 !important;
+}
+
 .learn-more {
-    margin-top: 1em;
+    margin-top: 2.2em;
     text-align: center;
     width: 100%;
 }
@@ -1054,6 +1073,10 @@ button:hover {
 
     .tarot-card-slots {
         gap: 15px;
+    }
+
+    .tarot-card-slots .slot-title {
+        font-size: 0.7em;
     }
 
     .tarot-intro-container {
@@ -1097,6 +1120,7 @@ button:hover {
 .tarot-modal-content {
     cursor: pointer;
     display: flex;
+    align-items: flex-start;
     gap: 50px;
     z-index: 2147483653 !important;
     position: relative;
@@ -1111,11 +1135,13 @@ button:hover {
 .tarot-card-container {
     flex-shrink: 0;
     perspective: 1000px;
+    width: clamp(260px, 28vw, 380px);
 }
 
 .tarot-modal-card {
-    height: 520px;
-    width: auto;
+    aspect-ratio: 825 / 1425; /* tarot card ratio */
+    width: 100%;
+    height: auto; /* instead of fixed height */
     border-radius: 12px;
     z-index: 2147483654 !important;
     position: relative;
@@ -1123,15 +1149,20 @@ button:hover {
     align-items: center;
     justify-content: center;
     background: none;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .tarot-modal-image {
+    display: block; /* stabilizes intrinsic sizing in Safari */
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto; /* instead of 100% */
+    max-height: 70vh; /* prevents overflow on short screens */
+    object-fit: contain; /* no crop; switch to 'cover' if you want fill */
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     transform: translate3d(0, 0, 0);
     z-index: 2147483650 !important;
     position: relative;
@@ -1231,13 +1262,20 @@ button:hover {
     }
 
     .tarot-modal-card {
-        height: auto;
+        margin: 0 auto; /* keep centered horizontally */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .tarot-modal-image {
+        display: block;
+        margin: 0 auto; /* centers image horizontally */
         width: 90vw;
         max-width: 400px;
-        margin: 0 auto 1em auto;
-        flex-direction: column;
-        margin-top: 0;
-        box-sizing: border-box;
+        height: auto;
+        max-height: 60vh;
+        object-fit: contain;
     }
 
     .tarot-modal-text {
@@ -1245,13 +1283,6 @@ button:hover {
         width: 90vw;
         max-width: 400px;
         box-sizing: border-box;
-    }
-
-    .tarot-modal-image {
-        width: 100%;
-        height: auto;
-        max-height: 60vh;
-        object-fit: contain;
     }
 
     .tarot-card-name {
@@ -1279,7 +1310,7 @@ button:hover {
 /* ----- Tarot Gallery ----- */
 
 #GalleryPage {
-    padding: 2em 0;
+    padding: 2em 0 1em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1299,20 +1330,22 @@ button:hover {
     max-width: min(100vw, 1000px);
     overflow-x: hidden;
     margin: auto;
-    margin: 0 1em;
+    margin: 0 1em 0 1em;
 }
 
 .tarot-gallery-card {
-    aspect-ratio: 825 / 1425;
-    width: 200px;
-    height: auto;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
+    margin-bottom: 1em;
 }
 
 .tarot-gallery-card img {
+    aspect-ratio: 825 / 1425;
+    width: 200px;
+    height: auto;
     cursor: pointer;
     transition: filter 0.1s ease;
 }
@@ -1337,7 +1370,6 @@ button:hover {
 @media (max-width: 760px) {
     .tarot-gallery-grid {
         width: 100vw;
-
         gap: 1em;
     }
 
@@ -1369,10 +1401,15 @@ button:hover {
     position: absolute;
     width: 100%;
     top: -4.25em;
-    bottom: -1.5em;
+    bottom: -5.4em;
     left: 50%;
     transform: translateX(-50%);
     font-size: 1.2em;
+}
+
+#QuizPage .intro-container .bottom {
+    display: flex;
+    flex-direction: column;
 }
 
 #QuizPage .intro-container .title {
@@ -1400,6 +1437,17 @@ button:hover {
     font-size: 1.5em;
 }
 
+#QuizPageMobile .back-button {
+    position: absolute;
+    bottom: 0;
+}
+
+@media (max-height: 650px) {
+    #QuizPageMobile .back-button {
+        display: none;
+    }
+}
+
 /* Book Container */
 
 #QuizPage .question-number {
@@ -1425,13 +1473,6 @@ button:hover {
     max-width: 900px;
     height: auto;
 }
-
-@media (max-height: 900px) {
-    .book-container {
-        max-width: 700px;
-    }
-}
-
 .book-container .book-img {
     z-index: 25;
     position: absolute;
@@ -1467,7 +1508,7 @@ button:hover {
     padding-top: 6%;
     padding-left: 8%;
     padding-right: 10%;
-    padding-bottom: 8%;
+    padding-bottom: 10%;
 
     /* Prevent children from overflowing padding */
     box-sizing: border-box;
@@ -1497,7 +1538,7 @@ button:hover {
     width: 100%;
     height: 100%;
     max-width: 100%;
-    max-height: 30%;
+    max-height: 50%;
     margin-bottom: 20px;
     flex-shrink: 1;
     width: auto;
@@ -1530,7 +1571,7 @@ button:hover {
         box-shadow 0.25s cubic-bezier(0.4, 0.2, 0.2, 1), background-color 0.2s;
 
     /* Paper texture overlay */
-    background-image: url("/images/quiz/paper_texture.png");
+    background-image: url("/images/quiz/paper_texture.webp");
     background-size: cover;
     background-repeat: no-repeat;
     background-blend-mode: multiply;
@@ -1576,6 +1617,7 @@ button:hover {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    gap: 15px;
     padding: 15px;
 
     /* Font */
@@ -1584,15 +1626,16 @@ button:hover {
 
     /* Background */
     background-color: rgb(206, 206, 206);
-    background-image: url("/images/quiz/paper_texture.png");
+    background-image: url("/images/quiz/paper_texture.webp");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .quiz-container-mobile .question {
-    margin: 1em;
-    font-size: 1.5em;
+    margin: 0 1em;
+    font-size: 1.2em;
+    line-height: 1.2em;
 }
 
 .quiz-container-mobile .question-art {
@@ -1602,7 +1645,7 @@ button:hover {
     flex-shrink: 1;
     min-height: 0;
     height: 100%;
-    max-height: 25vh;
+    max-height: 40vh;
     margin: auto 0;
 }
 
@@ -1614,7 +1657,7 @@ button:hover {
 
 .quiz-container-mobile .answer-choices {
     margin-top: auto;
-    margin-bottom: 2vh;
+    margin-bottom: 1vh;
     font-weight: normal;
     display: flex;
     flex-direction: column;
@@ -1639,6 +1682,10 @@ button:hover {
 
 .quiz-container-mobile .answer-choices > *:hover {
     background-color: rgba(0, 0, 0, 0.764);
+}
+
+#QuizPageMobile .watermark {
+    margin-top: -15px;
 }
 
 #QuizPageResults {
@@ -1725,25 +1772,17 @@ button:hover {
     height: 100%;
 }
 
+.onion-container span:first-child {
+    position: absolute;
+    top: 5vh;
+}
+
 .onion-container img {
     width: min(700px, 100%);
 }
 
-.onion-container img.glow {
+.onion-container img:hover {
     filter: drop-shadow(0 0 6px white) drop-shadow(0 0 12px white);
-}
-
-.onion-click-zone {
-    z-index: 999;
-    position: absolute;
-    top: 8%;
-    left: 2%;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    display: inline-block;
-    clip-path: circle(20% at 50% 50%);
-    /* background-color: rgba(255, 0, 0, 0.562); */
 }
 
 .bottle-container {
@@ -1761,6 +1800,14 @@ button:hover {
 
 .bottle-container img {
     height: 200px;
+}
+
+/* TEAR STREAMS */
+.tear-stream {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    height: 100vh;
 }
 
 /* Knife cursor */
@@ -1892,8 +1939,7 @@ button:hover {
     height: 100svh;
     max-width: 700px;
     margin: auto;
-    /* min-height: 700px; */
-    overflow: clip;
+    overflow-x: hidden;
 }
 
 .ritual-intro-container {
@@ -1927,10 +1973,11 @@ button:hover {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    height: 50vh;
+    height: 20vh;
     width: 50vw;
 }
 
+.finale-text-stage,
 .item-stage {
     opacity: 0;
     display: flex;
@@ -1942,8 +1989,8 @@ button:hover {
 }
 
 .item-stage .prompt,
-#RitualPage > .finale-text-stage {
-    max-width: 80%;
+.finale-text-stage .prompt {
+    max-width: 85%;
     text-align: center;
     font-size: 1.5em;
 }
@@ -1987,15 +2034,16 @@ button:hover {
 #RitualPage .vortex {
     pointer-events: none;
     opacity: 0;
-    height: 70vh;
+    height: 90vh;
     width: 150svw;
     max-width: 600px;
+    overflow: clip;
 }
 
 #RitualPage .vortex img {
-    height: auto;
-    width: auto;
-    margin: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .finale-buttons {
@@ -2019,6 +2067,21 @@ button:hover {
 
 .finale-buttons button:hover {
     background-color: rgb(211, 211, 211);
+}
+
+/* doubletap protection */
+
+/* Applies to the clickable ritual image */
+.ritual-activator {
+    touch-action: manipulation; /* prevents double-tap zoom → extra click on iOS */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Optional: keeps the stage from accepting interactions during fades */
+.item-stage {
+    will-change: opacity;
 }
 
 /* Z index bananza */
@@ -2061,7 +2124,7 @@ button:hover {
 
 @media (max-width: 760px) {
     .item-stage .prompt,
-    .finale-text-stage {
+    .finale-text-stage .prompt {
         font-size: 1em;
     }
 
@@ -2076,8 +2139,169 @@ button:hover {
 
 /* Final Screen */
 #FinalPage {
-    height: 100svh;
+    min-height: 100svh;
     width: 100%;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5vh 2vw;
+    gap: 20px;
+}
+
+#FinalPage > * {
+    max-width: 85vw;
+}
+
+#FinalPage hr {
+    width: 90vw;
+    max-width: 800px;
+}
+
+#FinalPage h1 {
+    font-size: 2em;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+#FinalPage > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.3em;
+}
+
+#FinalPage > div > h3 {
+    font-size: 1.3em;
+    margin-bottom: 0.5em;
+}
+
+.spirit-released {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.spirit-released .num {
+    color: rgb(159, 0, 0);
+}
+
+.spirit-released .total {
+    color: rgb(161, 161, 161);
+}
+
+#FinalPage .rift-title {
+    font-size: 2em;
+    margin-bottom: -0.3em;
+}
+
+#FinalPage .song-preview-container .text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+}
+
+.quiz-result img {
+    width: 100%;
+    max-width: 400px;
+}
+
+#FinalPage .good-kid-socials {
+    gap: 0.5em;
+}
+
+#FinalPage .good-kid-socials .social-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#FinalPage .social-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+#FinalPage .social-buttons > *:hover {
+    opacity: 0.7;
+}
+
+#FinalPage .gk-logo {
+    width: 12vw;
+    min-width: 200px;
+}
+
+#FinalPage .symbol {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#FinalPage .symbol img {
+    opacity: 0.2;
+    width: 4vw;
+    min-width: 100px;
+}
+
+@media (max-width: 760px) {
+    .spirit-released {
+        font-size: 1.1em !important;
+    }
+
+    #FinalPage .good-kid-socials .social-text {
+        font-size: 0.95em;
+    }
+}
+
+/* Ghost loading bar */
+.ghost-loading-bar {
+    position: relative;
+    overflow: clip;
+    max-width: 400px;
+    margin: 0 20px;
+}
+
+.ghost-loading-bar img {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.ghost-loading-bar .frame {
+    z-index: 20;
+}
+
+.ghost-loading-bar .bar {
+    z-index: 19;
+}
+
+/* TarotCardSpread Fan Layout */
+.tarot-card-spread-fan {
+    display: flex;
     justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    gap: 0;
+    overflow: visible;
+}
+
+.tarot-card-spread-fan .tarot-card-spread-card {
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.4, 2, 0.6, 1);
+}
+
+.tarot-card-spread-fan .tarot-card-spread-img {
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+    object-fit: contain;
+}
+
+.tarot-card-spread-fan .tarot-card-spread-label {
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    text-shadow: 0 2px 8px #000, 0 0 1px #000;
 }

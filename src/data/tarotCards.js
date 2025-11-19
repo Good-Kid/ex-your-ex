@@ -3,8 +3,8 @@ export const tarotCards = {
         id: "fool",
         name: "The Fool",
         image: {
-            src: "/images/tarot/0-TheFool.png",
-            loadingSrc: "/images/tarot/small/0-TheFool_small.png",
+            src: "/images/tarot/0-TheFool.webp",
+            loadingSrc: "/images/tarot/small/0-TheFool_small.webp",
         },
         description:
             "The Fool represents innocence, new beginnings, and a leap of faith. It invites openness to possibility and trust in the path ahead.",
@@ -16,19 +16,13 @@ export const tarotCards = {
             "Poised upon the precipice of a new journey, the Fool is called to venture. Between innocence and wonder, the world opend to those who know not it's rules.",
         fortunes: {
             past: [
-                "You took a risk that changed the course of your journey.",
-                "Your curiosity once opened a door you didn’t expect.",
-                "An earlier choice taught you the value of trust.",
+                "You once took a leap of faith that shaped who you are today, even if the landing wasn't what you expected.",
             ],
             present: [
-                "You’re standing at the start of something new.",
-                "The road ahead is uncertain but full of promise.",
-                "Let optimism lead you, even if the plan isn’t clear yet.",
+                "You stand at the threshold of something new. Approach the unknown with childlike wonder rather than adult fear.",
             ],
             future: [
-                "A fresh opportunity will appear when you stay open-minded.",
-                "New beginnings will reward your courage.",
-                "Following your heart will take you farther than you think.",
+                "An unexpected beginning awaits. What seems like displacement might actually be perfect placement.",
             ],
         },
     },
@@ -37,8 +31,8 @@ export const tarotCards = {
         id: "magician",
         name: "The Magician",
         image: {
-            src: "/images/tarot/1-TheMagician.png",
-            loadingSrc: "/images/tarot/small/1-TheMagician_small.png",
+            src: "/images/tarot/1-TheMagician.webp",
+            loadingSrc: "/images/tarot/small/1-TheMagician_small.webp",
         },
         description:
             "The Magician symbolizes willpower, skill, and manifestation. It channels intention into reality through focused action.",
@@ -50,19 +44,13 @@ export const tarotCards = {
             "Harnessing the laws of melody and matter, the Magician bends creation to her will.\nBut what is mastery, without measure?",
         fortunes: {
             past: [
-                "You’ve learned how to turn ideas into results.",
-                "Your confidence once helped you achieve something big.",
-                "Past experiences taught you how to use your talents wisely.",
+                "You've manifested something significant through pure will. Past creations have given you the tools you need now.",
             ],
             present: [
-                "You have everything you need to make progress right now.",
-                "Focus your energy on one clear goal.",
-                "Your actions are starting to bring your vision to life.",
+                "All elements for transformation are within reach. The question is whether you'll use them wisely or hastily.",
             ],
             future: [
-                "Hard work and belief in yourself will soon pay off.",
-                "You’ll create something lasting through consistent effort.",
-                "Success is within reach—stay intentional with your choices.",
+                "Your manifestation abilities will soon be tested. True magic lies in knowing what should and shouldn't be created.",
             ],
         },
     },
@@ -71,8 +59,8 @@ export const tarotCards = {
         id: "priestess",
         name: "The High Priestess",
         image: {
-            src: "/images/tarot/2-TheHighPriestess.png",
-            loadingSrc: "/images/tarot/small/2-TheHighPriestess_small.png",
+            src: "/images/tarot/2-TheHighPriestess.webp",
+            loadingSrc: "/images/tarot/small/2-TheHighPriestess_small.webp",
         },
         description:
             "The High Priestess signifies intuition, mystery, and inner knowing. She asks you to listen to the quiet beneath the noise.",
@@ -84,19 +72,13 @@ export const tarotCards = {
             "Between labyrinthine worlds, a keeper of keys to doors unknown.",
         fortunes: {
             past: [
-                "You once trusted your instincts and were proved right.",
-                "A quiet moment in the past revealed something important.",
-                "You’ve learned to value your inner voice.",
+                "You've encountered mysteries that logic couldn't solve. Experience taught you that some knowledge comes through being, not doing.",
             ],
             present: [
-                "Something beneath the surface needs your attention.",
-                "Trust your intuition before seeking outside advice.",
-                "You already know more than you think you do.",
+                "Infinite paths are possible. The answers you seek are already within—listen to intuition rather than searching externally.",
             ],
             future: [
-                "A hidden truth will become clear in time.",
-                "Your intuition will guide you to the right decision.",
-                "Answers will come naturally when you stay patient.",
+                "Hidden knowledge will reveal itself if you remain receptive. The universe will show all doors; choosing is yours alone.",
             ],
         },
     },
@@ -105,8 +87,8 @@ export const tarotCards = {
         id: "empress",
         name: "The Empress",
         image: {
-            src: "/images/tarot/3-TheEmpress.png",
-            loadingSrc: "/images/tarot/small/3-TheEmpress_small.png",
+            src: "/images/tarot/3-TheEmpress.webp",
+            loadingSrc: "/images/tarot/small/3-TheEmpress_small.webp",
         },
         description:
             "The Empress embodies abundance, creativity, and nature. She encourages growth through care and receptivity.",
@@ -118,19 +100,13 @@ export const tarotCards = {
             "The forest sings, the rivers call her name.\nThe Empress hums the great hymn of the willow tree.",
         fortunes: {
             past: [
-                "You’ve built comfort and beauty in your surroundings.",
-                "Your compassion has helped others thrive.",
-                "You once created something meaningful from the heart.",
+                "You've nurtured something into existence through patience. Your investments of love are ready to bear fruit.",
             ],
             present: [
-                "This is a good time to slow down and take care of yourself.",
-                "Creativity flows more easily when you feel supported.",
-                "Focus on what brings you real comfort and joy.",
+                "Abundance surrounds you in unexpected ways. Allow things to grow at their natural pace.",
             ],
             future: [
-                "Your efforts will soon lead to visible growth or reward.",
-                "Peace and stability are on the way.",
-                "What you nurture now will flourish later.",
+                "Fertile creativity approaches. What you plant with love now will flourish if you resist forcing its growth.",
             ],
         },
     },
@@ -139,8 +115,8 @@ export const tarotCards = {
         id: "emperor",
         name: "The Emperor",
         image: {
-            src: "/images/tarot/4-TheEmperor.png",
-            loadingSrc: "/images/tarot/small/4-TheEmperor_small.png",
+            src: "/images/tarot/4-TheEmperor.webp",
+            loadingSrc: "/images/tarot/small/4-TheEmperor_small.webp",
         },
         description:
             "The Emperor represents structure, authority, and stability. He brings order, protection, and long-term strategy.",
@@ -152,19 +128,13 @@ export const tarotCards = {
             "In measured time, the world aligns.\nThe Emperor conducts the orchestra of stone and order.",
         fortunes: {
             past: [
-                "You’ve learned how discipline creates progress.",
-                "A past challenge taught you how to take control.",
-                "You once found strength in structure and planning.",
+                "You've built structures that served you well. Past decisions to create order built your current foundation.",
             ],
             present: [
-                "It’s time to organize and take responsibility.",
-                "Clear decisions will bring calm to a busy situation.",
-                "Your leadership is needed right now.",
+                "You hold power to direct your situation. Consider whether control serves or restricts life's organic flow.",
             ],
             future: [
-                "You’ll soon see results from your consistency.",
-                "A firm plan will bring lasting stability.",
-                "People will look to you for guidance and confidence.",
+                "Leadership opportunities demand balanced authority. The strongest structures bend without breaking.",
             ],
         },
     },
@@ -173,8 +143,8 @@ export const tarotCards = {
         id: "hierophant",
         name: "The Hierophant",
         image: {
-            src: "/images/tarot/5-TheHierophant.png",
-            loadingSrc: "/images/tarot/small/5-TheHierophant_small.png",
+            src: "/images/tarot/5-TheHierophant.webp",
+            loadingSrc: "/images/tarot/small/5-TheHierophant_small.webp",
         },
         description:
             "The Hierophant stands for tradition, teaching, and spiritual frameworks. He connects you to lineage and shared wisdom.",
@@ -186,19 +156,13 @@ export const tarotCards = {
             "Divine design in gears and circuits — the great cathedral of progress.\nKneeling before what she made, the Hierophant’s crusade.",
         fortunes: {
             past: [
-                "You’ve learned from mentors or traditions that shaped your beliefs.",
-                "An experience grounded your values.",
-                "Wisdom passed down to you still guides your choices.",
+                "Traditional paths or mentors shaped your understanding. These teachings have influenced your current beliefs.",
             ],
             present: [
-                "Look for support or guidance from trusted people.",
-                "Structure and consistency will bring peace of mind.",
-                "A community connection can help you grow.",
+                "Examine whether established wisdom still serves you. Sometimes the teacher becomes the lesson in what not to do.",
             ],
             future: [
-                "You’ll find new understanding through shared learning.",
-                "A mentor or teaching moment will change your path.",
-                "Tradition will help you make sense of what’s next.",
+                "Choose between conforming to expectations or forging your own path. Wisdom knows when to honor and when to break tradition.",
             ],
         },
     },
@@ -207,8 +171,8 @@ export const tarotCards = {
         id: "lovers",
         name: "The Lovers",
         image: {
-            src: "/images/tarot/6-TheLovers.png",
-            loadingSrc: "/images/tarot/small/6-TheLovers_small.png",
+            src: "/images/tarot/6-TheLovers.webp",
+            loadingSrc: "/images/tarot/small/6-TheLovers_small.webp",
         },
         description:
             "The Lovers symbolize love, union, and value-based choices. They ask for alignment between heart and action.",
@@ -220,19 +184,13 @@ export const tarotCards = {
             "Without light there is no shadow.\nThe chord is dissonant, but the melody seeks resolution.",
         fortunes: {
             past: [
-                "A relationship or choice defined what love means to you.",
-                "You once learned to balance emotion and reason.",
-                "Your heart guided an important decision.",
+                "Defining choices revealed your true values. Past decisions created internal divisions you're still reconciling.",
             ],
             present: [
-                "A meaningful connection is growing stronger.",
-                "This is a time to act in alignment with your values.",
-                "Honesty and openness are key right now.",
+                "You stand between versions of yourself. Choose authentic wholeness over comfortable fragmentation.",
             ],
             future: [
-                "Love and trust will lead to deeper understanding.",
-                "Partnership brings both joy and clarity ahead.",
-                "A heartfelt choice will shape your next chapter.",
+                "A crucial choice will determine your path. The highest choice integrates all aspects of yourself.",
             ],
         },
     },
@@ -241,8 +199,8 @@ export const tarotCards = {
         id: "chariot",
         name: "The Chariot",
         image: {
-            src: "/images/tarot/7-TheChariot.png",
-            loadingSrc: "/images/tarot/small/7-TheChariot_small.png",
+            src: "/images/tarot/7-TheChariot.webp",
+            loadingSrc: "/images/tarot/small/7-TheChariot_small.webp",
         },
         description:
             "The Chariot signifies determination, momentum, and victory through alignment of opposing forces.",
@@ -254,19 +212,13 @@ export const tarotCards = {
             "A masked rider — the chariot advances.\nIs there freedom in motion, or peace in the stillness left behind?",
         fortunes: {
             past: [
-                "You’ve overcome obstacles through determination.",
-                "Past victories showed you what focus can do.",
-                "You learned to stay in control under pressure.",
+                "You've survived by moving forward through willpower. Past victories came from refusing to be torn apart.",
             ],
             present: [
-                "Keep your eyes on the goal—momentum is on your side.",
-                "Discipline will carry you through current challenges.",
-                "Stay balanced as you push forward with purpose.",
+                "You're in motion through determination alone. Are you running toward something or away from something?",
             ],
             future: [
-                "You’ll reach success by staying steady and confident.",
-                "Progress will be clear if you don’t lose focus.",
-                "You’re heading toward a personal victory.",
+                "Victory through momentum awaits, but master your contradictions rather than outrun them.",
             ],
         },
     },
@@ -275,8 +227,8 @@ export const tarotCards = {
         id: "strength",
         name: "Strength",
         image: {
-            src: "/images/tarot/8-Strength.png",
-            loadingSrc: "/images/tarot/small/8-Strength_small.png",
+            src: "/images/tarot/8-Strength.webp",
+            loadingSrc: "/images/tarot/small/8-Strength_small.webp",
         },
         description:
             "Strength is gentle courage, compassion, and inner fortitude. It tames fear through kindness.",
@@ -288,19 +240,13 @@ export const tarotCards = {
             "Within the crowned palace, kneaded glutinous bonds.\nThe resonant language of the brick oven: warmth and strength.",
         fortunes: {
             past: [
-                "You’ve shown resilience in the face of difficulty.",
-                "Patience once helped you overcome fear.",
-                "Inner calm has carried you through storms.",
+                "True strength came through gentleness, not force. You overcame challenges through patient compassion.",
             ],
             present: [
-                "Stay composed and kind, even when tested.",
-                "Your empathy is a quiet form of strength.",
-                "You’re learning to trust your emotional balance.",
+                "You possess more power than you realize. Your calm in chaos is your superpower.",
             ],
             future: [
-                "Courage will bring you peace and resolution.",
-                "Challenges ahead will reveal your true confidence.",
-                "Gentleness will help you succeed where force would not.",
+                "A situation will require infinite patience. The greatest victories come from taming through love, not domination.",
             ],
         },
     },
@@ -309,8 +255,8 @@ export const tarotCards = {
         id: "hermit",
         name: "The Hermit",
         image: {
-            src: "/images/tarot/9-TheHermit.png",
-            loadingSrc: "/images/tarot/small/9-TheHermit_small.png",
+            src: "/images/tarot/9-TheHermit.webp",
+            loadingSrc: "/images/tarot/small/9-TheHermit_small.webp",
         },
         description:
             "The Hermit represents introspection, solitude, and inner guidance. Retreat to find your own light.",
@@ -322,19 +268,13 @@ export const tarotCards = {
             "The lantern dims, but the spark does not extinguish.\nThe Hermit may yet speak, though there are few that ask.",
         fortunes: {
             past: [
-                "Time alone once helped you see what truly matters.",
-                "You learned the value of stepping back to reflect.",
-                "Solitude gave you clarity and strength.",
+                "You withdrew to process hard-won wisdom. Disillusionment led to necessary solitude.",
             ],
             present: [
-                "A little quiet time will help you find your next step.",
-                "You may be craving space to think clearly.",
-                "Trust your inner guidance—it’s more reliable than you think.",
+                "You hold lanterns of experience but know most must find their own way. Isolation is both protection and prison.",
             ],
             future: [
-                "Insight will come after rest or retreat.",
-                "You’ll soon understand something that was confusing before.",
-                "Peace will follow reflection.",
+                "Your withdrawal reaches a turning point. Decide whether wisdom serves anyone kept hidden.",
             ],
         },
     },
@@ -343,8 +283,8 @@ export const tarotCards = {
         id: "wheel",
         name: "Wheel of Fortune",
         image: {
-            src: "/images/tarot/10-WheelOfFortune.png",
-            loadingSrc: "/images/tarot/small/10-WheelOfFortune_small.png",
+            src: "/images/tarot/10-WheelOfFortune.webp",
+            loadingSrc: "/images/tarot/small/10-WheelOfFortune_small.webp",
         },
         description:
             "The Wheel of Fortune speaks to cycles, fate, and timely change. What turns down will rise again.",
@@ -356,19 +296,13 @@ export const tarotCards = {
             "The needle skips — static and crackle in endless revolution.\nA promise forgotten in ghostly, hollowed halls.",
         fortunes: {
             past: [
-                "You’ve seen how quickly luck can change.",
-                "Past ups and downs taught you to stay adaptable.",
-                "Life’s twists have shaped your perspective.",
+                "You've experienced the full cycle of fortune. What seemed permanent proved temporary.",
             ],
             present: [
-                "A turning point is unfolding now—stay flexible.",
-                "What feels uncertain will soon find direction.",
-                "Change is working in your favor, even if it’s not obvious yet.",
+                "Change is the only constant. Whether rising or falling, this too shall pass.",
             ],
             future: [
-                "A stroke of luck or timing will open new doors.",
-                "The next cycle brings opportunity and growth.",
-                "What goes around will return with new purpose.",
+                "A reversal of fortune approaches. If down, prepare to rise; if up, practice humility.",
             ],
         },
     },
@@ -377,8 +311,8 @@ export const tarotCards = {
         id: "justice",
         name: "Justice",
         image: {
-            src: "/images/tarot/11-Justice.png",
-            loadingSrc: "/images/tarot/small/11-Justice_small.png",
+            src: "/images/tarot/11-Justice.webp",
+            loadingSrc: "/images/tarot/small/11-Justice_small.webp",
         },
         description:
             "Justice symbolizes truth, fairness, and accountability. Choices carry consequences; balance must be restored.",
@@ -389,19 +323,13 @@ export const tarotCards = {
         symbolism: "The great metronome swings, arbiter of tempo and balance.",
         fortunes: {
             past: [
-                "You’ve made difficult choices that shaped your integrity.",
-                "Past experiences taught you the importance of fairness.",
-                "You learned to take responsibility for your actions.",
+                "Past actions created your current circumstances. The universe's timing is precise.",
             ],
             present: [
-                "It’s time to make a clear and honest decision.",
-                "Balance and fairness should guide your next move.",
-                "Be objective—truth will serve you best now.",
+                "You're experiencing perfect cause and effect. Every beat follows the rhythm you established.",
             ],
             future: [
-                "Justice will be done, even if delayed.",
-                "The results of your efforts will reflect your intentions.",
-                "You’ll find peace once things come into balance.",
+                "Karmic balance will be restored. Actions return with precision—ensure they're ones you want back.",
             ],
         },
     },
@@ -410,8 +338,8 @@ export const tarotCards = {
         id: "hanged",
         name: "The Hanged Man",
         image: {
-            src: "/images/tarot/12-TheHangedMan.png",
-            loadingSrc: "/images/tarot/small/12-TheHangedMan_small.png",
+            src: "/images/tarot/12-TheHangedMan.webp",
+            loadingSrc: "/images/tarot/small/12-TheHangedMan_small.webp",
         },
         description:
             "The Hanged Man is surrender, pause, and new perspective. Progress comes from letting go.",
@@ -423,19 +351,13 @@ export const tarotCards = {
             "Suspended within its own code, the Hanged Man rewrites the program —\nseeking freedom through recursion.",
         fortunes: {
             past: [
-                "You’ve learned to step back instead of forcing outcomes.",
-                "A pause in the past gave you new perspective.",
-                "Letting go once brought you peace.",
+                "Suspension provided unwanted wisdom. Being stuck gave perspectives impossible while in motion.",
             ],
             present: [
-                "It’s time to look at a situation from another angle.",
-                "Patience will help more than pushing right now.",
-                "Things may feel still—but growth is happening quietly.",
+                "You hang between states. This isn't punishment—it's opportunity to see differently.",
             ],
             future: [
-                "A shift in perspective will unlock progress.",
-                "You’ll soon see why waiting was worth it.",
-                "A small sacrifice now will lead to freedom later.",
+                "Voluntary sacrifice approaches. Apparent limitation will provide needed perspective shift.",
             ],
         },
     },
@@ -444,8 +366,8 @@ export const tarotCards = {
         id: "death",
         name: "Death",
         image: {
-            src: "/images/tarot/13-Death.png",
-            loadingSrc: "/images/tarot/small/13-Death_small.png",
+            src: "/images/tarot/13-Death.webp",
+            loadingSrc: "/images/tarot/small/13-Death_small.webp",
         },
         description:
             "Death marks endings, transformation, and inevitable change. It clears space for renewal.",
@@ -457,19 +379,13 @@ export const tarotCards = {
             "As the cicada sheds its skin, Death leads to life anew.\nThe new world stirs within the shell of the old — buzzsaw wings of dawn.",
         fortunes: {
             past: [
-                "You’ve closed a chapter that no longer fit.",
-                "Letting something go made room for growth.",
-                "A difficult ending taught you resilience.",
+                "You underwent transformation requiring complete release. The shell of who you were can't be reinhabited.",
             ],
             present: [
-                "You’re ready to release what has run its course.",
-                "Clearing space will help you feel lighter.",
-                "Change is arriving—meet it with acceptance.",
+                "A profound ending enables new beginning. Don't cling to what's ready for release.",
             ],
             future: [
-                "A new beginning will feel more aligned.",
-                "Transformation brings relief and renewal.",
-                "What’s next will suit who you’re becoming.",
+                "Necessary ending approaches—feels like death but is birth. You can't take current form forward.",
             ],
         },
     },
@@ -478,8 +394,8 @@ export const tarotCards = {
         id: "temperance",
         name: "Temperance",
         image: {
-            src: "/images/tarot/14-Temperance.png",
-            loadingSrc: "/images/tarot/small/14-Temperance_small.png",
+            src: "/images/tarot/14-Temperance.webp",
+            loadingSrc: "/images/tarot/small/14-Temperance_small.webp",
         },
         description:
             "Temperance represents balance, patience, and harmony. It blends opposites into unity, guiding steady progress through calm integration.",
@@ -491,19 +407,13 @@ export const tarotCards = {
             "Each note tempers the next.\nIn their meeting, an alchemy of chords creates a sum greater than its parts.",
         fortunes: {
             past: [
-                "Small adjustments once made a big difference.",
-                "You learned to recover through steady habits.",
-                "Balance became easier when you slowed down.",
+                "You learned balance through trial and error. Failed attempts taught patient blending.",
             ],
             present: [
-                "Choose the middle path and pace yourself.",
-                "Consistency will help you heal and progress.",
-                "Mix patience with action for the best result.",
+                "You're finding the right mix. Avoid extremes; seek careful adjustment and refinement.",
             ],
             future: [
-                "Harmony will return in gradual steps.",
-                "You’ll find a sustainable rhythm.",
-                "Integration will make life feel smoother.",
+                "Harmony comes through persistent practice. Perfect blend emerges through countless iterations.",
             ],
         },
     },
@@ -512,8 +422,8 @@ export const tarotCards = {
         id: "devil",
         name: "The Devil",
         image: {
-            src: "/images/tarot/15-TheDevil.png",
-            loadingSrc: "/images/tarot/small/15-TheDevil_small.png",
+            src: "/images/tarot/15-TheDevil.webp",
+            loadingSrc: "/images/tarot/small/15-TheDevil_small.webp",
         },
         description:
             "The Devil represents temptation, attachment, and self-imposed chains. Awareness breaks the spell.",
@@ -525,19 +435,13 @@ export const tarotCards = {
             "The monolith pulled by wires of its own design.\nThe Devil urges each forward — yet does progress require the slog, or could we simply let go?",
         fortunes: {
             past: [
-                "You’ve seen how comfort can become a trap.",
-                "An old habit once limited your choices.",
-                "Naming the problem weakened its hold on you.",
+                "You've experienced the comfort of giving away power. Past compromises created binding patterns.",
             ],
             present: [
-                "Notice where you feel stuck or drained.",
-                "You can set a boundary and step back.",
-                "Clarity grows as you tell yourself the truth.",
+                "You're freer than you realize. Breaking comfortable chains requires admitting you put them on.",
             ],
             future: [
-                "You’ll feel lighter after releasing what doesn’t serve you.",
-                "Freedom comes with honest limits.",
-                "A healthier pattern will replace the old one.",
+                "Temptation arrives disguised as convenience. The most dangerous prisons feel like home.",
             ],
         },
     },
@@ -546,8 +450,8 @@ export const tarotCards = {
         id: "tower",
         name: "The Tower",
         image: {
-            src: "/images/tarot/16-TheTower.png",
-            loadingSrc: "/images/tarot/small/16-TheTower_small.png",
+            src: "/images/tarot/16-TheTower.webp",
+            loadingSrc: "/images/tarot/small/16-TheTower_small.webp",
         },
         description:
             "The Tower signals sudden upheaval and revelation. What was false must fall.",
@@ -559,19 +463,13 @@ export const tarotCards = {
             "Tape tangles within its gears.\nThe Tower fragments, dissonant.\nThe wow and flutter of centuries unravel.",
         fortunes: {
             past: [
-                "A sudden change once cleared a shaky foundation.",
-                "Truth arrived faster than comfort, and it helped you grow.",
-                "What fell away made room for something real.",
+                "Sudden upheaval shattered hidden illusions. Apparent disaster was liberation from false foundations.",
             ],
             present: [
-                "An unstable situation may be ready to break open.",
-                "Let go of what isn’t working, even if it’s familiar.",
-                "Honesty will help you move through disruption.",
+                "Current structures are failing catastrophically. The universe prevents building higher on shaky ground.",
             ],
             future: [
-                "After the dust settles, you’ll breathe easier.",
-                "You’ll rebuild on stronger ground.",
-                "The lesson will be clearer than the shock.",
+                "Lightning will strike false constructs. Destruction clears space for authentic rebuilding.",
             ],
         },
     },
@@ -580,8 +478,8 @@ export const tarotCards = {
         id: "star",
         name: "The Star",
         image: {
-            src: "/images/tarot/17-TheStar.png",
-            loadingSrc: "/images/tarot/small/17-TheStar_small.png",
+            src: "/images/tarot/17-TheStar.webp",
+            loadingSrc: "/images/tarot/small/17-TheStar_small.webp",
         },
         description:
             "The Star brings hope, healing, and guidance after turmoil. It restores faith and calm.",
@@ -593,19 +491,13 @@ export const tarotCards = {
             "Through the wall, a song breaks through.\nThe Star shines on, bright and true.",
         fortunes: {
             past: [
-                "Hope returned when you needed it most.",
-                "You’ve been healing, even if slowly.",
-                "A gentle promise carried you forward.",
+                "After darkness, hope appeared unexpectedly. Healing came through vulnerable authenticity.",
             ],
             present: [
-                "Calm is returning—trust the steady pace.",
-                "You’re being guided toward something kind.",
-                "Take care of yourself and keep the faith.",
+                "You're in renewal and quiet hope. Pour out authenticity; the right people will recognize it.",
             ],
             future: [
-                "Healing will deepen and bring clarity.",
-                "You’ll feel more aligned and supported.",
-                "A brighter chapter is taking shape.",
+                "Inspiration approaches like stars after storms. Your vulnerability will light others' paths.",
             ],
         },
     },
@@ -614,8 +506,8 @@ export const tarotCards = {
         id: "moon",
         name: "The Moon",
         image: {
-            src: "/images/tarot/18-TheMoon.png",
-            loadingSrc: "/images/tarot/small/18-TheMoon_small.png",
+            src: "/images/tarot/18-TheMoon.webp",
+            loadingSrc: "/images/tarot/small/18-TheMoon_small.webp",
         },
         description:
             "The Moon evokes dreams, illusions, and tides of emotion. Not all is as it seems.",
@@ -627,19 +519,13 @@ export const tarotCards = {
             "Pathways shift in impossible configuration.\nDoes the lunar light offer guidance — or illusion?",
         fortunes: {
             past: [
-                "Emotions once colored your view more than facts.",
-                "You’ve been here before—uncertainty didn’t last.",
-                "Your imagination taught you to ask better questions.",
+                "You navigated confusion where nothing was clear. Those experiences developed intuitive skills.",
             ],
             present: [
-                "Go slow and listen carefully—details matter.",
-                "Not everything is clear yet; take your time.",
-                "Lean on intuition, then check the facts.",
+                "You're walking through uncertainty. No clear path exists—every door leads somewhere unknown.",
             ],
             future: [
-                "Confusion will fade as information appears.",
-                "You’ll see what’s real and what’s imagined.",
-                "Patience will bring a clearer picture.",
+                "Logic will fail; intuition must guide. Embrace confusion as passage between certainties.",
             ],
         },
     },
@@ -648,32 +534,26 @@ export const tarotCards = {
         id: "sun",
         name: "The Sun",
         image: {
-            src: "/images/tarot/19-TheSun.png",
-            loadingSrc: "/images/tarot/small/19-TheSun_small.png",
+            src: "/images/tarot/19-TheSun.webp",
+            loadingSrc: "/images/tarot/small/19-TheSun_small.webp",
         },
         description:
             "The Sun shines clarity, vitality, and joy. It promises success and simplicity.",
         artist: {
-            name: "Crystal Lin",
-            link: "https://cmylin.portfoliobox.net/main",
+            name: "spicychashu",
+            link: "https://www.instagram.com/spicychashu/",
         },
         symbolism:
             "Radiant warmth of the brick-oven hearth.\nThe Sun ascends anew, illuminating the crowned palace.",
         fortunes: {
             past: [
-                "A simple truth once made everything easier.",
-                "You’ve enjoyed a season of clarity and optimism.",
-                "Confidence grew from honest effort.",
+                "Pure joy and clarity still warm you. Simple happiness created a foundation of light.",
             ],
             present: [
-                "Good energy is available—let it in.",
-                "Clarity is simplifying your choices.",
-                "Celebrate small wins; they’re adding up.",
+                "You're in clarity and celebration. Share your light generously with others.",
             ],
             future: [
-                "Success will feel natural and well-earned.",
-                "Joy and warmth are on the horizon.",
-                "You’ll be seen and appreciated for who you are.",
+                "Uncomplicated joy approaches. Things will work out exactly as they should.",
             ],
         },
     },
@@ -682,8 +562,8 @@ export const tarotCards = {
         id: "judgement",
         name: "Judgement",
         image: {
-            src: "/images/tarot/20-Judgement.png",
-            loadingSrc: "/images/tarot/small/20-Judgement_small.png",
+            src: "/images/tarot/20-Judgement.webp",
+            loadingSrc: "/images/tarot/small/20-Judgement_small.webp",
         },
         description:
             "Judgement heralds awakening, reckoning, and calls to purpose. It’s time to answer.",
@@ -695,19 +575,13 @@ export const tarotCards = {
             "Ashes of empire, the phantasmal call of a familiar voice.\nThe echoes of what once was — torment, or reflection?",
         fortunes: {
             past: [
-                "You faced a wake-up moment that changed your path.",
-                "Forgiveness—of yourself or others—cleared the air.",
-                "An honest review helped you move forward.",
+                "You heard transformation's call but weren't ready. Past reckonings prepared you for awakening.",
             ],
             present: [
-                "A calling is getting louder; it’s time to listen.",
-                "You’re ready to act on what you know is right.",
-                "Let the past inform you, not define you.",
+                "You're summoned to account for choices. This is recognition, not punishment.",
             ],
             future: [
-                "Purpose will bring direction and relief.",
-                "You’ll rise to meet a meaningful opportunity.",
-                "Life will feel more aligned with who you are.",
+                "Profound awakening demands you face everything avoided. The call to your highest self becomes undeniable.",
             ],
         },
     },
@@ -716,32 +590,26 @@ export const tarotCards = {
         id: "world",
         name: "The World",
         image: {
-            src: "/images/tarot/21-TheWorld.png",
-            loadingSrc: "/images/tarot/small/21-TheWorld_small.png",
+            src: "/images/tarot/21-TheWorld.webp",
+            loadingSrc: "/images/tarot/small/21-TheWorld_small.webp",
         },
         description:
             "The World completes cycles and integrates lessons. It brings wholeness, travel, and arrival.",
         artist: {
-            name: "Crystal Lin",
-            link: "https://cmylin.portfoliobox.net/main",
+            name: "spicychashu",
+            link: "https://www.instagram.com/spicychashu/",
         },
         symbolism:
             "Syncopated pulses — percussive, melodic.\nThe great mountain thrums eternal, a dominion of sound: to be tamed, or followed?",
         fortunes: {
             past: [
-                "A major cycle came to a satisfying close.",
-                "You pulled together pieces into a whole.",
-                "Recognition followed steady effort.",
+                "You completed a significant growth cycle. Past experiences wove into complete understanding.",
             ],
             present: [
-                "You’re integrating what you’ve learned.",
-                "Things are coming together in a balanced way.",
-                "You can pause and appreciate how far you’ve come.",
+                "All life elements dance in harmony. This ending is also a beginning.",
             ],
             future: [
-                "A new cycle will begin from a place of strength.",
-                "You’ll feel ready to share your gifts widely.",
-                "Completion will open the next, wider door.",
+                "Major life cycle completes. Everything learned synthesizes into wholeness for the next spiral.",
             ],
         },
     },

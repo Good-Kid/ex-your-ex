@@ -15,20 +15,20 @@ export const getResultTitle = (quizResult) =>
     quizResult?.name || quizResult?.title || quizResult?.id || "My Result";
 
 // Fetch the PNG and turn it into a File so native share can include it
-export async function getResultImageFile(imgUrl, filename = "result.png") {
+export async function getResultImageFile(imgUrl, filename = "result.webp") {
     const res = await fetch(imgUrl, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch result image");
     const blob = await res.blob();
     const type = blob.type || "image/png";
     return new File(
         [blob],
-        filename.endsWith(".png") ? filename : `${filename}.png`,
+        filename.endsWith(".webp") ? filename : `${filename}.webp`,
         { type }
     );
 }
 
 // Simple client-side download fallback
-export async function downloadUrlAsFile(imgUrl, filename = "result.png") {
+export async function downloadUrlAsFile(imgUrl, filename = "result.webp") {
     const a = document.createElement("a");
     a.href = imgUrl;
     a.download = filename;

@@ -116,176 +116,203 @@ const ghostQuizData = {
     questions: [
         {
             id: 1,
-            text: "One dark night, you find yourself lost in the woods.\n Through the trees, a cabin glows with pale light.\nWhat do you do?",
-            imageSrc: "/images/quiz/question_art/house.png",
+            text: "You're walking home after a long day. Suddenly, you hear footsteps behind you.",
+            imageSrc: "/images/quiz/question_art/q1.gif",
             answers: [
                 {
-                    text: "Quietly approach, wary of what might be within",
-                    weights: { voice: -1.0, temper: -1.0 },
+                    text: "Keep walking at the same pace, listening carefully without turning around",
+                    weights: { voice: -1.0, temper: 0.0 },
                 },
                 {
-                    text: "Call out: 'Hello? Anyone there?'",
-                    weights: { voice: +1.0, temper: +1.0 },
+                    text: "Turn around immediately and say 'Can I help you?'",
+                    weights: { voice: +1.0, temper: 0.0 },
                 },
             ],
         },
         {
             id: 2,
-            text: "As you approach, you notice the door creek open.\n You decide to go in.\n How do you enter?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: "When you look, no one is there. Afraid, you take a shortcut through the woods. It's getting darker. Your phone battery is at 2%.",
+            imageSrc: "/images/quiz/question_art/q2.gif",
             answers: [
                 {
-                    text: "Push the door open gently, creeping inside",
-                    weights: { voice: -1.0, temper: -1.0 },
+                    text: "Turn off your phone to save battery and navigate by memory",
+                    weights: { voice: -1.0, temper: 0.0 },
                 },
                 {
-                    text: "Kick the door open, better to scare than be scared",
-                    weights: { voice: +1.0, temper: +1.0 },
+                    text: "Use the flashlight anyway — you need to see where you're going",
+                    weights: { voice: +1.0, temper: 0.0 },
                 },
             ],
         },
         {
             id: 3,
-            text: "Inside, dust coats the floor.\nCobwebs block your path.\nWhat do you do?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: "Before you get the chance, your phone dies! Through the trees, you see a faint light. It's a hotel you've never noticed before.",
+            imageSrc: "/images/quiz/question_art/q3.gif",
             answers: [
                 {
-                    text: "Tear them down, they are in your way!",
-                    weights: { voice: +0.5, temper: +1.0 },
+                    text: "Approach quietly, observing from the tree line first",
+                    weights: { voice: -1.0, temper: 0.0 },
                 },
                 {
-                    text: "Crawl under them, avoiding them the best you can",
-                    weights: { voice: -1.0, temper: -0.5 },
+                    text: "Walk straight toward it and knock on the door",
+                    weights: { voice: +1.0, temper: 0.0 },
                 },
             ],
         },
         {
             id: 4,
-            text: "As you continue down the hall, you get the feeling something is watching you from the stairs.\n What do you do?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: "You approach the entrance, when the hotel door slowly creaks open by itself. No one appears.",
+            imageSrc: "/images/quiz/question_art/q4.gif",
             answers: [
                 {
-                    text: "Turn around, pretending that you didn't notice.",
-                    weights: { voice: -1.0, temper: +0.5 },
+                    text: "Slip inside silently, barely touching the door",
+                    weights: { voice: -1.0, temper: 0.0 },
                 },
                 {
-                    text: 'Shout "Who\'s there?!"',
-                    weights: { voice: +1.0, temper: +0.5 },
+                    text: "Push it wide open and call out 'Hello?'",
+                    weights: { voice: +1.0, temper: 0.0 },
                 },
             ],
         },
         {
             id: 5,
-            text: "Suddenly, you hear footsteps coming from the opposite direction.\n What do you do?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: 'The door slams shut behind you. A woman stands behind the front desk, staring at you with white, hollow eyes. Her nameplate reads "Jenny."',
+            imageSrc: "/images/quiz/question_art/q5.gif",
             answers: [
                 {
-                    text: "Find something to defend yourself",
-                    weights: { voice: -0.0, temper: +1.0 },
+                    text: "Ask her if there's a place you can charge your phone",
+                    weights: { voice: 0.0, temper: -1.0 },
                 },
                 {
-                    text: "Hide under a nearby table",
-                    weights: { voice: +0.0, temper: -1.0 },
+                    text: "Don't make eye contact, back away slowly...",
+                    weights: { voice: 0.0, temper: +1.0 },
                 },
             ],
         },
         {
             id: 6,
-            text: "As quickly as the sound came, it is gone.\n Ahead of you are two doors:\n The one on the left is cold to the touch. \n The one on the right spills light underneath.",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: '"Welcome to the hotel," she says, reading the reservations. "Ah yes, I see here that you\'ll be staying with us for a long time." She points to a door behind the desk. "This way to your room."',
+            imageSrc: "/images/quiz/question_art/q6.gif",
             answers: [
                 {
-                    text: "Open the left door",
-                    weights: { voice: -1.0, temper: -0.0 },
+                    text: "Follow Jenny through the door",
+                    weights: { voice: 0.0, temper: -1.0 },
                 },
                 {
-                    text: "Open the right door",
-                    weights: { voice: +1.0, temper: +0.0 },
+                    text: "No thanks, I think I'll find my own way",
+                    weights: { voice: 0.0, temper: +1.0 },
                 },
             ],
         },
         {
             id: 7,
-            text: "Inside, you find a portrait, its eyes seem to follow you.\n You hear a voice in your head ask:\n 'What do you seek?'",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: "Jenny waves you forward, as you find yourself in an endless hallway with endless doors and old photographs of guests lining the walls. In one of them, you see yourself.",
+            imageSrc: "/images/quiz/question_art/q7.gif",
             answers: [
                 {
-                    text: '"A good story"',
-                    weights: { voice: +0.5, temper: +0.5 },
+                    text: "Reach out and touch your face in the photograph, remember...",
+                    weights: { voice: 0.0, temper: +1.0 },
                 },
                 {
-                    text: '"A safe place"',
-                    weights: { voice: -0.5, temper: -0.5 },
+                    text: "Run — get as far from it as possible, this can't be real!",
+                    weights: { voice: 0.0, temper: -1.0 },
                 },
             ],
         },
         {
             id: 8,
-            text: "The floor opens to reveal a stairway.\n A voice below calls your name. \n What do you do?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: 'You reach the only open room — "501." On the bed lies dusty formalwear, as if waiting for you.',
+            imageSrc: "/images/quiz/question_art/q8.gif",
             answers: [
                 {
-                    text: "Go toward the voice.",
-                    weights: { voice: +0.5, temper: +0.5 },
+                    text: "Put on the outfit — maybe it will help you blend in.",
+                    weights: { voice: 0.0, temper: +1.0 },
                 },
                 {
-                    text: "Step back and run.",
-                    weights: { voice: -0.5, temper: -0.5 },
+                    text: "It probably belongs to someone, leave it alone and look around the room.",
+                    weights: { voice: 0.0, temper: -1.0 },
                 },
             ],
         },
         {
             id: 9,
-            text: "You slip and fall down the steps.\n At the bottom, you find a mirror. Your reflection speaks, asking:\n 'What are you really?'",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: "You're drawn to the window, but find a ballroom where woods should be. A dancer beckons. Suddenly you're there with someone who looks just like your first love—the one who broke your heart.",
+            imageSrc: "/images/quiz/question_art/q9.gif",
             answers: [
-                { text: "A Witness", weights: { voice: -1.0, temper: +1.0 } },
-                { text: "A Judge", weights: { voice: +1.0, temper: -1.0 } },
+                {
+                    text: "Ask them why they left you",
+                    weights: { voice: -1.0, temper: +1.0 },
+                },
+                {
+                    text: "Just keep dancing, maybe this time it'll be different",
+                    weights: { voice: +1.0, temper: -1.0 },
+                },
             ],
         },
         {
             id: 10,
-            text: "You step to your feet, but find you are chained to the ground.\n Your reflection begins to creep towards you, out of the mirror. \n What do you do?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: 'Midnight strikes. Everyone vanishes—except them. "I\'m sorry. Follow me, I have more to tell you" They walk through a door revealing a staircase descending into darkness.',
+            imageSrc: "/images/quiz/question_art/q10.gif",
             answers: [
                 {
-                    text: "Pull on the chain, attempting to break it from the floor.",
+                    text: '"I forgive you, wait!" Run after them',
                     weights: { voice: -1.0, temper: +1.0 },
                 },
                 {
-                    text: "Plead with the spirit to let you live.",
+                    text: "Follow slowly, you're afraid of what they'll say",
                     weights: { voice: +1.0, temper: -1.0 },
                 },
             ],
         },
         {
             id: 11,
-            text: "As the spirit reaches your body, you feel it pulling you into itself.\n Do you accept this change?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: 'You find them halfway down the staircase. They turn to face you, reaching out their hand. "I never meant to hurt you," they say softly. "I need you to know—"',
+            imageSrc: "/images/quiz/question_art/q11.gif",
             answers: [
-                { text: "Yes", weights: { voice: -1.0, temper: +1.0 } },
-                { text: "No", weights: { voice: +1.0, temper: -1.0 } },
+                {
+                    text: "Take their hand — you need to hear this",
+                    weights: { voice: -1.0, temper: +1.0 },
+                },
+                {
+                    text: '"Just tell me. Please."',
+                    weights: { voice: +1.0, temper: -1.0 },
+                },
             ],
         },
         {
             id: 12,
-            text: "You look back to see your body on the floor.\nWhat have you become?",
-            imageSrc: "/images/quiz/question_art/circle.png",
+            text: "They step back. You reach and fall, tumbling down the stairs. Then—weightless, floating above yourself. They're gone. You'll never hear what they had to say.",
+            imageSrc: "/images/quiz/question_art/q12.gif",
             answers: [
                 {
-                    text: "A quiet light fading to peace.",
-                    weights: { voice: -1.0, temper: -1.0 },
-                },
-                {
-                    text: "A whisper that never forgives.",
+                    text: "Swim back into your body, you still have more to say!",
                     weights: { voice: -1.0, temper: +1.0 },
                 },
                 {
-                    text: "A voice calling others to safety.",
+                    text: "Float away — maybe you'll find them again",
+                    weights: { voice: +1.0, temper: -1.0 },
+                },
+            ],
+        },
+        {
+            id: 13,
+            text: "Ding ... \"Welcome home.\" You're back in the lobby with Jenny. You realize — You're not leaving. What have you become?",
+            imageSrc: "/images/quiz/question_art/q13.gif",
+            answers: [
+                {
+                    text: "A fading glow that seeks eternal rest",
+                    weights: { voice: -1.0, temper: -1.0 },
+                },
+                {
+                    text: "A cold presence that never forgets a wrong",
+                    weights: { voice: -1.0, temper: +1.0 },
+                },
+                {
+                    text: "A gentle guide leading lost souls to safety",
                     weights: { voice: +1.0, temper: -1.0 },
                 },
                 {
-                    text: "A scream that burns the dark away.",
+                    text: "A fierce flame that burns away the darkness",
                     weights: { voice: +1.0, temper: +1.0 },
                 },
             ],

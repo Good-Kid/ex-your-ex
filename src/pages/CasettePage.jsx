@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { useAnimate } from "motion/react";
 import { Howl } from "howler";
@@ -6,11 +6,11 @@ import { useGameState } from "../context/GameStateContext";
 import LinkButton from "../components/LinkButton";
 
 const TAPE_SRCS = [
-    "/images/cassette/tape/unwound1.png",
-    "/images/cassette/tape/unwound2.png",
-    "/images/cassette/tape/unwound3.png",
-    "/images/cassette/tape/unwound4.png",
-    "/images/cassette/tape/unwound5.png",
+    "/images/cassette/tape/unwound1.webp",
+    "/images/cassette/tape/unwound2.webp",
+    "/images/cassette/tape/unwound3.webp",
+    "/images/cassette/tape/unwound4.webp",
+    "/images/cassette/tape/unwound5.webp",
 ];
 
 const playCrankSound = () => {
@@ -176,7 +176,7 @@ export default function CassettePage() {
                         className="youtube"
                         width="100%"
                         height="auto"
-                        src="https://www.youtube.com/embed/jj6CBSG5ZQE?si=sZzmJsqha_A_AUuZ"
+                        src="https://www.youtube.com/embed/pqbeMEHvadE?si=sZzmJsqha_A_AUuZ"
                         title="YouTube video player"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

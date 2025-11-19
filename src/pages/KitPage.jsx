@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 // KitPage.jsx
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Howl } from "howler";
@@ -138,7 +138,6 @@ export default function KitPage() {
                         text: "consult the grimoire...",
                         glow_id: "book",
                     },
-                    ,
                     {
                         text: "the book... under me...",
                         glow_id: "book",
@@ -166,6 +165,7 @@ export default function KitPage() {
                     { text: 'presave "rift"...' },
                 ];
             }
+            console.log(whisper_pool);
 
             return whisper_pool[
                 Math.floor(Math.random() * whisper_pool.length)
@@ -195,7 +195,8 @@ export default function KitPage() {
 
         // choose text
         const choice = getSkullWhisper(gameState);
-        const redEyes = !!choice.red_eyes;
+        console.log(choice);
+        const redEyes = !!choice?.red_eyes;
         const text = choice.text;
 
         // show whisper and play sound
@@ -225,7 +226,7 @@ export default function KitPage() {
     useEffect(() => {
         const introAnimation = async () => {
             const img = new window.Image();
-            img.src = "/images/kit/kit_closed.png";
+            img.src = "/images/kit/kit_closed.webp";
             if (img.decode) {
                 await img.decode();
             } else {
@@ -267,18 +268,15 @@ export default function KitPage() {
         await animate(scope.current, { opacity: 1 }, { duration: 0.1 });
     };
 
-    const openNoteDelayed = async () => {
-        await new Promise((resolve) => setTimeout(resolve, 400));
-        setNoteModalOpen(true);
-    };
-
     // ----- Click Handlers -----
     const handleOuijaClick = (clickedYes) => {
         if (clickedYes) {
             new Howl({ src: ["/sounds/latch.mp3"] }).play();
             setPlayIntroAnim(false);
             updateGameState({ kitIntroPlayed: true });
-            setNoteModalOpen(true);
+            if (!gameState.flags.ritualCompleted) {
+                setNoteModalOpen(true);
+            }
         } else {
             clickedNoAnimation();
         }
@@ -305,19 +303,19 @@ export default function KitPage() {
             const def = kitItemDefinitions[itemId] || {
                 name: itemId.charAt(0).toUpperCase() + itemId.slice(1),
                 description: "A mysterious item from the spirit realm.",
-                imageSrc: `/images/kit/full/${itemId}.png`,
+                imageSrc: `/images/kit/full/${itemId}.webp`,
             };
 
             if (itemId === "bottle" && gameState.flags.bottleCompleted) {
                 def.name = "Bottle of Tears";
-                def.imageSrc = `/images/kit/full/${itemId}_full.png`;
+                def.imageSrc = `/images/kit/full/${itemId}_full.webp`;
                 def.description =
                     "A glass bottle filled with your tears, ready for use in the ritual.";
             }
 
             if (itemId === "cassette" && !gameState.flags.cassetteCompleted) {
                 def.name = "Broken Cassette";
-                def.imageSrc = `/images/kit/full/${itemId}_unwound.png`;
+                def.imageSrc = `/images/kit/full/${itemId}_unwound.webp`;
                 def.description =
                     "A cassette imperitive to the ritual. It's tape is unwound.";
             }
@@ -404,7 +402,7 @@ export default function KitPage() {
                                   }
                         }
                     >
-                        <img src="/images/logo_full_white.png" alt="" />
+                        <img src="/images/logo_full_white.webp" alt="" />
                     </div>
                 )}
                 <div
@@ -457,7 +455,7 @@ export default function KitPage() {
                                 width="2438"
                                 height="2295"
                                 transform="translate(10.56) scale(.24)"
-                                href="/images/kit/menu/background.png"
+                                href="/images/kit/menu/background.webp"
                             />
                         </g>
 
@@ -467,14 +465,14 @@ export default function KitPage() {
                                 width="718"
                                 height="315"
                                 transform="translate(34.08 349.92) scale(.24)"
-                                href="/images/kit/menu/candles_glow.png"
+                                href="/images/kit/menu/candles_glow.webp"
                             />
                             <image
                                 id="candles_normal"
                                 width="522"
                                 height="218"
                                 transform="translate(57.359 373.554) scale(.24)"
-                                href="/images/kit/menu/candles_normal.png"
+                                href="/images/kit/menu/candles_normal.webp"
                             />
                             <polygon
                                 id="candles_hit_path"
@@ -491,8 +489,8 @@ export default function KitPage() {
                                 transform="translate(408 311.76) scale(.24)"
                                 href={
                                     gameState.flags.bottleCompleted
-                                        ? "/images/kit/menu/full_bottle_normal.png"
-                                        : "/images/kit/menu/bottle_normal.png"
+                                        ? "/images/kit/menu/full_bottle_normal.webp"
+                                        : "/images/kit/menu/bottle_normal.webp"
                                 }
                             />
                             <image
@@ -503,8 +501,8 @@ export default function KitPage() {
                                 transform="translate(391.681 296.161) scale(.24)"
                                 href={
                                     gameState.flags.bottleCompleted
-                                        ? "/images/kit/menu/full_bottle_glow.png"
-                                        : "/images/kit/menu/bottle_glow.png"
+                                        ? "/images/kit/menu/full_bottle_glow.webp"
+                                        : "/images/kit/menu/bottle_glow.webp"
                                 }
                             />
                             <polyline
@@ -520,14 +518,14 @@ export default function KitPage() {
                                 width="1196"
                                 height="487"
                                 transform="translate(188.4 314.64) scale(.24)"
-                                href="/images/kit/menu/book_glow.png"
+                                href="/images/kit/menu/book_glow.webp"
                             />
                             <image
                                 id="book_normal"
                                 width="999"
                                 height="371"
                                 transform="translate(212.16 339.6) scale(.24)"
-                                href="/images/kit/menu/book_normal.png"
+                                href="/images/kit/menu/book_normal.webp"
                             />
                             <polyline
                                 id="book_hit_path"
@@ -542,21 +540,21 @@ export default function KitPage() {
                                 width="780"
                                 height="468"
                                 transform="translate(233.52 300.72) scale(.24)"
-                                href="/images/kit/menu/skull_glow.png"
+                                href="/images/kit/menu/skull_glow.webp"
                             />
                             <image
                                 id="skull_normal"
                                 width="581"
                                 height="264"
                                 transform="translate(257.52 325.68) scale(.24)"
-                                href="/images/kit/menu/skull_normal.png"
+                                href="/images/kit/menu/skull_normal.webp"
                             />
                             <image
                                 id="skull_redeyes"
                                 width="581"
                                 height="264"
                                 transform="translate(257.52 325.68) scale(.24)"
-                                href="/images/kit/menu/skull_redeye.png" /* <-- use your actual asset path */
+                                href="/images/kit/menu/skull_redeye.webp" /* <-- use your actual asset path */
                                 style={{
                                     opacity: skullRedEyes ? 1 : 0,
                                 }} /* toggled by state */
@@ -574,14 +572,14 @@ export default function KitPage() {
                                 width="344"
                                 height="405"
                                 transform="translate(162.72 312.72) scale(.24)"
-                                href="/images/kit/menu/lighter_glow.png"
+                                href="/images/kit/menu/lighter_glow.webp"
                             />
                             <image
                                 id="lighter_normal"
                                 width="140"
                                 height="198"
                                 transform="translate(186.96 337.44) scale(.24)"
-                                href="/images/kit/menu/lighter_normal.png"
+                                href="/images/kit/menu/lighter_normal.webp"
                             />
                             <polygon
                                 id="lighter_hit_path"
@@ -596,14 +594,14 @@ export default function KitPage() {
                                 width="310"
                                 height="440"
                                 transform="translate(431.28 340.08) scale(.24)"
-                                href="/images/kit/menu/knife_glow.png"
+                                href="/images/kit/menu/knife_glow.webp"
                             />
                             <image
                                 id="knife_normal"
                                 width="111"
                                 height="242"
                                 transform="translate(455.04 364.08) scale(.24)"
-                                href="/images/kit/menu/knife_normal.png"
+                                href="/images/kit/menu/knife_normal.webp"
                             />
                             <polygon
                                 id="knife_hit_path"
@@ -618,7 +616,7 @@ export default function KitPage() {
                                 width="808"
                                 height="438"
                                 transform="translate(200.388 43.157) scale(.24)"
-                                href="/images/kit/menu/note_glow.png"
+                                href="/images/kit/menu/note_glow.webp"
                             />
                             {gameState.flags.quizCompleted &&
                             gameState.flags.cassetteCompleted &&
@@ -630,7 +628,7 @@ export default function KitPage() {
                                     width="808"
                                     height="438"
                                     transform="translate(200.388 43.157) scale(.24)"
-                                    href="/images/kit/menu/note_redglow.png"
+                                    href="/images/kit/menu/note_redglow.webp"
                                 />
                             ) : (
                                 <image
@@ -638,7 +636,7 @@ export default function KitPage() {
                                     width="603"
                                     height="231"
                                     transform="translate(224.628 67.877) scale(.24)"
-                                    href="/images/kit/menu/note_normal.png"
+                                    href="/images/kit/menu/note_normal.webp"
                                 />
                             )}
 
@@ -655,14 +653,14 @@ export default function KitPage() {
                                 width="480"
                                 height="295"
                                 transform="translate(364.505 54.023) scale(.24)"
-                                href="/images/kit/menu/cassette_glow.png"
+                                href="/images/kit/menu/cassette_glow.webp"
                             />
                             <image
                                 id="cassette_normal"
                                 width="278"
                                 height="190"
                                 transform="translate(388.745 78.743) scale(.24)"
-                                href="/images/kit/menu/cassette_normal.png"
+                                href="/images/kit/menu/cassette_normal.webp"
                             />
                             <polygon
                                 id="cassette_hit_path"
@@ -677,14 +675,14 @@ export default function KitPage() {
                                 width="476"
                                 height="416"
                                 transform="translate(120.678 40.681) scale(.228)"
-                                href="/images/kit/menu/cards_glow.png"
+                                href="/images/kit/menu/cards_glow.webp"
                             />
                             <image
                                 id="cards_normal"
                                 width="269"
                                 height="235"
                                 transform="translate(143.724 64.406) scale(.228)"
-                                href="/images/kit/menu/cards_normal.png"
+                                href="/images/kit/menu/cards_normal.webp"
                             />
                             <path
                                 id="cards_hit_path"
@@ -721,7 +719,7 @@ export default function KitPage() {
                             }}
                         />
                         <img
-                            src="images/kit/kit_closed.png"
+                            src="images/kit/kit_closed.webp"
                             draggable={false}
                         />
                     </div>

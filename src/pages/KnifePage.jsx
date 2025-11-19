@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useRef } from "react";
 import { useAnimate } from "motion/react";
 import { Howl } from "howler";
@@ -6,25 +6,25 @@ import { useGameState } from "../context/GameStateContext.jsx";
 import LinkButton from "../components/LinkButton.jsx";
 
 const ONION_STAGES = [
-    "/images/knife/onion/onionchop00.png",
-    "/images/knife/onion/onionchop01.png",
-    "/images/knife/onion/onionchop02.png",
-    "/images/knife/onion/onionchop03.png",
-    "/images/knife/onion/onionchop04.png",
-    "/images/knife/onion/onionchop05.png",
-    "/images/knife/onion/onionchop06.png",
-    "/images/knife/onion/onionchop07.png",
+    "/images/knife/onion/onionchop00.webp",
+    "/images/knife/onion/onionchop01.webp",
+    "/images/knife/onion/onionchop02.webp",
+    "/images/knife/onion/onionchop03.webp",
+    "/images/knife/onion/onionchop04.webp",
+    "/images/knife/onion/onionchop05.webp",
+    "/images/knife/onion/onionchop06.webp",
+    "/images/knife/onion/onionchop07.webp",
 ];
 
 const BOTTLE_STAGES = [
-    "/images/knife/bottle/bottle01.png",
-    "/images/knife/bottle/bottle01.png",
-    "/images/knife/bottle/bottle02.png",
-    "/images/knife/bottle/bottle03.png",
-    "/images/knife/bottle/bottle04.png",
-    "/images/knife/bottle/bottle05.png",
-    "/images/knife/bottle/bottle06.png",
-    "/images/knife/bottle/bottle07.png",
+    "/images/knife/bottle/bottle01.webp",
+    "/images/knife/bottle/bottle01.webp",
+    "/images/knife/bottle/bottle02.webp",
+    "/images/knife/bottle/bottle03.webp",
+    "/images/knife/bottle/bottle04.webp",
+    "/images/knife/bottle/bottle05.webp",
+    "/images/knife/bottle/bottle06.webp",
+    "/images/knife/bottle/bottle07.webp",
 ];
 
 const SOUND_SRCS = [
@@ -32,6 +32,11 @@ const SOUND_SRCS = [
     "/sounds/chops/chop2.mp3",
     "/sounds/chops/chop3.mp3",
     "/sounds/chops/chop4.mp3",
+];
+
+const TEAR_SRCS = [
+    "/images/knife/tearstream1.gif",
+    "/images/knife/tearstream2.gif",
 ];
 
 const playRandomChop = (lastPlayedRef) => {
@@ -53,13 +58,12 @@ export default function KnifePage() {
     const [knifePos, setKnifePos] = useState({ x: 0, y: 0 });
     const [knifeCursorEnabled, setKnifeCursorEnabled] = useState(false);
 
-    const [onionGlow, setOnionGlow] = useState(false);
     const [onionFullyChopped, setOnionFullyChopped] = useState(false);
 
     const rafRef = useRef(null);
     const targetRef = useRef({ x: 0, y: 0 });
 
-    // NEW: last-known pointer (updated always; doesn’t re-render)
+    // last-known pointer (updated always; doesn’t re-render)
     const lastPointerRef = useRef({
         x: typeof window !== "undefined" ? window.innerWidth / 2 : 0,
         y: typeof window !== "undefined" ? window.innerHeight / 2 : 0,
@@ -172,6 +176,40 @@ export default function KnifePage() {
         introAnimation();
     }, [animate]);
 
+    // ----- Tear Streams -----
+    const [tears, setTears] = useState([]);
+
+    // helper: create a tear, fade in/out, then remove
+    const spawnTearStream = async () => {
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        const src = TEAR_SRCS[Math.floor(Math.random() * TEAR_SRCS.length)];
+        const leftPercent = Math.floor(Math.random() * 90); // 0–90%
+
+        // add to state (initially rendered with opacity:0)
+        setTears((prev) => [...prev, { id, src, leftPercent }]);
+
+        // let React paint, then animate
+        await new Promise((r) =>
+            requestAnimationFrame(() => requestAnimationFrame(r))
+        );
+
+        // fade in
+        await animate(
+            `[data-tear="${id}"]`,
+            { opacity: 1 },
+            { duration: 0.35 }
+        );
+
+        // visible hold
+        await new Promise((r) => setTimeout(r, 500));
+
+        // fade out
+        await animate(`[data-tear="${id}"]`, { opacity: 0 }, { duration: 0.4 });
+
+        // cleanup
+        setTears((prev) => prev.filter((t) => t.id !== id));
+    };
+
     //----- Click Handlers -----
     const handleTakeKnife = async (e) => {
         await animate(
@@ -224,10 +262,12 @@ export default function KnifePage() {
     const handleOnionChop = async () => {
         if (onionFullyChopped) return;
 
+        // spawn a tear stream on every chop
+        spawnTearStream();
+
         playRandomChop(lastPlayedRef);
 
         if (onionIndex === ONION_STAGES.length - 1) {
-            0;
             // Onion is fully chopped
             setOnionFullyChopped(true);
             animate(".onion-container", { opacity: 0 }, { duration: 0.3 });
@@ -243,18 +283,12 @@ export default function KnifePage() {
             updateGameState({ bottleCompleted: true });
             await animate(
                 ".bottle-container",
-                {
-                    bottom: "50%",
-                    right: "50%",
-                    pointerEvents: "auto",
-                },
+                { bottom: "50%", right: "50%", pointerEvents: "auto" },
                 { duration: DEFAULT_DURATION }
             );
             await animate(
                 ".bottle-text",
-                {
-                    opacity: 1,
-                },
+                { opacity: 1 },
                 { duration: DEFAULT_DURATION }
             );
             return;
@@ -301,7 +335,7 @@ export default function KnifePage() {
                     <img
                         draggable={false}
                         onClick={handleTakeKnife}
-                        src="/images/kit/full/knife.png"
+                        src="/images/kit/full/knife.webp"
                         alt=""
                     />
                 </div>
@@ -316,24 +350,12 @@ export default function KnifePage() {
                 >
                     <span>{isMobile && "Tap to "}Chop</span>
                     <img
-                        style={{
-                            zIndex: 200,
-                        }}
-                        className={onionGlow ? "glow" : undefined}
+                        style={{ zIndex: 200 }}
+                        onClick={handleOnionChop}
                         draggable={false}
                         src={ONION_STAGES[onionIndex]}
                         alt=""
                     />
-                    <div
-                        className="onion-click-zone"
-                        onClick={handleOnionChop}
-                        onMouseEnter={() => {
-                            setOnionGlow(true);
-                        }}
-                        onMouseLeave={() => {
-                            setOnionGlow(false);
-                        }}
-                    ></div>
                 </div>
 
                 <div
@@ -343,12 +365,7 @@ export default function KnifePage() {
                         pointerEvents: "none",
                     }}
                 >
-                    <span
-                        className="bottle-text"
-                        style={{
-                            opacity: 0,
-                        }}
-                    >
+                    <span className="bottle-text" style={{ opacity: 0 }}>
                         You filled the bottle with tears
                     </span>
                     <img
@@ -359,9 +376,7 @@ export default function KnifePage() {
                     />
                     <LinkButton
                         className="bottle-text"
-                        style={{
-                            opacity: 0,
-                        }}
+                        style={{ opacity: 0 }}
                         to="/kit"
                     >
                         Return to Kit
@@ -371,7 +386,7 @@ export default function KnifePage() {
                 {knifeCursorEnabled && (
                     <img
                         draggable={false}
-                        src="/images/kit/full/knife.png"
+                        src="/images/kit/full/knife.webp"
                         alt=""
                         className="knife-cursor"
                         style={{
@@ -383,6 +398,22 @@ export default function KnifePage() {
                         }}
                     />
                 )}
+
+                {/* TEAR STREAMS */}
+                {tears.map((t) => (
+                    <div
+                        key={t.id}
+                        className="tear-stream"
+                        data-tear={t.id}
+                        style={{
+                            left: `${t.leftPercent}%`,
+                            top: 0,
+                            opacity: 0, // start hidden; JS will fade in/out
+                        }}
+                    >
+                        <img src={t.src} alt="" draggable={false} />
+                    </div>
+                ))}
             </div>
         </>
     );

@@ -14,7 +14,6 @@ dist-ssr
 
 # Firebase
 firebase-debug.log
-.firebaserc
 .firebase/
 
 # Vite build output
@@ -30,8 +29,31 @@ dist-ssr/
 !.vscode/extensions.json
 .idea
 .DS_Store
+*/.DS_Store
+**/.DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Runtime and temporary files
+*.pid
+*.seed
+*.pid.lock
+.npm
+.eslintcache
+.stylelintcache
+
+# Coverage and testing
+coverage/
+.nyc_output/
+*.lcov
+.coverage/
+
+# Build artifacts and cache
+.cache/
+.parcel-cache/
+.vite/
+*.tsbuildinfo

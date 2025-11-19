@@ -4,13 +4,21 @@ import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // ------------ CONFIG: add as many pages as you want ------------
-const SITE = "https://website.com";
+const SITE = "https://exorciseyourex.com";
 const PAGES = [
     {
         path: "quiz",
         title: "Exorcise Your Ex — Personality Quiz",
         description: "What kind of ghost will you be when you die?",
-        // image: "/images/og/quiz.png", // can be absolute or relative
+        // image: "/images/og/quiz.webp", // can be absolute or relative
+        // Optional extras:
+        canonical: "/quiz",
+    },
+    {
+        path: "tarot",
+        title: "Exorcise Your Ex — Tarot Reading",
+        description: "Consult the cards",
+        image: "/exurex_tarot_og.png",
         // Optional extras:
         canonical: "/quiz",
     },
@@ -22,7 +30,7 @@ const PAGES = [
 //     path: "quiz",
 //     title: "Exorcise Your Ex — Personality Quiz",
 //     description: "What kind of ghost will you be when you die?",
-//     image: "/images/og/quiz.png",        // can be absolute or relative
+//     image: "/images/og/quiz.webp",        // can be absolute or relative
 //     // Optional extras:
 //     canonical: "/quiz",
 //     twitterCard: "summary_large_image",

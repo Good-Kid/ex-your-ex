@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import React, { useEffect, useState } from "react";
 
 import ghostQuizData, {
@@ -19,8 +19,8 @@ import {
 import LinkButton from "../components/LinkButton";
 import { log } from "../firebase";
 
-const BOOK_COVER_SRC = "/images/quiz/book_closed.png";
-const BOOK_OPEN_SRC = "/images/quiz/book_open.png";
+const BOOK_COVER_SRC = "/images/quiz/book_closed.webp";
+const BOOK_OPEN_SRC = "/images/quiz/book_open.webp";
 const OPEN_BOOK_GIF_SRC = "/images/quiz/book_opening.gif"; // 0.11 secs
 const PAGE_FLIP_GIF_SRC = "/images/quiz/book_flip.gif"; // 0.06 secs
 
@@ -219,8 +219,9 @@ const QuizPage = () => {
     };
 
     const quizOverAnimation = async (finalScores) => {
-        setQuizResult(resultFromScores(finalScores));
-        updateGameState({ quizCompleted: true });
+        const result = resultFromScores(finalScores);
+        setQuizResult(result);
+        updateGameState({ quizCompleted: true, quizResult: result });
     };
 
     // ----- Click Handlers -----
@@ -266,14 +267,11 @@ const QuizPage = () => {
     };
 
     const handleShareClick = async () => {
-        // Guard
         if (!quizResult) return;
-
-        let canShareFiles = false;
 
         try {
             const slug = quizResult.id;
-            const shareUrl = getShareUrl(slug); // e.g. https://yoursite/share/<slug>
+            const shareUrl = getShareUrl(slug);
             const resultImgUrl = new URL(
                 `/images/quiz/result_art/${slug}.png`,
                 window.location.origin
@@ -284,23 +282,23 @@ const QuizPage = () => {
             )}" in the Ghost Quiz! 👻`;
             const text = `Take the quiz and see what you get:`;
 
+            // Prefer native share when available
             if (navigator.share) {
                 let files;
                 try {
                     const file = await getResultImageFile(
                         resultImgUrl,
-                        `${slug}.png`
+                        `${slug}.webp`
                     );
                     files = [file];
                 } catch {
                     files = undefined; // image fetch failed, share link only
                 }
 
-                canShareFiles = !!(
-                    files &&
+                const canShareFiles =
+                    !!files &&
                     navigator.canShare &&
-                    navigator.canShare({ files })
-                );
+                    navigator.canShare({ files });
 
                 if (canShareFiles) {
                     await navigator.share({
@@ -309,65 +307,90 @@ const QuizPage = () => {
                         url: shareUrl,
                         files,
                     });
+                    await log("share_click", {
+                        slug,
+                        method: "web-share-api-with-file",
+                        hasFile: true,
+                    });
+                    return; // ✅ do not fall through to any fallback
                 } else {
                     await navigator.share({ title, text, url: shareUrl });
+                    await log("share_click", {
+                        slug,
+                        method: "web-share-api",
+                        hasFile: false,
+                    });
+                    return; // ✅ no fallthrough
                 }
-
-                // Log after we know the capability
-                await log("share_click", {
-                    slug,
-                    method: canShareFiles
-                        ? "web-share-api-with-file"
-                        : "web-share-api",
-                    hasFile: canShareFiles,
-                });
-
-                return;
             }
 
-            // No native share (desktop or older browsers): prefer link copy, then download as last resort
+            // No Web Share API:
+            // On mobile, DO NOT download image; just copy link and stop.
+            if (isMobile) {
+                try {
+                    await navigator.clipboard?.writeText?.(shareUrl);
+                    alert("Link copied! Share it anywhere.");
+                    await log("share_click", {
+                        slug,
+                        method: "clipboard-link-mobile",
+                        hasFile: false,
+                    });
+                    return; // ✅ stop here on mobile
+                } catch {
+                    // last resort on mobile: just show the URL
+                    prompt("Copy this link to share:", shareUrl);
+                    await log("share_click", {
+                        slug,
+                        method: "prompt-link-mobile",
+                        hasFile: false,
+                    });
+                    return;
+                }
+            }
+
+            // Desktop fallback only (safe to allow download on desktop)
             try {
                 await navigator.clipboard?.writeText?.(shareUrl);
                 await log("share_click", {
                     slug,
-                    method: "clipboard-link",
+                    method: "clipboard-link-desktop",
                     hasFile: false,
                 });
                 alert("Link copied! Share it anywhere.");
                 return;
             } catch {
-                // fall through to download
+                await downloadUrlAsFile(resultImgUrl, `${slug}.webp`);
+                await log("share_click", {
+                    slug,
+                    method: "download-fallback-desktop",
+                    hasFile: false,
+                });
+                return;
             }
-
-            await downloadUrlAsFile(resultImgUrl, `${slug}.png`);
-            await log("share_click", {
-                slug,
-                method: "download-fallback",
-                hasFile: false,
-            });
         } catch (err) {
             console.error("Share failed:", err);
 
-            // Last-chance fallback: try to copy link, otherwise try downloading image path (may open in new tab on iOS)
+            // final soft landing: never download on mobile
             try {
                 const slug = quizResult?.id ?? "result";
                 const shareUrl = getShareUrl(slug);
                 await navigator.clipboard?.writeText?.(shareUrl);
                 alert("Link copied! Share it anywhere.");
             } catch {
-                try {
-                    const slug = quizResult?.id ?? "result";
-                    const fallbackImgUrl = new URL(
-                        `/images/quiz/result_art/${slug}.png`,
-                        window.location.origin
-                    ).href;
-                    await downloadUrlAsFile(fallbackImgUrl, `${slug}.png`);
-                } catch {}
+                if (!isProbablyMobile()) {
+                    try {
+                        const slug = quizResult?.id ?? "result";
+                        const fallbackImgUrl = new URL(
+                            `/images/quiz/result_art/${slug}.png`,
+                            window.location.origin
+                        ).href;
+                        await downloadUrlAsFile(fallbackImgUrl, `${slug}.webp`);
+                    } catch {}
+                }
             }
         }
     };
 
-    // ----- Render -----
     // ----- Render -----
 
     // Prebuild the three views so the final return is clean
@@ -377,12 +400,21 @@ const QuizPage = () => {
                 <img
                     id="quiz-result-img"
                     src={`/images/quiz/result_art/${quizResult?.id}.png`}
-                    onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src =
-                            "/images/quiz/result_art/poltergeist.png";
-                    }}
                     alt=""
+                    onError={(e) => {
+                        // Try to reload up to 3 times if it fails
+                        const el = e.currentTarget;
+                        el._reloadCount = (el._reloadCount || 0) + 1;
+                        if (el._reloadCount < 4) {
+                            // Remove src and re-set to force reload
+                            const src = el.src;
+                            el.src = "";
+                            setTimeout(() => {
+                                el.src = src;
+                            }, 250);
+                        }
+                        // else: do nothing, leave broken image
+                    }}
                 />
             </div>
             <div className="buttons">
@@ -423,7 +455,11 @@ const QuizPage = () => {
                                 onClick={mobileStartQuiz}
                             />
                             <div className="bottom">
+                                <span></span>
                                 {isMobile ? "Tap" : "Click"} the Book to begin
+                            </div>
+                            <div className="back-button">
+                                <LinkButton to="/kit">Back to Kit</LinkButton>
                             </div>
                         </div>
                     </>
@@ -483,7 +519,10 @@ const QuizPage = () => {
                                     </div>
                                 </div>
                                 <div className="bottom">
-                                    Click the Book to begin
+                                    <span>Click the Book to begin</span>
+                                    <LinkButton to="/kit">
+                                        Return to Kit
+                                    </LinkButton>
                                 </div>
                             </motion.div>
                         </>

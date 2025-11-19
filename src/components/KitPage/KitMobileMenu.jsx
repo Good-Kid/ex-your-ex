@@ -7,11 +7,11 @@ const resolveMenuImageSrc = (itemId, def, flags) => {
 
     // game-state overrides (mirror your KitPage logic)
     if (itemId === "bottle" && flags?.bottleCompleted) {
-        src = "/images/kit/full/bottle_full.png";
+        src = "/images/kit/full/bottle_full.webp";
     }
     if (itemId === "cassette" && !flags?.cassetteCompleted) {
         // use whatever your “broken/unwound” menu asset is
-        src = "/images/kit/full/cassette_unwound.png";
+        src = "/images/kit/full/cassette_unwound.webp";
     }
 
     return src;

@@ -4,6 +4,8 @@ import { useGameState } from "../../context/GameStateContext";
 import { GrCheckbox } from "react-icons/gr";
 import { GrCheckboxSelected } from "react-icons/gr";
 import { Link } from "react-router-dom";
+import LinkButton from "../LinkButton";
+import { transform } from "motion";
 
 const NoteModal = ({ modalOpen, onClose }) => {
     const { gameState } = useGameState();
@@ -122,6 +124,18 @@ const NoteModal = ({ modalOpen, onClose }) => {
                                     }
                                 />
                             </Link>
+                            {gameState.flags.ritualCompleted && (
+                                <LinkButton
+                                    style={{
+                                        margin: "auto",
+                                        marginTop: "-1em",
+                                        transform: "scale(0.9)",
+                                    }}
+                                    to="/final"
+                                >
+                                    Go to Results
+                                </LinkButton>
+                            )}
                         </div>
                     ) : (
                         ready && (
